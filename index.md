@@ -19,7 +19,7 @@ permalink: /
 
 - **[Documentation Home]({{ site.baseurl }}/docs/index.html)** - Complete documentation index
 - **[Platform Overview]({{ site.baseurl }}/docs/01-overview.html)** - Get started with platform fundamentals
-- **[Platform Architecture]({{ site.baseurl }}/docs/02-platform-architecture.md)** - System design and components
+- **[Platform Architecture]({{ site.baseurl }}/docs/02-platform-architecture.html)** - System design and components
 
 ## Documentation Structure
 

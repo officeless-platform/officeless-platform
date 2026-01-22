@@ -354,6 +354,6 @@ graph TB
 
 ## Related Documentation
 
-- [Platform Architecture](./02-platform-architecture.md)
-- [Observability](./06-observability.md)
-- [Enterprise Integration](./09-enterprise-integration.md)
+- [Platform Architecture](./02-platform-architecture.html)
+- [Observability](./06-observability.html)
+- [Enterprise Integration](./09-enterprise-integration.html)

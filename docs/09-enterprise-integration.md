@@ -197,7 +197,7 @@ Officeless platform serves as a middleware solution, enabling integration betwee
 - **API**: JSON, XML
 - **Files**: CSV, XML, fixed-width formats
 
-**See Also**: [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.md)
+**See Also**: [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.html)
 
 #### SAP Systems
 
@@ -240,7 +240,7 @@ Officeless platform serves as a middleware solution, enabling integration betwee
 - SAP SuccessFactors (HR)
 - SAP Ariba (procurement)
 
-**See Also**: [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.md)
+**See Also**: [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.html)
 
 ### CRM Systems
 
@@ -288,7 +288,7 @@ Officeless platform serves as a middleware solution, enabling integration betwee
 - **Event-driven**: Platform Events for asynchronous processing
 - **Webhook**: Outbound messaging (legacy)
 
-**See Also**: [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.md)
+**See Also**: [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.html)
 
 #### Microsoft Dynamics 365
 
@@ -319,7 +319,7 @@ Officeless platform serves as a middleware solution, enabling integration betwee
 - **REST**: JSON
 - **Files**: Various formats via Blob Storage
 
-**See Also**: [Multi-Cloud Deployment](./10-multi-cloud-deployment.md)
+**See Also**: [Multi-Cloud Deployment](./10-multi-cloud-deployment.html)
 
 ### Other Enterprise Applications
 
@@ -399,7 +399,7 @@ Officeless platform serves as a middleware solution, enabling integration betwee
 - **Database**: Database credentials
 - **VPN**: Certificate-based or pre-shared key
 
-**See Also**: [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.md)
+**See Also**: [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.html)
 
 ### Identity Systems
 - Active Directory integration
@@ -644,8 +644,8 @@ For on-premise enterprise applications (Oracle, SAP, custom applications), site-
 - **High Availability**: Redundant VPN tunnels
 
 **See Also**: 
-- [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.md) - Detailed VPN requirements
-- [VPN and Connectivity](./11-vpn-connectivity.md) - VPN configuration guide
+- [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.html) - Detailed VPN requirements
+- [VPN and Connectivity](./11-vpn-connectivity.html) - VPN configuration guide
 
 ### Public API Integration
 
@@ -673,9 +673,9 @@ For cloud-based enterprise applications (Salesforce, ServiceNow, Workday), integ
 
 ## Related Documentation
 
-- [Platform Architecture](./02-platform-architecture.md) - Platform components
-- [Extensibility](./08-extensibility.md) - Extension mechanisms
-- [Security and Governance](./05-security-and-governance.md) - Security controls
-- [Multi-Cloud Deployment](./10-multi-cloud-deployment.md) - Cloud deployment options
-- [VPN and Connectivity](./11-vpn-connectivity.md) - VPN configuration
-- [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.md) - Detailed VPN requirements
+- [Platform Architecture](./02-platform-architecture.html) - Platform components
+- [Extensibility](./08-extensibility.html) - Extension mechanisms
+- [Security and Governance](./05-security-and-governance.html) - Security controls
+- [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) - Cloud deployment options
+- [VPN and Connectivity](./11-vpn-connectivity.html) - VPN configuration
+- [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.html) - Detailed VPN requirements

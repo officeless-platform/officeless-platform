@@ -302,6 +302,6 @@ graph TB
 
 ## Related Documentation
 
-- [Deployment Architecture](./03-deployment-architecture.md)
-- [Database and Storage](./04-database-and-storage.md)
-- [Extensibility](./08-extensibility.md)
+- [Deployment Architecture](./03-deployment-architecture.html)
+- [Database and Storage](./04-database-and-storage.html)
+- [Extensibility](./08-extensibility.html)

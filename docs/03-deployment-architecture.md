@@ -442,6 +442,6 @@ terraform-officeless/
 
 ## Related Documentation
 
-- [Platform Architecture](./02-platform-architecture.md)
-- [Observability](./06-observability.md)
-- [Hybrid and Multicloud](./07-hybrid-and-multicloud.md)
+- [Platform Architecture](./02-platform-architecture.html)
+- [Observability](./06-observability.html)
+- [Hybrid and Multicloud](./07-hybrid-and-multicloud.html)

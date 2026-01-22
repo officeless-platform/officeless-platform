@@ -407,6 +407,6 @@ graph TB
 
 ## Related Documentation
 
-- [Platform Architecture](./02-platform-architecture.md)
-- [Deployment Architecture](./03-deployment-architecture.md)
-- [Security and Governance](./05-security-and-governance.md)
+- [Platform Architecture](./02-platform-architecture.html)
+- [Deployment Architecture](./03-deployment-architecture.html)
+- [Security and Governance](./05-security-and-governance.html)

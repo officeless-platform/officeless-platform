@@ -322,6 +322,6 @@ graph TB
 
 ## Related Documentation
 
-- [Platform Architecture](./02-platform-architecture.md)
-- [Enterprise Integration](./09-enterprise-integration.md)
-- [Security and Governance](./05-security-and-governance.md)
+- [Platform Architecture](./02-platform-architecture.html)
+- [Enterprise Integration](./09-enterprise-integration.html)
+- [Security and Governance](./05-security-and-governance.html)

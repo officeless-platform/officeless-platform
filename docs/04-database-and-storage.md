@@ -416,6 +416,6 @@ The Officeless platform uses a multi-tier storage architecture leveraging AWS st
 
 ## Related Documentation
 
-- [Platform Architecture](./02-platform-architecture.md)
-- [Security and Governance](./05-security-and-governance.md)
-- [Observability](./06-observability.md)
+- [Platform Architecture](./02-platform-architecture.html)
+- [Security and Governance](./05-security-and-governance.html)
+- [Observability](./06-observability.html)

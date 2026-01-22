@@ -125,6 +125,6 @@ Officeless is designed to enable organizations to build custom applications tail
 
 ## Next Steps
 
-- [Platform Architecture](./02-platform-architecture.md) - Detailed system design
-- [Deployment Architecture](./03-deployment-architecture.md) - Infrastructure patterns
-- [Security and Governance](./05-security-and-governance.md) - Security controls
+- [Platform Architecture](./02-platform-architecture.html) - Detailed system design
+- [Deployment Architecture](./03-deployment-architecture.html) - Infrastructure patterns
+- [Security and Governance](./05-security-and-governance.html) - Security controls

@@ -160,7 +160,7 @@ Deploy Officeless on one cloud with migration path to another cloud provider.
 ## AWS Deployment
 
 ### Reference Implementation
-See [Deployment Architecture](./03-deployment-architecture.md) for detailed AWS deployment.
+See [Deployment Architecture](./03-deployment-architecture.html) for detailed AWS deployment.
 
 ### Key Components
 - **EKS Cluster**: Kubernetes 1.33
@@ -495,7 +495,7 @@ Private: VPN → Private Endpoint → Internal Services
 
 ## Related Documentation
 
-- [Deployment Architecture](./03-deployment-architecture.md) - AWS reference implementation
-- [Hybrid and Multicloud](./07-hybrid-and-multicloud.md) - Hybrid deployment patterns
-- [VPN and Connectivity](./11-vpn-connectivity.md) - VPN configuration details
-- [Enterprise Integration](./09-enterprise-integration.md) - Enterprise system integration
+- [Deployment Architecture](./03-deployment-architecture.html) - AWS reference implementation
+- [Hybrid and Multicloud](./07-hybrid-and-multicloud.html) - Hybrid deployment patterns
+- [VPN and Connectivity](./11-vpn-connectivity.html) - VPN configuration details
+- [Enterprise Integration](./09-enterprise-integration.html) - Enterprise system integration

@@ -333,6 +333,6 @@ graph TB
 
 ## Related Documentation
 
-- [Deployment Architecture](./03-deployment-architecture.md)
-- [Security and Governance](./05-security-and-governance.md)
-- [Observability](./06-observability.md)
+- [Deployment Architecture](./03-deployment-architecture.html)
+- [Security and Governance](./05-security-and-governance.html)
+- [Observability](./06-observability.html)

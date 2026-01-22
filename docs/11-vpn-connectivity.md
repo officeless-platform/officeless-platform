@@ -443,6 +443,6 @@ Target Enterprise Application
 
 ## Related Documentation
 
-- [Multi-Cloud Deployment](./10-multi-cloud-deployment.md) - Cloud-specific VPN services
-- [Enterprise Integration](./09-enterprise-integration.md) - Enterprise application integration
-- [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.md) - Detailed VPN requirements
+- [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) - Cloud-specific VPN services
+- [Enterprise Integration](./09-enterprise-integration.html) - Enterprise application integration
+- [Site-to-Site VPN Requirements](./12-site-to-site-vpn-requirements.html) - Detailed VPN requirements

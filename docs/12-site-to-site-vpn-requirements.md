@@ -534,6 +534,6 @@ graph TB
 
 ## Related Documentation
 
-- [Multi-Cloud Deployment](./10-multi-cloud-deployment.md) - Cloud-specific VPN services
-- [VPN and Connectivity](./11-vpn-connectivity.md) - VPN types and configuration
-- [Enterprise Integration](./09-enterprise-integration.md) - Enterprise application integration details
+- [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) - Cloud-specific VPN services
+- [VPN and Connectivity](./11-vpn-connectivity.html) - VPN types and configuration
+- [Enterprise Integration](./09-enterprise-integration.html) - Enterprise application integration details
