@@ -1,0 +1,15 @@
+{
+  "name": "officeless-platform-docs",
+  "version": "1.0.0",
+  "description": "Officeless Platform Architecture Documentation",
+  "scripts": {
+    "render-diagrams": "node scripts/render-mermaid.js",
+    "build-docs": "npm run render-diagrams && bundle exec jekyll build"
+  },
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^10.6.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
