@@ -69,3 +69,8 @@ defaults:
       type: "pages"
     values:
       layout: "default"
+  - scope:
+      path: "index.md"
+    values:
+      layout: "default"
+      permalink: /
