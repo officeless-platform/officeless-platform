@@ -6,8 +6,8 @@ description: Enterprise-grade architecture documentation for Officeless Platform
 # Custom theme - no default theme
 
 # Base URL (adjust if using custom domain or subdirectory)
-baseurl: "" # e.g., "/officeless-platform" if using subdirectory
-url: "" # e.g., "https://officeless-platform.github.io"
+baseurl: "/officeless-platform" # Repository name for GitHub Pages
+url: "https://officeless-platform.github.io"
 
 # Navigation
 navigation:
