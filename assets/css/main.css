@@ -425,22 +425,42 @@ body {
 
 /* Hide mermaid code blocks until converted */
 .content pre code.language-mermaid {
-    display: none;
+    display: none !important;
+}
+
+.content pre:has(code.language-mermaid) {
+    display: none !important;
 }
 
 .content pre.mermaid-processed {
-    display: none;
+    display: none !important;
 }
 
 /* Show mermaid divs */
 .content .mermaid {
     display: block;
-    min-height: 200px;
+    min-height: 100px;
+    width: 100%;
 }
 
 .content .mermaid svg {
     max-width: 100%;
     height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Loading state for mermaid diagrams */
+.content .mermaid:not([data-rendered]) {
+    position: relative;
+}
+
+.content .mermaid:not([data-rendered]):before {
+    content: 'Loading diagram...';
+    display: block;
+    text-align: center;
+    color: var(--text-tertiary);
+    padding: 2rem;
 }
 
 /* Badges and tags */

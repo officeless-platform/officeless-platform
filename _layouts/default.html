@@ -84,18 +84,20 @@
                     if (preElement && preElement.tagName === 'PRE') {
                         if (!preElement.classList.contains('mermaid-processed')) {
                             const content = codeElement.textContent.trim();
-                            // Check if it's a valid Mermaid diagram (starts with common Mermaid keywords)
+                            
+                            // More flexible check - look for Mermaid keywords anywhere in first few lines
+                            const firstLines = content.split('\n').slice(0, 3).join('\n').toLowerCase();
                             const isMermaid = content && content.length > 0 && (
-                                content.startsWith('graph') || 
-                                content.startsWith('flowchart') || 
-                                content.startsWith('sequenceDiagram') || 
-                                content.startsWith('classDiagram') || 
-                                content.startsWith('stateDiagram') ||
-                                content.startsWith('erDiagram') ||
-                                content.startsWith('journey') ||
-                                content.startsWith('gantt') ||
-                                content.startsWith('pie') ||
-                                content.startsWith('gitgraph')
+                                firstLines.includes('graph') || 
+                                firstLines.includes('flowchart') || 
+                                firstLines.includes('sequencediagram') || 
+                                firstLines.includes('classdiagram') || 
+                                firstLines.includes('statediagram') ||
+                                firstLines.includes('erdiagram') ||
+                                firstLines.includes('journey') ||
+                                firstLines.includes('gantt') ||
+                                firstLines.includes('pie') ||
+                                firstLines.includes('gitgraph')
                             );
                             
                             if (isMermaid) {
@@ -134,7 +136,7 @@
                 
                 const isDark = getMermaidTheme() === 'dark';
                 const config = { 
-                    startOnLoad: true,
+                    startOnLoad: false, // We'll manually trigger rendering
                     theme: getMermaidTheme(),
                     themeVariables: getThemeVariables(isDark),
                     securityLevel: 'loose'
@@ -142,45 +144,83 @@
                 
                 mermaid.initialize(config);
                 
-                // Force render all mermaid diagrams (in case startOnLoad didn't catch them)
-                setTimeout(function() {
+                // Render all mermaid diagrams
+                function renderMermaidDiagrams() {
                     document.querySelectorAll('.mermaid').forEach(function(element) {
-                        if (!element.hasAttribute('data-rendered') && element.textContent.trim().length > 0) {
-                            element.setAttribute('data-rendered', 'true');
+                        if (!element.hasAttribute('data-rendered')) {
                             const content = element.textContent.trim();
-                            const id = element.id || 'mermaid-' + Math.random().toString(36).substr(2, 9);
-                            element.id = id;
-                            
-                            // Clear content before rendering
-                            const originalContent = content;
-                            element.textContent = '';
-                            
-                            mermaid.render(id, originalContent).then(function(result) {
-                                element.innerHTML = result.svg;
-                            }).catch(function(err) {
-                                console.error('Mermaid render error:', err, 'Content:', originalContent.substring(0, 100));
-                                // Fallback: restore content
-                                element.textContent = originalContent;
-                            });
+                            if (content && content.length > 0) {
+                                element.setAttribute('data-rendered', 'true');
+                                const id = element.id || 'mermaid-' + Math.random().toString(36).substr(2, 9);
+                                element.id = id;
+                                
+                                // Clear content before rendering
+                                const originalContent = content;
+                                element.textContent = '';
+                                
+                                mermaid.render(id, originalContent).then(function(result) {
+                                    element.innerHTML = result.svg;
+                                }).catch(function(err) {
+                                    console.error('Mermaid render error:', err);
+                                    console.error('Diagram content:', originalContent.substring(0, 200));
+                                    // Fallback: show error message
+                                    element.innerHTML = '<div style="padding: 1rem; background: #fee; border: 1px solid #fcc; border-radius: 4px; color: #c33;">Error rendering diagram. Check console for details.</div>';
+                                });
+                            }
                         }
                     });
-                }, 300);
+                }
+                
+                // Render immediately
+                renderMermaidDiagrams();
+                
+                // Also render after a short delay to catch any dynamically added diagrams
+                setTimeout(renderMermaidDiagrams, 500);
             }
             
             // Wait for DOM and Mermaid to be ready
             function init() {
-                if (typeof mermaid !== 'undefined') {
+                if (typeof mermaid !== 'undefined' && typeof mermaid.initialize === 'function') {
                     initializeMermaid();
                 } else {
-                    setTimeout(init, 100);
+                    // Wait for Mermaid to load (max 10 seconds)
+                    let attempts = 0;
+                    const maxAttempts = 200;
+                    const checkInterval = setInterval(function() {
+                        attempts++;
+                        if (typeof mermaid !== 'undefined' && typeof mermaid.initialize === 'function') {
+                            clearInterval(checkInterval);
+                            initializeMermaid();
+                        } else if (attempts >= maxAttempts) {
+                            clearInterval(checkInterval);
+                            console.error('Mermaid library failed to load after 10 seconds');
+                        }
+                    }, 50);
                 }
             }
             
+            // Start initialization when DOM is ready
             if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(init, 100); // Delay to ensure all scripts are loaded
+                });
             } else {
-                init();
+                // DOM already loaded
+                setTimeout(init, 100);
             }
+            
+            // Fallback: also try on window load
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    if (typeof mermaid !== 'undefined' && typeof mermaid.initialize === 'function') {
+                        // Re-process in case some diagrams weren't caught
+                        const unrendered = document.querySelectorAll('.mermaid:not([data-rendered])');
+                        if (unrendered.length > 0) {
+                            initializeMermaid();
+                        }
+                    }
+                }, 500);
+            });
             
             // Update Mermaid theme when theme changes
             document.addEventListener('themeChanged', function(e) {
