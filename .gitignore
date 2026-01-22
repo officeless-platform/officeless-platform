@@ -1,7 +1,7 @@
 # Dependencies
 node_modules/
-package-lock.json
 yarn.lock
+# Note: package-lock.json should be committed for consistent installs
 
 # Jekyll
 _site/
