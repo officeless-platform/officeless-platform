@@ -9,8 +9,8 @@ _site/
 .jekyll-cache/
 .jekyll-metadata/
 
-# Rendered diagrams (will be generated)
-assets/diagrams/rendered/
+# Rendered diagrams - keep them in git for GitHub Pages
+# assets/diagrams/rendered/
 
 # OS files
 .DS_Store
