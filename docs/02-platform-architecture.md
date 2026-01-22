@@ -26,7 +26,7 @@ graph TB
         NLB[Network Load Balancer]
     end
     
-    subgraph "EKS Cluster: officeless-production"
+    subgraph "EKS Cluster: production-cluster"
         subgraph "kube-system"
             LBC[AWS Load Balancer Controller]
             Autoscaler[Cluster Autoscaler]
@@ -52,7 +52,7 @@ graph TB
     
     subgraph "Storage Layer"
         EBS[(EBS Volumes<br/>gp3)]
-        EFS[(EFS File System<br/>eks_production)]
+        EFS[(EFS File System<br/>eks-shared-storage)]
         S3_Mimir[(S3: Mimir Metrics)]
         S3_Loki[(S3: Loki Logs)]
         S3_Tempo[(S3: Tempo Traces)]
@@ -118,9 +118,9 @@ graph TB
 ## Infrastructure Foundation
 
 ### AWS EKS Cluster
-- **Cluster Name**: `officeless-production`
+- **Cluster Name**: `production-cluster`
 - **Kubernetes Version**: 1.33
-- **Region**: ap-southeast-1 (Singapore)
+- **Region**: AWS region (e.g., us-east-1)
 - **Endpoint Configuration**:
   - Private endpoint access: Enabled
   - Public endpoint access: Disabled (production security best practice)
@@ -129,7 +129,7 @@ graph TB
 - **Log Retention**: 7 days in CloudWatch
 
 ### Compute Nodes
-- **Node Group**: `riung-workers`
+- **Node Group**: `worker-nodes`
 - **Instance Types**: 
   - Primary: `t3.xlarge` (4 vCPU, 16 GB RAM)
   - Alternative: `m6i.large` (2 vCPU, 8 GB RAM)
@@ -206,12 +206,12 @@ graph TB
 - **Metrics Storage**: Mimir for long-term metrics storage (S3-backed)
 - **Alerting**: Alertmanager (S3-backed)
 - **S3 Buckets for Observability**:
-  - `officeless-mimir-production`
-  - `officeless-mimir-alertmanager-production`
-  - `officeless-mimir-ruler-production`
-  - `officeless-loki-chunks-production`
-  - `officeless-loki-ruler-production`
-  - `officeless-tempo-production`
+  - `mimir-metrics` - Metrics storage
+  - `mimir-alertmanager` - Alertmanager state
+  - `mimir-ruler` - Recording rules
+  - `loki-chunks` - Log chunks
+  - `loki-ruler` - Log rules
+  - `tempo-traces` - Trace storage
 
 #### Auto-Scaling
 - **Cluster Autoscaler**: v9.45.0 (Helm chart)
@@ -280,7 +280,7 @@ graph TB
 
 ## Deployment Models
 
-- **Primary**: AWS EKS in ap-southeast-1 (Singapore)
+- **Primary**: AWS EKS in selected AWS region
 - **Network**: VPC-based with private subnets for workloads
 - **Hybrid Capable**: VPN server for on-premises connectivity
 - **Multi-cloud Ready**: Architecture supports extension to other clouds

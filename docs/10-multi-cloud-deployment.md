@@ -30,7 +30,7 @@ graph TB
     
     subgraph "Officeless Platform - Multi-Cloud Deployment"
         subgraph "AWS"
-            AWS_EKS[EKS Cluster<br/>officeless-production]
+            AWS_EKS[EKS Cluster<br/>production-cluster]
             AWS_VPN[Site-to-Site VPN]
         end
         

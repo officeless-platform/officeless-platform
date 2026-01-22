@@ -27,17 +27,17 @@ graph TB
     end
     
     subgraph "File Storage - EFS"
-        EFS[(EFS File System<br/>eks_production<br/>Encrypted<br/>General Purpose)]
+        EFS[(EFS File System<br/>eks-shared-storage<br/>Encrypted<br/>General Purpose)]
         EFS_AP1[EFS Access Point 1]
         EFS_AP2[EFS Access Point 2]
     end
     
     subgraph "Object Storage - S3"
         S3_App[S3 Application Buckets]
-        S3_Mimir[(S3: Mimir Metrics<br/>officeless-mimir-production)]
-        S3_Loki[(S3: Loki Logs<br/>officeless-loki-chunks-production)]
-        S3_Tempo[(S3: Tempo Traces<br/>officeless-tempo-production)]
-        S3_Alert[(S3: Alertmanager<br/>officeless-mimir-alertmanager-production)]
+        S3_Mimir[(S3: Mimir Metrics<br/>mimir-metrics)]
+        S3_Loki[(S3: Loki Logs<br/>loki-chunks)]
+        S3_Tempo[(S3: Tempo Traces<br/>tempo-traces)]
+        S3_Alert[(S3: Alertmanager<br/>mimir-alertmanager)]
     end
     
     subgraph "Cache Layer - Valkey"
@@ -123,7 +123,7 @@ The Officeless platform uses a multi-tier storage architecture leveraging AWS st
 - **Storage Class**: `efs`
 
 #### EFS File System Configuration
-- **File System ID**: `eks_production`
+- **File System ID**: `eks-shared-storage`
 - **Performance Mode**: General Purpose
 - **Throughput Mode**: Bursting
 - **Encryption**: Enabled at rest (AWS managed keys)
@@ -152,12 +152,12 @@ The Officeless platform uses a multi-tier storage architecture leveraging AWS st
 - Lifecycle policies: Configurable for cost optimization
 
 #### S3 Buckets for Observability Stack
-- **Mimir Metrics**: `officeless-mimir-production`
-- **Alertmanager State**: `officeless-mimir-alertmanager-production`
-- **Mimir Rules**: `officeless-mimir-ruler-production`
-- **Loki Chunks**: `officeless-loki-chunks-production`
-- **Loki Rules**: `officeless-loki-ruler-production`
-- **Tempo Traces**: `officeless-tempo-production`
+- **Mimir Metrics**: `mimir-metrics`
+- **Alertmanager State**: `mimir-alertmanager`
+- **Mimir Rules**: `mimir-ruler`
+- **Loki Chunks**: `loki-chunks`
+- **Loki Rules**: `loki-ruler`
+- **Tempo Traces**: `tempo-traces`
 
 #### S3 Access Management
 - IAM roles with Pod Identity for service accounts

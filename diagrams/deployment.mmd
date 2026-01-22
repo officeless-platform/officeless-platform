@@ -1,5 +1,5 @@
 graph TB
-    subgraph "AWS Region: ap-southeast-1"
+    subgraph "AWS Region"
         subgraph "VPC: 10.1.0.0/16"
             subgraph "Public Subnets"
                 subgraph "AZ-1a: 10.1.0.0/20"
@@ -31,7 +31,7 @@ graph TB
             end
             
             subgraph "EKS Control Plane"
-                EKS[EKS Cluster<br/>officeless-production<br/>K8s 1.33<br/>Private Endpoint Only]
+                EKS[EKS Cluster<br/>production-cluster<br/>K8s 1.33<br/>Private Endpoint Only]
             end
         end
         

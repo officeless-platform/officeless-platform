@@ -42,12 +42,13 @@
     {% endif %}
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script>
-        function initializeMermaid() {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            mermaid.initialize({ 
-                startOnLoad: true, 
-                theme: isDark ? 'dark' : 'default',
-                themeVariables: isDark ? {
+        (function() {
+            function getMermaidTheme() {
+                return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+            }
+            
+            function getThemeVariables(isDark) {
+                return isDark ? {
                     primaryColor: '#58a6ff',
                     primaryTextColor: '#c9d1d9',
                     primaryBorderColor: '#30363d',
@@ -69,27 +70,143 @@
                     mainBkg: '#f8f9fa',
                     secondBkg: '#f1f3f5',
                     textColor: '#212529'
+                };
+            }
+            
+            function processMermaidDiagrams() {
+                // Find all code blocks with language-mermaid (from Jekyll markdown processing)
+                const mermaidCodeBlocks = document.querySelectorAll('pre code.language-mermaid, code.language-mermaid');
+                
+                mermaidCodeBlocks.forEach(function(codeElement) {
+                    let preElement = codeElement.parentElement;
+                    
+                    // Handle both pre>code and direct code elements
+                    if (preElement && preElement.tagName === 'PRE') {
+                        if (!preElement.classList.contains('mermaid-processed')) {
+                            const content = codeElement.textContent.trim();
+                            // Check if it's a valid Mermaid diagram (starts with common Mermaid keywords)
+                            const isMermaid = content && content.length > 0 && (
+                                content.startsWith('graph') || 
+                                content.startsWith('flowchart') || 
+                                content.startsWith('sequenceDiagram') || 
+                                content.startsWith('classDiagram') || 
+                                content.startsWith('stateDiagram') ||
+                                content.startsWith('erDiagram') ||
+                                content.startsWith('journey') ||
+                                content.startsWith('gantt') ||
+                                content.startsWith('pie') ||
+                                content.startsWith('gitgraph')
+                            );
+                            
+                            if (isMermaid) {
+                                // Mark as processed
+                                preElement.classList.add('mermaid-processed');
+                                
+                                // Create a new div for Mermaid
+                                const mermaidDiv = document.createElement('div');
+                                mermaidDiv.className = 'mermaid';
+                                mermaidDiv.textContent = content;
+                                
+                                // Replace the pre element with the mermaid div
+                                if (preElement.parentNode) {
+                                    preElement.parentNode.replaceChild(mermaidDiv, preElement);
+                                }
+                            }
+                        }
+                    } else if (codeElement.tagName === 'CODE' && codeElement.classList.contains('language-mermaid')) {
+                        // Direct code element (shouldn't happen, but handle it)
+                        const content = codeElement.textContent.trim();
+                        if (content && content.length > 0) {
+                            const mermaidDiv = document.createElement('div');
+                            mermaidDiv.className = 'mermaid';
+                            mermaidDiv.textContent = content;
+                            if (codeElement.parentNode) {
+                                codeElement.parentNode.replaceChild(mermaidDiv, codeElement);
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function initializeMermaid() {
+                // First, convert code blocks to mermaid divs
+                processMermaidDiagrams();
+                
+                const isDark = getMermaidTheme() === 'dark';
+                const config = { 
+                    startOnLoad: true,
+                    theme: getMermaidTheme(),
+                    themeVariables: getThemeVariables(isDark),
+                    securityLevel: 'loose'
+                };
+                
+                mermaid.initialize(config);
+                
+                // Force render all mermaid diagrams (in case startOnLoad didn't catch them)
+                setTimeout(function() {
+                    document.querySelectorAll('.mermaid').forEach(function(element) {
+                        if (!element.hasAttribute('data-rendered') && element.textContent.trim().length > 0) {
+                            element.setAttribute('data-rendered', 'true');
+                            const content = element.textContent.trim();
+                            const id = element.id || 'mermaid-' + Math.random().toString(36).substr(2, 9);
+                            element.id = id;
+                            
+                            // Clear content before rendering
+                            const originalContent = content;
+                            element.textContent = '';
+                            
+                            mermaid.render(id, originalContent).then(function(result) {
+                                element.innerHTML = result.svg;
+                            }).catch(function(err) {
+                                console.error('Mermaid render error:', err, 'Content:', originalContent.substring(0, 100));
+                                // Fallback: restore content
+                                element.textContent = originalContent;
+                            });
+                        }
+                    });
+                }, 300);
+            }
+            
+            // Wait for DOM and Mermaid to be ready
+            function init() {
+                if (typeof mermaid !== 'undefined') {
+                    initializeMermaid();
+                } else {
+                    setTimeout(init, 100);
                 }
-            });
-        }
-        
-        // Initialize on page load
-        initializeMermaid();
-        
-        // Update Mermaid theme when theme changes
-        document.addEventListener('themeChanged', function(e) {
-            initializeMermaid();
-            // Re-render all Mermaid diagrams
-            document.querySelectorAll('.mermaid').forEach(function(element) {
-                const id = element.id || 'mermaid-' + Math.random().toString(36).substr(2, 9);
-                element.id = id;
-                const content = element.textContent;
-                element.textContent = '';
-                mermaid.render(id, content, function(svgCode) {
-                    element.innerHTML = svgCode;
+            }
+            
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+            
+            // Update Mermaid theme when theme changes
+            document.addEventListener('themeChanged', function(e) {
+                const isDark = e.detail.theme === 'dark';
+                mermaid.initialize({ 
+                    startOnLoad: false,
+                    theme: getMermaidTheme(),
+                    themeVariables: getThemeVariables(isDark)
+                });
+                
+                // Re-render all Mermaid diagrams
+                document.querySelectorAll('.mermaid').forEach(function(element) {
+                    const content = element.textContent.trim();
+                    if (content) {
+                        const id = element.id || 'mermaid-' + Math.random().toString(36).substr(2, 9);
+                        element.id = id;
+                        element.textContent = '';
+                        mermaid.render(id, content).then(function(result) {
+                            element.innerHTML = result.svg;
+                        }).catch(function(err) {
+                            console.error('Mermaid render error:', err);
+                        });
+                    }
                 });
             });
-        });
+        })();
     </script>
 </body>
 </html>

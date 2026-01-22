@@ -43,10 +43,10 @@ graph TB
     end
     
     subgraph "Storage - S3"
-        S3_Mimir[(S3: Mimir Metrics<br/>officeless-mimir-production)]
-        S3_Loki[(S3: Loki Logs<br/>officeless-loki-chunks-production)]
-        S3_Tempo[(S3: Tempo Traces<br/>officeless-tempo-production)]
-        S3_Alert[(S3: Alertmanager<br/>officeless-mimir-alertmanager-production)]
+        S3_Mimir[(S3: Mimir Metrics<br/>mimir-metrics)]
+        S3_Loki[(S3: Loki Logs<br/>loki-chunks)]
+        S3_Tempo[(S3: Tempo Traces<br/>tempo-traces)]
+        S3_Alert[(S3: Alertmanager<br/>mimir-alertmanager)]
     end
     
     subgraph "Visualization"
@@ -93,9 +93,9 @@ graph TB
 ### Metrics: Mimir
 - **Storage Backend**: Amazon S3
 - **S3 Buckets**:
-  - `officeless-mimir-production` - Metrics storage
-  - `officeless-mimir-alertmanager-production` - Alertmanager state
-  - `officeless-mimir-ruler-production` - Recording and alerting rules
+  - `mimir-metrics` - Metrics storage
+  - `mimir-alertmanager` - Alertmanager state
+  - `mimir-ruler` - Recording and alerting rules
 - **Features**:
   - Long-term metrics storage
   - Prometheus-compatible
@@ -105,8 +105,8 @@ graph TB
 ### Logs: Loki
 - **Storage Backend**: Amazon S3
 - **S3 Buckets**:
-  - `officeless-loki-chunks-production` - Log chunks
-  - `officeless-loki-ruler-production` - Log rules
+  - `loki-chunks` - Log chunks
+  - `loki-ruler` - Log rules
 - **Features**:
   - Log aggregation
   - Label-based indexing
@@ -115,7 +115,7 @@ graph TB
 
 ### Traces: Tempo
 - **Storage Backend**: Amazon S3
-- **S3 Bucket**: `officeless-tempo-production`
+- **S3 Bucket**: `tempo-traces`
 - **Features**:
   - Distributed tracing
   - OpenTelemetry compatible
@@ -123,8 +123,8 @@ graph TB
   - High scalability
 
 ### Access Management
-- **IAM Role**: `officeless-monitoring-production-role`
-- **Service Account**: `officeless-monitoring-production-sa`
+- **IAM Role**: `monitoring-role`
+- **Service Account**: `monitoring-sa`
 - **Namespace**: `monitoring`
 - **Permissions**:
   - S3 read/write access to monitoring buckets

@@ -420,6 +420,27 @@ body {
     border-radius: 8px;
     border: 1px solid var(--border-color);
     overflow-x: auto;
+    text-align: center;
+}
+
+/* Hide mermaid code blocks until converted */
+.content pre code.language-mermaid {
+    display: none;
+}
+
+.content pre.mermaid-processed {
+    display: none;
+}
+
+/* Show mermaid divs */
+.content .mermaid {
+    display: block;
+    min-height: 200px;
+}
+
+.content .mermaid svg {
+    max-width: 100%;
+    height: auto;
 }
 
 /* Badges and tags */

@@ -11,7 +11,7 @@ graph TB
         NLB[Network Load Balancer]
     end
     
-    subgraph "EKS Cluster: officeless-production"
+    subgraph "EKS Cluster: production-cluster"
         subgraph "kube-system"
             LBC[AWS Load Balancer Controller]
             Autoscaler[Cluster Autoscaler]
@@ -37,7 +37,7 @@ graph TB
     
     subgraph "Storage Layer"
         EBS[(EBS Volumes<br/>gp3)]
-        EFS[(EFS File System<br/>eks_production)]
+        EFS[(EFS File System<br/>eks-shared-storage)]
         S3_Mimir[(S3: Mimir Metrics)]
         S3_Loki[(S3: Loki Logs)]
         S3_Tempo[(S3: Tempo Traces)]

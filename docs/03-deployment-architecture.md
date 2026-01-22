@@ -14,7 +14,7 @@ This document describes the actual deployment architecture of the Officeless pla
 
 ```mermaid
 graph TB
-    subgraph "AWS Region: ap-southeast-1"
+    subgraph "AWS Region"
         subgraph "VPC: 10.1.0.0/16"
             subgraph "Public Subnets"
                 subgraph "AZ-1a: 10.1.0.0/20"
@@ -46,7 +46,7 @@ graph TB
             end
             
             subgraph "EKS Control Plane"
-                EKS[EKS Cluster<br/>officeless-production<br/>K8s 1.33<br/>Private Endpoint Only]
+                EKS[EKS Cluster<br/>production-cluster<br/>K8s 1.33<br/>Private Endpoint Only]
             end
         end
         
@@ -95,11 +95,11 @@ graph TB
 ## Infrastructure Foundation
 
 ### AWS Region and Availability Zones
-- **Region**: ap-southeast-1 (Singapore)
+- **Region**: AWS region (e.g., us-east-1)
 - **Availability Zones**: 
-  - ap-southeast-1a
-  - ap-southeast-1b
-  - ap-southeast-1c
+  - us-east-1a
+  - us-east-1b
+  - us-east-1c
 - **Multi-AZ Deployment**: All critical components deployed across 3 availability zones
 
 ### VPC Architecture
@@ -108,27 +108,27 @@ graph TB
 - **CIDR Block**: 10.1.0.0/16
 - **DNS Support**: Enabled
 - **DNS Hostnames**: Enabled
-- **VPC Name**: `officeless-production-vpc`
+- **VPC Name**: `production-vpc`
 
 #### Subnet Architecture
 **Public Subnets** (3 subnets, one per AZ):
-- `officeless-production-public-ap-southeast-1a`: 10.1.0.0/20
-- `officeless-production-public-ap-southeast-1b`: 10.1.16.0/20
-- `officeless-production-public-ap-southeast-1c`: 10.1.80.0/20
+- `public-subnet-1a`: 10.1.0.0/20
+- `public-subnet-1b`: 10.1.16.0/20
+- `public-subnet-1c`: 10.1.80.0/20
 - **Purpose**: NAT Gateway, Internet-facing load balancers
 - **Tags**: `kubernetes.io/role/elb = 1` for ALB placement
 
 **Private Subnets** (3 subnets, one per AZ):
-- `officeless-production-private-ap-southeast-1a`: 10.1.32.0/20
-- `officeless-production-private-ap-southeast-1b`: 10.1.48.0/20
-- `officeless-production-private-ap-southeast-1c`: 10.1.64.0/20
+- `private-subnet-1a`: 10.1.32.0/20
+- `private-subnet-1b`: 10.1.48.0/20
+- `private-subnet-1c`: 10.1.64.0/20
 - **Purpose**: EKS cluster nodes, application workloads
 - **Tags**: `kubernetes.io/role/internal-elb = 1` for internal load balancers
 
 #### Networking Components
 - **Internet Gateway**: Provides internet access for public subnets
 - **NAT Gateway**: 
-  - Single NAT Gateway in public subnet (ap-southeast-1a)
+  - Single NAT Gateway in public subnet (us-east-1a)
   - Elastic IP associated
   - Provides outbound internet access for private subnets
 - **Route Tables**: 
@@ -138,7 +138,7 @@ graph TB
 ## EKS Cluster Deployment
 
 ### Cluster Configuration
-- **Cluster Name**: `officeless-production`
+- **Cluster Name**: `production-cluster`
 - **Kubernetes Version**: 1.33
 - **Endpoint Access**:
   - Private endpoint: Enabled (from VPC CIDR only)
@@ -153,7 +153,7 @@ graph TB
   - Retention: 7 days
 
 ### Node Group Configuration
-- **Node Group Name**: `riung-workers`
+- **Node Group Name**: `worker-nodes`
 - **Deployment**: Private subnets across 3 AZs
 - **Instance Types**: 
   - Primary: `t3.xlarge` (4 vCPU, 16 GB RAM)
@@ -170,7 +170,7 @@ graph TB
   - Rolling updates with zero-downtime
 - **Labels**: 
   - `environment = production`
-  - `workload = riung`
+  - `workload = application`
 
 ## Storage Architecture
 
@@ -184,7 +184,7 @@ graph TB
 - **Use Cases**: Database volumes, application persistent storage
 
 ### EFS (Elastic File System)
-- **File System**: `eks_production`
+- **File System**: `eks-shared-storage`
 - **CSI Driver**: AWS EFS CSI Driver v3.1.8
 - **Configuration**:
   - Performance mode: General Purpose
@@ -198,12 +198,12 @@ graph TB
 ### S3 (Simple Storage Service)
 - **Application Buckets**: Custom buckets as needed
 - **Monitoring Buckets**:
-  - `officeless-mimir-production` - Metrics storage
-  - `officeless-mimir-alertmanager-production` - Alertmanager state
-  - `officeless-mimir-ruler-production` - Recording rules
-  - `officeless-loki-chunks-production` - Log chunks
-  - `officeless-loki-ruler-production` - Log rules
-  - `officeless-tempo-production` - Trace storage
+  - `mimir-metrics` - Metrics storage
+  - `mimir-alertmanager` - Alertmanager state
+  - `mimir-ruler` - Recording rules
+  - `loki-chunks` - Log chunks
+  - `loki-ruler` - Log rules
+  - `tempo-traces` - Trace storage
 
 ## Load Balancing
 
@@ -227,7 +227,7 @@ graph TB
 ### VPN Server
 - **Instance Type**: t3.large
 - **AMI**: Ubuntu 24.04
-- **Deployment**: Public subnet (ap-southeast-1a)
+- **Deployment**: Public subnet (us-east-1a)
 - **Elastic IP**: Static public IP assigned
 - **Storage**: 
   - Root volume: 20 GB gp3, encrypted
