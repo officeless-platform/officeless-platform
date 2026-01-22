@@ -5,8 +5,9 @@ title: Officeless Architecture Reference
 description: Enterprise-grade architecture documentation for Officeless Platform
 # Custom theme - no default theme
 
-# Base URL (adjust if using custom domain or subdirectory)
-baseurl: "/officeless-platform" # Repository name for GitHub Pages
+# Base URL - will be overridden by workflow during build
+# Default value for local development
+baseurl: "/officeless-platform"
 url: "https://officeless-platform.github.io"
 
 # Navigation

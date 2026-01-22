@@ -2,6 +2,7 @@
 layout: default
 title: Officeless Architecture Reference
 description: Enterprise-grade architecture documentation for Solution Architects, Enterprise IT, and Security/Compliance teams
+permalink: /docs/index.html
 ---
 
 # Officeless Architecture Reference

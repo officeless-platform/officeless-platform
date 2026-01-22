@@ -40,7 +40,15 @@ jobs:
         run: |
           gem install bundler
           bundle install
-          bundle exec jekyll build --baseurl "/officeless-platform"
+          BASE_PATH="${{ steps.pages.outputs.base_path }}"
+          echo "GitHub Pages base_path: $BASE_PATH"
+          if [ -z "$BASE_PATH" ] || [ "$BASE_PATH" = "/" ]; then
+            BASE_PATH="/officeless-platform"
+          fi
+          echo "Building Jekyll with baseurl: $BASE_PATH"
+          bundle exec jekyll build --baseurl "$BASE_PATH"
+          echo "Build complete. Checking _site directory:"
+          ls -la _site/ | head -20
         env:
           JEKYLL_ENV: production
       
