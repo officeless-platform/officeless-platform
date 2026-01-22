@@ -5,32 +5,36 @@ title: Officeless Architecture Reference
 description: Enterprise-grade architecture documentation for Officeless Platform
 theme: jekyll-theme-minimal
 
+# Base URL (adjust if using custom domain or subdirectory)
+baseurl: "" # e.g., "/officeless-platform" if using subdirectory
+url: "" # e.g., "https://officeless-platform.github.io"
+
 # Navigation
 navigation:
   - title: Overview
-    url: /docs/01-overview
+    url: /docs/01-overview.html
   - title: Platform Architecture
-    url: /docs/02-platform-architecture
+    url: /docs/02-platform-architecture.html
   - title: Deployment Architecture
-    url: /docs/03-deployment-architecture
+    url: /docs/03-deployment-architecture.html
   - title: Database and Storage
-    url: /docs/04-database-and-storage
+    url: /docs/04-database-and-storage.html
   - title: Security and Governance
-    url: /docs/05-security-and-governance
+    url: /docs/05-security-and-governance.html
   - title: Observability
-    url: /docs/06-observability
+    url: /docs/06-observability.html
   - title: Hybrid and Multicloud
-    url: /docs/07-hybrid-and-multicloud
+    url: /docs/07-hybrid-and-multicloud.html
   - title: Extensibility
-    url: /docs/08-extensibility
+    url: /docs/08-extensibility.html
   - title: Enterprise Integration
-    url: /docs/09-enterprise-integration
+    url: /docs/09-enterprise-integration.html
   - title: Multi-Cloud Deployment
-    url: /docs/10-multi-cloud-deployment
+    url: /docs/10-multi-cloud-deployment.html
   - title: VPN and Connectivity
-    url: /docs/11-vpn-connectivity
+    url: /docs/11-vpn-connectivity.html
   - title: Site-to-Site VPN Requirements
-    url: /docs/12-site-to-site-vpn-requirements
+    url: /docs/12-site-to-site-vpn-requirements.html
 
 # Plugins
 plugins:
