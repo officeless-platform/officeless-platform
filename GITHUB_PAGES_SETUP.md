@@ -18,8 +18,11 @@ This repository includes a GitHub Actions workflow (`.github/workflows/pages.yml
 1. **Enable GitHub Pages in Repository Settings**
    - Go to your repository on GitHub
    - Navigate to **Settings** → **Pages**
-   - Under **Source**, select **GitHub Actions**
+   - Under **Source**, select **GitHub Actions** (NOT "Deploy from a branch")
+   - **Important**: Make sure "Deploy from a branch" is NOT selected, as this will cause conflicts
    - Click **Save**
+
+**Note**: If you see two pipeline actions running (GitHub Actions + automatic build), it means both deployment methods are enabled. You must disable the automatic build by selecting "GitHub Actions" only in Settings → Pages.
 
 2. **Push the workflow file** (if not already committed)
    ```bash
@@ -56,6 +59,7 @@ The repository includes the following configuration:
 - **`Gemfile`**: Ruby dependencies for Jekyll
 - **`.github/workflows/pages.yml`**: GitHub Actions workflow for automated deployment
 - **`docs/index.md`**: Landing page for the documentation
+- **`.nojekyll`**: Disables automatic Jekyll processing (we use GitHub Actions instead)
 
 ## Site Structure
 

@@ -1,0 +1,2 @@
+# This file disables automatic Jekyll processing by GitHub Pages
+# We use GitHub Actions workflow for building instead
