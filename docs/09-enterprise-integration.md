@@ -12,6 +12,20 @@ This document describes integration patterns, enterprise systems connectivity, a
 
 ## Enterprise Integration Architecture
 
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/09-enterprise-integration-diagram-1-eae22d2b.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/09-enterprise-integration-diagram-1-eae22d2b.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
 ```mermaid
 graph TB
     subgraph "Enterprise Network A"
@@ -98,6 +112,14 @@ graph TB
     Service2 -.REST API.-> ServiceNow
     Service3 -.Custom API.-> Custom_App2
 ```
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 ## Integration Architecture
 

@@ -12,6 +12,20 @@ This document describes the high-level architecture of the Officeless platform, 
 
 ## Platform Architecture Diagram
 
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/02-platform-architecture-diagram-1-9c5650af.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/02-platform-architecture-diagram-1-9c5650af.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
 ```mermaid
 graph TB
     subgraph "Client Layer"
@@ -114,6 +128,14 @@ graph TB
     VPN --> Jenkins
     Jenkins --> AppService1
 ```
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 ## Infrastructure Foundation
 

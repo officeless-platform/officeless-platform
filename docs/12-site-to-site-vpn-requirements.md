@@ -24,6 +24,23 @@ graph LR
         VPN1[Site-to-Site VPN<br/>IPsec AES-256]
     end
     
+    subgraph<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-82f1aadf.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
+```mermaid
+graph LR
+    subgraph "Enterprise Network A"
+        AppA[Enterprise App A<br/>Oracle/SAP/etc]
+    end
+    
+    subgraph "VPN Tunnel 1"
+        VPN1[Site-to-Site VPN<br/>IPsec AES-256]
+    end
+    
     subgraph "Officeless Platform"
         Middleware[Officeless<br/>Middleware Solution]
         Transform[Data Transformation]
@@ -52,7 +69,16 @@ graph LR
     style VPN2 fill:#ffe1e1
 ```
 
-### Detailed Integration Architecture
+</details>
+
+</div>urce code</summary>
+
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-2-956a66a4.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
 
 ```mermaid
 graph TB
@@ -138,6 +164,14 @@ graph TB
     Service2 -.REST API.-> ServiceNow
     Service3 -.Custom API.-> Custom_App2
 ```
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 ### Integration Scenarios
 

@@ -12,6 +12,20 @@ This document describes the data architecture, persistence models, storage solut
 
 ## Storage Architecture Diagram
 
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/04-database-and-storage-diagram-1-bd370083.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/04-database-and-storage-diagram-1-bd370083.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
 ```mermaid
 graph TB
     subgraph "Application Layer - EKS Pods"
@@ -88,6 +102,14 @@ graph TB
     App2 --> Loki
     App3 --> Tempo
 ```
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 ## Storage Architecture
 

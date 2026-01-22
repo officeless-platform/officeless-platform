@@ -12,6 +12,20 @@ This document describes the actual deployment architecture of the Officeless pla
 
 ## Deployment Architecture Diagram
 
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/03-deployment-architecture-diagram-1-bcef1d50.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/03-deployment-architecture-diagram-1-bcef1d50.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
 ```mermaid
 graph TB
     subgraph "AWS Region"
@@ -91,6 +105,14 @@ graph TB
     VPN_Instance -.VPN Tunnel.-> Node1
     VPN_Instance -.VPN Tunnel.-> Node2
 ```
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 ## Infrastructure Foundation
 

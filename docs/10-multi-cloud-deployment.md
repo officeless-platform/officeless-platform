@@ -12,6 +12,20 @@ This document provides comprehensive deployment guidance for the Officeless plat
 
 ## Multi-Cloud Deployment Architecture
 
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/10-multi-cloud-deployment-diagram-1-602726d0.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/10-multi-cloud-deployment-diagram-1-602726d0.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
 ```mermaid
 graph TB
     subgraph "Enterprise Networks"
@@ -97,6 +111,14 @@ graph TB
     GCP_GKE --> DirectConnect
     Azure_AKS --> DirectConnect
 ```
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 ## Supported Platforms
 

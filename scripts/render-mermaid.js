@@ -36,30 +36,33 @@ function renderMermaidToSVG(mermaidCode, outputPath) {
         fs.writeFileSync(tempFile, mermaidCode, 'utf8');
         
         // Check if mermaid-cli is available
+        // In version 11.x, the CLI is at src/cli.js and it's an ES module
+        // Best approach is to use npx which handles the binary correctly
         let mermaidCLI;
-        const possiblePaths = [
-            require.resolve('@mermaid-js/mermaid-cli/bin/mmdc'),
-            path.join(__dirname, '..', 'node_modules', '@mermaid-js', 'mermaid-cli', 'bin', 'mmdc'),
-            path.join(process.cwd(), 'node_modules', '@mermaid-js', 'mermaid-cli', 'bin', 'mmdc')
-        ];
-        
-        for (const possiblePath of possiblePaths) {
-            try {
-                if (fs.existsSync(possiblePath)) {
-                    mermaidCLI = possiblePath;
-                    break;
+        try {
+            execSync('which npx', { stdio: 'pipe' });
+            mermaidCLI = 'npx'; // Use npx to run mermaid-cli (handles ES modules correctly)
+        } catch (e) {
+            // Try to find the binary directly (for version 11.x it's at src/cli.js)
+            const possiblePaths = [
+                path.join(__dirname, '..', 'node_modules', '@mermaid-js', 'mermaid-cli', 'src', 'cli.js'),
+                path.join(process.cwd(), 'node_modules', '@mermaid-js', 'mermaid-cli', 'src', 'cli.js'),
+                path.join(__dirname, '..', 'node_modules', '@mermaid-js', 'mermaid-cli', 'bin', 'mmdc'),
+                path.join(process.cwd(), 'node_modules', '@mermaid-js', 'mermaid-cli', 'bin', 'mmdc')
+            ];
+            
+            for (const possiblePath of possiblePaths) {
+                try {
+                    if (fs.existsSync(possiblePath)) {
+                        mermaidCLI = possiblePath;
+                        break;
+                    }
+                } catch (e) {
+                    // Continue to next path
                 }
-            } catch (e) {
-                // Continue to next path
             }
-        }
-        
-        // Try npx as fallback
-        if (!mermaidCLI) {
-            try {
-                execSync('which npx', { stdio: 'pipe' });
-                mermaidCLI = 'npx'; // Use npx to run mermaid-cli
-            } catch (e) {
+            
+            if (!mermaidCLI) {
                 console.error('Error: @mermaid-js/mermaid-cli is not installed.');
                 console.error('Please install it with: npm install --save-dev @mermaid-js/mermaid-cli');
                 process.exit(1);
@@ -72,14 +75,17 @@ function renderMermaidToSVG(mermaidCode, outputPath) {
         // -s 2: scale 2 for better quality
         let command;
         if (mermaidCLI === 'npx') {
+            // Use npx which handles ES modules correctly
             command = `npx -y @mermaid-js/mermaid-cli -i "${tempFile}" -o "${outputPath}" -b transparent -w 1200 -s 2`;
         } else {
-            command = `"${mermaidCLI}" -i "${tempFile}" -o "${outputPath}" -b transparent -w 1200 -s 2`;
+            // For direct path, use node to run the ES module
+            command = `node "${mermaidCLI}" -i "${tempFile}" -o "${outputPath}" -b transparent -w 1200 -s 2`;
         }
         
         execSync(command, {
             stdio: 'pipe',
-            encoding: 'utf8'
+            encoding: 'utf8',
+            env: { ...process.env, NODE_OPTIONS: '--no-warnings' }
         });
         
         // Clean up temp file
@@ -129,7 +135,8 @@ function processMarkdownFile(filePath) {
         // Generate filename for this diagram
         const diagramFilename = generateDiagramFilename(mermaidCode, i, fileBaseName);
         const diagramPath = path.join(DIAGRAMS_DIR, diagramFilename);
-        const relativePath = path.relative(path.dirname(filePath), diagramPath).replace(/\\/g, '/');
+        // Use path relative to docs directory (go up one level to reach assets)
+        const relativePath = path.join('..', 'assets', 'diagrams', 'rendered', diagramFilename).replace(/\\/g, '/');
         
         // Render diagram
         console.log(`  Rendering diagram ${i + 1}/${matches.length}...`);

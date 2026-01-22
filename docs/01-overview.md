@@ -12,6 +12,20 @@ This document provides a high-level overview of the Officeless platform, its cor
 
 ## Platform Overview
 
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/01-overview-diagram-1-e6454949.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/01-overview-diagram-1-e6454949.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
 ```mermaid
 graph TB
     subgraph "Officeless Platform"
@@ -58,6 +72,14 @@ graph TB
     Cloud --> MultiCloud
     Hybrid --> OnPrem
 ```
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 ## Platform Vision
 

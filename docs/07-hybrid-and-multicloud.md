@@ -12,6 +12,20 @@ This document describes deployment patterns and strategies for hybrid and multi-
 
 ## Hybrid and Multi-Cloud Architecture
 
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/07-hybrid-and-multicloud-diagram-1-a86f58ec.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/07-hybrid-and-multicloud-diagram-1-a86f58ec.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
 ```mermaid
 graph TB
     subgraph "On-Premise"
@@ -76,6 +90,14 @@ graph TB
     GCP_GKE --> DirectConnect
     Azure_AKS --> DirectConnect
 ```
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 ## Architecture Patterns
 

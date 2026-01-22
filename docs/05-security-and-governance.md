@@ -12,6 +12,20 @@ This document describes the security controls, compliance frameworks, and govern
 
 ## Security Architecture Diagram
 
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/05-security-and-governance-diagram-1-10a06bfb.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/05-security-and-governance-diagram-1-10a06bfb.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
 ```mermaid
 graph TB
     subgraph "Security Layers"
@@ -84,6 +98,14 @@ graph TB
     GDPR --> DataPrivacy
     HIPAA --> Encrypt_Rest
 ```
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 ## Security Architecture
 

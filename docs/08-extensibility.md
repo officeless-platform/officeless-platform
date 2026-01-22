@@ -12,6 +12,20 @@ This document describes the extensibility mechanisms, APIs, and customization op
 
 ## Extensibility Architecture
 
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/08-extensibility-diagram-1-f6185bb0.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+![Mermaid Diagram](../assets/diagrams/rendered/08-extensibility-diagram-1-f6185bb0.svg)
+
+<details>
+<summary>View Mermaid source code</summary>
+
 ```mermaid
 graph TB
     subgraph "Extension Points"
@@ -80,6 +94,14 @@ graph TB
     Testing --> Platform
     CI_CD --> Platform
 ```
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 ## Extension Points
 
