@@ -1,0 +1,77 @@
+graph TB
+    subgraph "AWS Region: ap-southeast-1"
+        subgraph "VPC: 10.1.0.0/16"
+            subgraph "Public Subnets"
+                subgraph "AZ-1a: 10.1.0.0/20"
+                    NAT[NAT Gateway<br/>Elastic IP]
+                    IGW[Internet Gateway]
+                    VPN_Instance[VPN Server<br/>EC2 t3.large<br/>Pritunl]
+                end
+                subgraph "AZ-1b: 10.1.16.0/20"
+                    ALB_Public[ALB Public<br/>Subnet]
+                end
+                subgraph "AZ-1c: 10.1.80.0/20"
+                    ALB_Public2[ALB Public<br/>Subnet]
+                end
+            end
+            
+            subgraph "Private Subnets"
+                subgraph "AZ-1a: 10.1.32.0/20"
+                    Node1[EKS Node 1<br/>t3.xlarge<br/>Bottlerocket]
+                    EFS_Mount1[EFS Mount<br/>Target]
+                end
+                subgraph "AZ-1b: 10.1.48.0/20"
+                    Node2[EKS Node 2<br/>t3.xlarge<br/>Bottlerocket]
+                    EFS_Mount2[EFS Mount<br/>Target]
+                end
+                subgraph "AZ-1c: 10.1.64.0/20"
+                    Node3[EKS Node 3<br/>t3.xlarge<br/>Bottlerocket]
+                    EFS_Mount3[EFS Mount<br/>Target]
+                end
+            end
+            
+            subgraph "EKS Control Plane"
+                EKS[EKS Cluster<br/>officeless-production<br/>K8s 1.33<br/>Private Endpoint Only]
+            end
+        end
+        
+        subgraph "AWS Managed Services"
+            S3_Buckets[S3 Buckets<br/>Mimir, Loki, Tempo<br/>Application Data]
+            Valkey_Service[Valkey<br/>ElastiCache]
+            CloudWatch_Logs[CloudWatch Logs<br/>EKS Cluster Logs]
+        end
+    end
+    
+    Internet[Internet] --> IGW
+    IGW --> ALB_Public
+    IGW --> ALB_Public2
+    IGW --> VPN_Instance
+    
+    ALB_Public --> Node1
+    ALB_Public2 --> Node2
+    ALB_Public --> Node3
+    
+    Node1 --> NAT
+    Node2 --> NAT
+    Node3 --> NAT
+    NAT --> IGW
+    
+    Node1 --> EKS
+    Node2 --> EKS
+    Node3 --> EKS
+    
+    Node1 --> EFS_Mount1
+    Node2 --> EFS_Mount2
+    Node3 --> EFS_Mount3
+    
+    Node1 --> S3_Buckets
+    Node2 --> S3_Buckets
+    Node3 --> S3_Buckets
+    
+    Node1 --> Valkey_Service
+    Node2 --> Valkey_Service
+    
+    EKS --> CloudWatch_Logs
+    
+    VPN_Instance -.VPN Tunnel.-> Node1
+    VPN_Instance -.VPN Tunnel.-> Node2

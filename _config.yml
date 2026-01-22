@@ -1,0 +1,51 @@
+# GitHub Pages Configuration for Officeless Architecture Reference
+# This enables Jekyll with GitHub Pages
+
+title: Officeless Architecture Reference
+description: Enterprise-grade architecture documentation for Officeless Platform
+theme: jekyll-theme-minimal
+
+# Navigation
+navigation:
+  - title: Overview
+    url: /docs/01-overview
+  - title: Platform Architecture
+    url: /docs/02-platform-architecture
+  - title: Deployment Architecture
+    url: /docs/03-deployment-architecture
+  - title: Database and Storage
+    url: /docs/04-database-and-storage
+  - title: Security and Governance
+    url: /docs/05-security-and-governance
+  - title: Observability
+    url: /docs/06-observability
+  - title: Hybrid and Multicloud
+    url: /docs/07-hybrid-and-multicloud
+  - title: Extensibility
+    url: /docs/08-extensibility
+  - title: Enterprise Integration
+    url: /docs/09-enterprise-integration
+  - title: Multi-Cloud Deployment
+    url: /docs/10-multi-cloud-deployment
+  - title: VPN and Connectivity
+    url: /docs/11-vpn-connectivity
+  - title: Site-to-Site VPN Requirements
+    url: /docs/12-site-to-site-vpn-requirements
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Exclude files from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
+# Markdown settings
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge

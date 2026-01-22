@@ -1,0 +1,74 @@
+graph TB
+    subgraph "Application Layer - EKS Pods"
+        App1[Application Pod 1]
+        App2[Application Pod 2]
+        App3[Application Pod 3]
+    end
+    
+    subgraph "Block Storage - EBS"
+        EBS1[(EBS Volume 1<br/>gp3<br/>200GB)]
+        EBS2[(EBS Volume 2<br/>gp3<br/>200GB)]
+        EBS3[(EBS Volume 3<br/>gp3<br/>200GB)]
+    end
+    
+    subgraph "File Storage - EFS"
+        EFS[(EFS File System<br/>eks_production<br/>Encrypted<br/>General Purpose)]
+        EFS_AP1[EFS Access Point 1]
+        EFS_AP2[EFS Access Point 2]
+    end
+    
+    subgraph "Object Storage - S3"
+        S3_App[S3 Application Buckets]
+        S3_Mimir[(S3: Mimir Metrics<br/>officeless-mimir-production)]
+        S3_Loki[(S3: Loki Logs<br/>officeless-loki-chunks-production)]
+        S3_Tempo[(S3: Tempo Traces<br/>officeless-tempo-production)]
+        S3_Alert[(S3: Alertmanager<br/>officeless-mimir-alertmanager-production)]
+    end
+    
+    subgraph "Cache Layer - Valkey"
+        Valkey[(Valkey Cluster<br/>Redis-Compatible<br/>ElastiCache)]
+    end
+    
+    subgraph "Database Layer"
+        DB1[(Database Pod 1<br/>PostgreSQL/MySQL<br/>on EBS)]
+        DB2[(Database Pod 2<br/>PostgreSQL/MySQL<br/>on EBS)]
+    end
+    
+    subgraph "Monitoring Stack"
+        Mimir[Mimir]
+        Loki[Loki]
+        Tempo[Tempo]
+    end
+    
+    App1 --> EBS1
+    App2 --> EBS2
+    App3 --> EBS3
+    
+    App1 --> EFS_AP1
+    App2 --> EFS_AP1
+    App3 --> EFS_AP2
+    EFS_AP1 --> EFS
+    EFS_AP2 --> EFS
+    
+    App1 --> S3_App
+    App2 --> S3_App
+    App3 --> S3_App
+    
+    App1 --> Valkey
+    App2 --> Valkey
+    App3 --> Valkey
+    
+    App1 --> DB1
+    App2 --> DB1
+    App3 --> DB2
+    DB1 --> EBS1
+    DB2 --> EBS2
+    
+    Mimir --> S3_Mimir
+    Loki --> S3_Loki
+    Tempo --> S3_Tempo
+    Mimir --> S3_Alert
+    
+    App1 --> Mimir
+    App2 --> Loki
+    App3 --> Tempo

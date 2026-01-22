@@ -1,0 +1,100 @@
+graph TB
+    subgraph "Client Layer"
+        Web[Web Application]
+        Mobile[Mobile App]
+        API_Client[API Clients]
+        VPN_Client[VPN Clients]
+    end
+    
+    subgraph "AWS Load Balancer"
+        ALB[Application Load Balancer]
+        NLB[Network Load Balancer]
+    end
+    
+    subgraph "EKS Cluster: officeless-production"
+        subgraph "kube-system"
+            LBC[AWS Load Balancer Controller]
+            Autoscaler[Cluster Autoscaler]
+            MetricsServer[Metrics Server]
+            EBSCSI[EBS CSI Driver]
+            EFSCSI[EFS CSI Driver]
+            SecretCSI[Secret Store CSI Driver]
+        end
+        
+        subgraph "Application Namespaces"
+            AppService1[Application Service 1]
+            AppService2[Application Service 2]
+            AppServiceN[Application Service N]
+        end
+        
+        subgraph "Monitoring Namespace"
+            Mimir[Mimir]
+            Loki[Loki]
+            Tempo[Tempo]
+            Alertmanager[Alertmanager]
+        end
+    end
+    
+    subgraph "Storage Layer"
+        EBS[(EBS Volumes<br/>gp3)]
+        EFS[(EFS File System<br/>eks_production)]
+        S3_Mimir[(S3: Mimir Metrics)]
+        S3_Loki[(S3: Loki Logs)]
+        S3_Tempo[(S3: Tempo Traces)]
+        Valkey[(Valkey Cache)]
+    end
+    
+    subgraph "AWS Services"
+        IAM[IAM Roles<br/>Pod Identity]
+        Secrets[Secrets Manager]
+        CloudWatch[CloudWatch Logs]
+    end
+    
+    subgraph "VPN Server"
+        VPN[Pritunl VPN<br/>EC2 t3.large]
+        Jenkins[Jenkins Agent]
+    end
+    
+    Web --> ALB
+    Mobile --> ALB
+    API_Client --> ALB
+    VPN_Client --> VPN
+    
+    ALB --> AppService1
+    ALB --> AppService2
+    ALB --> AppServiceN
+    NLB --> AppService1
+    
+    AppService1 --> EBS
+    AppService2 --> EBS
+    AppServiceN --> EBS
+    
+    AppService1 --> EFS
+    AppService2 --> EFS
+    
+    AppService1 --> Valkey
+    AppService2 --> Valkey
+    
+    Mimir --> S3_Mimir
+    Loki --> S3_Loki
+    Tempo --> S3_Tempo
+    Alertmanager --> S3_Mimir
+    
+    AppService1 --> Mimir
+    AppService2 --> Loki
+    AppServiceN --> Tempo
+    
+    AppService1 --> Secrets
+    AppService2 --> Secrets
+    
+    Autoscaler --> CloudWatch
+    AppService1 --> CloudWatch
+    
+    LBC --> IAM
+    EBSCSI --> IAM
+    EFSCSI --> IAM
+    SecretCSI --> IAM
+    AppService1 --> IAM
+    
+    VPN --> Jenkins
+    Jenkins --> AppService1
