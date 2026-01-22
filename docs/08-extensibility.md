@@ -1,3 +1,9 @@
+---
+layout: default
+title: Extensibility
+permalink: /docs/08-extensibility.html
+---
+
 # Extensibility
 
 ## Extensibility Overview

@@ -1,3 +1,9 @@
+---
+layout: default
+title: Hybrid and Multicloud
+permalink: /docs/07-hybrid-and-multicloud.html
+---
+
 # Hybrid and Multicloud
 
 ## Hybrid and Multicloud Overview

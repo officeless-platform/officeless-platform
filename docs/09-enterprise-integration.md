@@ -1,3 +1,9 @@
+---
+layout: default
+title: Enterprise Integration
+permalink: /docs/09-enterprise-integration.html
+---
+
 # Enterprise Integration
 
 ## Enterprise Integration Overview

@@ -1,3 +1,9 @@
+---
+layout: default
+title: Security and Governance
+permalink: /docs/05-security-and-governance.html
+---
+
 # Security and Governance
 
 ## Security Overview

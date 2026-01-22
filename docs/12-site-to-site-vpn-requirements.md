@@ -1,3 +1,9 @@
+---
+layout: default
+title: Site-to-Site VPN Requirements
+permalink: /docs/12-site-to-site-vpn-requirements.html
+---
+
 # Site-to-Site VPN Requirements for Enterprise Integration
 
 ## Overview

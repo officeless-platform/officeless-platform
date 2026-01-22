@@ -5,13 +5,13 @@
     
     <ul class="nav-list">
         <li class="nav-item">
-            <a href="{{ site.baseurl }}/docs/index.html" class="nav-link {% if page.url == '/docs/index.html' %}active{% endif %}">
+            <a href="{{ site.baseurl }}/docs/index.html" class="nav-link {% if page.url == '/docs/index.html' or page.url == '/docs/' %}active{% endif %}">
                 Home
             </a>
         </li>
         {% for item in site.navigation %}
         <li class="nav-item">
-            <a href="{{ site.baseurl }}{{ item.url }}" class="nav-link {% if page.url == item.url %}active{% endif %}">
+            <a href="{{ site.baseurl }}{{ item.url }}" class="nav-link {% if page.url == item.url or page.permalink == item.url %}active{% endif %}">
                 {{ item.title }}
             </a>
         </li>

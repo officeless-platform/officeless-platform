@@ -1,3 +1,9 @@
+---
+layout: default
+title: Platform Architecture
+permalink: /docs/02-platform-architecture.html
+---
+
 # Platform Architecture
 
 ## Architecture Overview

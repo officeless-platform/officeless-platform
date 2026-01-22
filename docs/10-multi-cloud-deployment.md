@@ -1,3 +1,9 @@
+---
+layout: default
+title: Multi-Cloud Deployment
+permalink: /docs/10-multi-cloud-deployment.html
+---
+
 # Multi-Cloud Deployment Guide
 
 ## Overview

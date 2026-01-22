@@ -1,3 +1,9 @@
+---
+layout: default
+title: Observability
+permalink: /docs/06-observability.html
+---
+
 # Observability
 
 ## Observability Overview

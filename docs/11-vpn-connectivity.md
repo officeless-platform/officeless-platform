@@ -1,3 +1,9 @@
+---
+layout: default
+title: VPN and Connectivity
+permalink: /docs/11-vpn-connectivity.html
+---
+
 # VPN and Connectivity Guide
 
 ## Overview

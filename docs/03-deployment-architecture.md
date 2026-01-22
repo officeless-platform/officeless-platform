@@ -1,3 +1,9 @@
+---
+layout: default
+title: Deployment Architecture
+permalink: /docs/03-deployment-architecture.html
+---
+
 # Deployment Architecture
 
 ## Deployment Overview

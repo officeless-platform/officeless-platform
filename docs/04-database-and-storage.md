@@ -1,3 +1,9 @@
+---
+layout: default
+title: Database and Storage
+permalink: /docs/04-database-and-storage.html
+---
+
 # Database and Storage
 
 ## Data Architecture Overview
