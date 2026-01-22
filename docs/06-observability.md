@@ -10,6 +10,84 @@ permalink: /docs/06-observability.html
 
 This document describes the observability strategy for the Officeless platform, including monitoring, logging, tracing, and operational visibility capabilities. The platform uses a comprehensive observability stack with Mimir for metrics, Loki for logs, and Tempo for traces, all backed by Amazon S3.
 
+## Observability Stack Architecture
+
+```mermaid
+graph TB
+    subgraph "Application Layer"
+        App1[Application Pod 1]
+        App2[Application Pod 2]
+        App3[Application Pod 3]
+        EKS_Cluster[EKS Control Plane]
+    end
+    
+    subgraph "Metrics Collection"
+        MetricsServer[Metrics Server<br/>Kubernetes Metrics]
+        Mimir[Mimir<br/>Long-term Metrics]
+        Prometheus[Prometheus<br/>Scraping]
+    end
+    
+    subgraph "Log Collection"
+        Loki[Loki<br/>Log Aggregation]
+        CloudWatch[CloudWatch Logs<br/>EKS Cluster Logs]
+    end
+    
+    subgraph "Tracing"
+        Tempo[Tempo<br/>Distributed Tracing]
+        OpenTelemetry[OpenTelemetry<br/>Instrumentation]
+    end
+    
+    subgraph "Alerting"
+        Alertmanager[Alertmanager<br/>Alert Management]
+        Notifications[Notifications<br/>Email, Slack, PagerDuty]
+    end
+    
+    subgraph "Storage - S3"
+        S3_Mimir[(S3: Mimir Metrics<br/>officeless-mimir-production)]
+        S3_Loki[(S3: Loki Logs<br/>officeless-loki-chunks-production)]
+        S3_Tempo[(S3: Tempo Traces<br/>officeless-tempo-production)]
+        S3_Alert[(S3: Alertmanager<br/>officeless-mimir-alertmanager-production)]
+    end
+    
+    subgraph "Visualization"
+        Grafana[Grafana<br/>Dashboards]
+        Dashboards[Custom Dashboards]
+    end
+    
+    App1 --> MetricsServer
+    App2 --> MetricsServer
+    App3 --> MetricsServer
+    EKS_Cluster --> CloudWatch
+    
+    MetricsServer --> Prometheus
+    Prometheus --> Mimir
+    App1 --> Mimir
+    App2 --> Mimir
+    
+    App1 --> Loki
+    App2 --> Loki
+    App3 --> Loki
+    CloudWatch --> Loki
+    
+    App1 --> OpenTelemetry
+    App2 --> OpenTelemetry
+    App3 --> OpenTelemetry
+    OpenTelemetry --> Tempo
+    
+    Mimir --> Alertmanager
+    Alertmanager --> Notifications
+    
+    Mimir --> S3_Mimir
+    Loki --> S3_Loki
+    Tempo --> S3_Tempo
+    Alertmanager --> S3_Alert
+    
+    Mimir --> Grafana
+    Loki --> Grafana
+    Tempo --> Grafana
+    Grafana --> Dashboards
+```
+
 ## Observability Stack
 
 ### Metrics: Mimir

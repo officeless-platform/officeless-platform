@@ -10,6 +10,81 @@ permalink: /docs/05-security-and-governance.html
 
 This document describes the security controls, compliance frameworks, and governance models implemented in the Officeless platform.
 
+## Security Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "Security Layers"
+        subgraph "Network Security"
+            VPC[VPC Isolation<br/>10.1.0.0/16]
+            SG[Security Groups]
+            NACL[Network ACLs]
+            VPN[VPN Gateway<br/>Site-to-Site]
+        end
+        
+        subgraph "Identity & Access"
+            IAM[IAM Roles<br/>Pod Identity]
+            OIDC[OIDC Provider<br/>IRSA]
+            RBAC[Kubernetes RBAC]
+            SA[Service Accounts]
+        end
+        
+        subgraph "Data Security"
+            Encrypt_Transit[Encryption in Transit<br/>TLS/SSL]
+            Encrypt_Rest[Encryption at Rest<br/>AWS KMS]
+            Secrets[Secrets Manager<br/>AWS Secrets]
+            KeyMgmt[Key Management]
+        end
+        
+        subgraph "Application Security"
+            WAF[Web Application Firewall]
+            DDoS[DDoS Protection]
+            Scan[Vulnerability Scanning]
+            Audit[Audit Logging]
+        end
+        
+        subgraph "Compliance"
+            ISO[ISO 27001]
+            SOC[SOC 2]
+            GDPR[GDPR]
+            HIPAA[HIPAA]
+        end
+    end
+    
+    subgraph "EKS Cluster"
+        ControlPlane[Control Plane<br/>Private Endpoint]
+        Nodes[Worker Nodes<br/>Private Subnets]
+        Pods[Application Pods]
+    end
+    
+    VPC --> SG
+    SG --> NACL
+    VPN --> VPC
+    
+    IAM --> OIDC
+    OIDC --> SA
+    SA --> RBAC
+    RBAC --> Pods
+    
+    Encrypt_Transit --> ControlPlane
+    Encrypt_Transit --> Nodes
+    Encrypt_Rest --> EBS
+    Encrypt_Rest --> EFS
+    Encrypt_Rest --> S3
+    Secrets --> Pods
+    KeyMgmt --> Encrypt_Rest
+    
+    WAF --> ALB
+    DDoS --> VPC
+    Scan --> Pods
+    Audit --> CloudWatch
+    
+    ISO --> Encrypt_Rest
+    SOC --> Audit
+    GDPR --> DataPrivacy
+    HIPAA --> Encrypt_Rest
+```
+
 ## Security Architecture
 
 ### Defense in Depth

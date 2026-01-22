@@ -10,6 +10,73 @@ permalink: /docs/07-hybrid-and-multicloud.html
 
 This document describes deployment patterns and strategies for hybrid and multi-cloud architectures with the Officeless platform.
 
+## Hybrid and Multi-Cloud Architecture
+
+```mermaid
+graph TB
+    subgraph "On-Premise"
+        OnPrem_App[On-Premise Applications]
+        OnPrem_Data[On-Premise Data]
+        Legacy[Legacy Systems]
+    end
+    
+    subgraph "Cloud Provider 1 - AWS"
+        AWS_EKS[AWS EKS Cluster]
+        AWS_VPN[Site-to-Site VPN]
+        AWS_Services[AWS Services]
+    end
+    
+    subgraph "Cloud Provider 2 - GCP"
+        GCP_GKE[GCP GKE Cluster]
+        GCP_VPN[Cloud VPN]
+        GCP_Services[GCP Services]
+    end
+    
+    subgraph "Cloud Provider 3 - Azure"
+        Azure_AKS[Azure AKS Cluster]
+        Azure_VPN[VPN Gateway]
+        Azure_Services[Azure Services]
+    end
+    
+    subgraph "Connectivity"
+        VPN_Tunnel1[Site-to-Site VPN<br/>IPsec]
+        VPN_Tunnel2[Site-to-Site VPN<br/>IPsec]
+        DirectConnect[Direct Connect<br/>ExpressRoute<br/>Interconnect]
+        Internet[Internet<br/>HTTPS]
+    end
+    
+    subgraph "Data Synchronization"
+        DataSync[Data Sync Service]
+        Replication[Cross-Cloud Replication]
+    end
+    
+    OnPrem_App --> VPN_Tunnel1
+    OnPrem_Data --> VPN_Tunnel1
+    Legacy --> VPN_Tunnel1
+    
+    VPN_Tunnel1 --> AWS_VPN
+    VPN_Tunnel1 --> GCP_VPN
+    VPN_Tunnel1 --> Azure_VPN
+    
+    AWS_VPN --> AWS_EKS
+    GCP_VPN --> GCP_GKE
+    Azure_VPN --> Azure_AKS
+    
+    AWS_EKS --> DataSync
+    GCP_GKE --> DataSync
+    Azure_AKS --> DataSync
+    
+    DataSync --> Replication
+    
+    AWS_EKS -.Data Sync.-> GCP_GKE
+    GCP_GKE -.Data Sync.-> Azure_AKS
+    Azure_AKS -.Data Sync.-> AWS_EKS
+    
+    AWS_EKS --> DirectConnect
+    GCP_GKE --> DirectConnect
+    Azure_AKS --> DirectConnect
+```
+
 ## Architecture Patterns
 
 ### Hybrid Cloud

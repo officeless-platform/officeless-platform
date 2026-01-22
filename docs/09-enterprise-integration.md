@@ -10,6 +10,95 @@ permalink: /docs/09-enterprise-integration.html
 
 This document describes integration patterns, enterprise systems connectivity, and migration strategies for the Officeless platform.
 
+## Enterprise Integration Architecture
+
+```mermaid
+graph TB
+    subgraph "Enterprise Network A"
+        Oracle[Oracle E-Business Suite<br/>Port: 1521, 8000, 443]
+        SAP[SAP ECC<br/>Port: 3300, 8000, 443]
+        Custom_App1[Custom Enterprise App<br/>Application Ports]
+    end
+    
+    subgraph "VPN Connectivity"
+        VPN_Gateway_A[VPN Gateway A<br/>Site-to-Site IPsec]
+        VPN_Tunnel[VPN Tunnel<br/>AES-256, IKEv2]
+        VPN_Gateway_B[VPN Gateway B<br/>Officeless Platform]
+    end
+    
+    subgraph "Officeless Platform - Middleware"
+        subgraph "Integration Layer"
+            API_Gateway[API Gateway<br/>Request Routing]
+            Transform[Data Transformation<br/>Format Conversion]
+            Orchestrate[Workflow Orchestration<br/>Process Coordination]
+        end
+        
+        subgraph "Application Services"
+            Service1[Integration Service 1<br/>Oracle Connector]
+            Service2[Integration Service 2<br/>SAP Connector]
+            Service3[Integration Service 3<br/>Custom Connector]
+        end
+        
+        subgraph "Data Layer"
+            Cache[(Cache Layer<br/>Valkey/Redis)]
+            Queue[Message Queue<br/>Async Processing]
+            Storage[(Object Storage<br/>S3/GCS/Blob)]
+        end
+    end
+    
+    subgraph "Enterprise Network B"
+        Salesforce[Salesforce<br/>Port: 443<br/>REST/SOAP API]
+        ServiceNow[ServiceNow<br/>Port: 443<br/>REST/SOAP API]
+        Custom_App2[Custom Enterprise App<br/>Application Ports]
+    end
+    
+    subgraph "Connectivity Options"
+        VPN_Option[Site-to-Site VPN<br/>For On-Premise Apps]
+        Internet_Option[Internet HTTPS<br/>For Cloud Apps]
+        DirectConnect[Direct Connect<br/>ExpressRoute<br/>For High Bandwidth]
+    end
+    
+    Oracle --> VPN_Gateway_A
+    SAP --> VPN_Gateway_A
+    Custom_App1 --> VPN_Gateway_A
+    
+    VPN_Gateway_A --> VPN_Tunnel
+    VPN_Tunnel --> VPN_Gateway_B
+    VPN_Gateway_B --> API_Gateway
+    
+    API_Gateway --> Transform
+    Transform --> Orchestrate
+    
+    Orchestrate --> Service1
+    Orchestrate --> Service2
+    Orchestrate --> Service3
+    
+    Service1 --> Cache
+    Service2 --> Queue
+    Service3 --> Storage
+    
+    Service1 --> VPN_Option
+    Service2 --> VPN_Option
+    Service3 --> VPN_Option
+    
+    Service1 --> Internet_Option
+    Service2 --> Internet_Option
+    Service3 --> Internet_Option
+    
+    VPN_Option --> Salesforce
+    Internet_Option --> Salesforce
+    Internet_Option --> ServiceNow
+    DirectConnect --> Custom_App2
+    
+    Service1 -.Oracle Protocol.-> Oracle
+    Service2 -.SAP RFC/IDoc.-> SAP
+    Service3 -.Custom Protocol.-> Custom_App1
+    
+    Service1 -.REST API.-> Salesforce
+    Service2 -.REST API.-> ServiceNow
+    Service3 -.Custom API.-> Custom_App2
+```
+
 ## Integration Architecture
 
 ### Integration Patterns

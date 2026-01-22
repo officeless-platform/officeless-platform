@@ -6,6 +6,10 @@
     <meta name="description" content="{{ page.description | default: site.description }}">
     <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/webp" href="{{ site.baseurl }}/assets/images/officeless.webp">
+    <link rel="apple-touch-icon" href="{{ site.baseurl }}/assets/images/officeless.webp">
+    
     <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,24 +42,52 @@
     {% endif %}
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script>
-        mermaid.initialize({ 
-            startOnLoad: true, 
-            theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default',
-            themeVariables: {
-                primaryColor: '#0066cc',
-                primaryTextColor: '#ffffff',
-                primaryBorderColor: '#0052a3',
-                lineColor: '#6c757d',
-                secondaryColor: '#f8f9fa',
-                tertiaryColor: '#f1f3f5'
-            }
-        });
+        function initializeMermaid() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            mermaid.initialize({ 
+                startOnLoad: true, 
+                theme: isDark ? 'dark' : 'default',
+                themeVariables: isDark ? {
+                    primaryColor: '#58a6ff',
+                    primaryTextColor: '#c9d1d9',
+                    primaryBorderColor: '#30363d',
+                    lineColor: '#8b949e',
+                    secondaryColor: '#161b22',
+                    tertiaryColor: '#21262d',
+                    background: '#0d1117',
+                    mainBkg: '#161b22',
+                    secondBkg: '#21262d',
+                    textColor: '#c9d1d9'
+                } : {
+                    primaryColor: '#0066cc',
+                    primaryTextColor: '#ffffff',
+                    primaryBorderColor: '#0052a3',
+                    lineColor: '#6c757d',
+                    secondaryColor: '#f8f9fa',
+                    tertiaryColor: '#f1f3f5',
+                    background: '#ffffff',
+                    mainBkg: '#f8f9fa',
+                    secondBkg: '#f1f3f5',
+                    textColor: '#212529'
+                }
+            });
+        }
+        
+        // Initialize on page load
+        initializeMermaid();
         
         // Update Mermaid theme when theme changes
         document.addEventListener('themeChanged', function(e) {
-            mermaid.initialize({ 
-                startOnLoad: false, 
-                theme: e.detail.theme === 'dark' ? 'dark' : 'default' 
+            initializeMermaid();
+            // Re-render all Mermaid diagrams
+            document.querySelectorAll('.mermaid').forEach(function(element) {
+                const id = element.id || 'mermaid-' + Math.random().toString(36).substr(2, 9);
+                element.id = id;
+                const content = element.textContent;
+                element.textContent = '';
+                mermaid.render(id, content, function(svgCode) {
+                    element.innerHTML = svgCode;
+                });
             });
         });
     </script>

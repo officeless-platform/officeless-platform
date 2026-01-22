@@ -10,6 +10,78 @@ permalink: /docs/11-vpn-connectivity.html
 
 This document describes VPN and connectivity options for the Officeless platform, enabling secure access from enterprise networks, remote locations, and bridging between cloud and on-premise environments.
 
+## VPN Connectivity Architecture
+
+```mermaid
+graph TB
+    subgraph "Access Patterns"
+        subgraph "Point-to-Site VPN"
+            User1[User 1<br/>VPN Client]
+            User2[User 2<br/>VPN Client]
+            Mobile[Mobile Device<br/>VPN Client]
+        end
+        
+        subgraph "Site-to-Site VPN"
+            Enterprise[Enterprise Network<br/>VPN Gateway]
+            Branch[Branch Office<br/>VPN Gateway]
+        end
+        
+        subgraph "Direct Connect"
+            DC_AWS[AWS Direct Connect]
+            DC_GCP[GCP Interconnect]
+            DC_Azure[Azure ExpressRoute]
+        end
+    end
+    
+    subgraph "VPN Types"
+        IPsec[IPsec VPN<br/>Site-to-Site]
+        SSL[SSL/TLS VPN<br/>OpenVPN, SSTP]
+        WireGuard[WireGuard VPN<br/>Modern Protocol]
+    end
+    
+    subgraph "Officeless Platform"
+        subgraph "Cloud Deployment"
+            Cloud_VPN[Cloud VPN Gateway]
+            Cloud_Cluster[Kubernetes Cluster]
+        end
+        
+        subgraph "On-Premise Deployment"
+            OnPrem_VPN[VPN Server<br/>Pritunl/OpenVPN]
+            OnPrem_Cluster[Kubernetes Cluster]
+        end
+    end
+    
+    subgraph "Security"
+        Encryption[Encryption<br/>AES-256]
+        Auth[Authentication<br/>Certificates/PSK]
+        Monitoring[VPN Monitoring<br/>Health Checks]
+    end
+    
+    User1 --> SSL
+    User2 --> SSL
+    Mobile --> SSL
+    Enterprise --> IPsec
+    Branch --> IPsec
+    
+    SSL --> Cloud_VPN
+    IPsec --> Cloud_VPN
+    WireGuard --> OnPrem_VPN
+    
+    Cloud_VPN --> Cloud_Cluster
+    OnPrem_VPN --> OnPrem_Cluster
+    
+    DC_AWS --> Cloud_Cluster
+    DC_GCP --> Cloud_Cluster
+    DC_Azure --> Cloud_Cluster
+    
+    IPsec --> Encryption
+    SSL --> Encryption
+    WireGuard --> Encryption
+    
+    Encryption --> Auth
+    Auth --> Monitoring
+```
+
 ## Connectivity Patterns
 
 ### Pattern 1: Point-to-Site VPN

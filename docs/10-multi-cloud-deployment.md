@@ -10,6 +10,94 @@ permalink: /docs/10-multi-cloud-deployment.html
 
 This document provides comprehensive deployment guidance for the Officeless platform across multiple cloud providers and on-premise environments. The platform is designed to be cloud-agnostic, enabling deployment flexibility based on organizational requirements, compliance needs, and geographic constraints.
 
+## Multi-Cloud Deployment Architecture
+
+```mermaid
+graph TB
+    subgraph "Enterprise Networks"
+        subgraph "Enterprise A"
+            Oracle[Oracle EBS<br/>On-Premise]
+            SAP[SAP ECC<br/>On-Premise]
+            Custom1[Custom App<br/>On-Premise]
+        end
+        
+        subgraph "Enterprise B"
+            Salesforce[Salesforce<br/>Cloud]
+            ServiceNow[ServiceNow<br/>Cloud]
+            Custom2[Custom App<br/>Cloud]
+        end
+    end
+    
+    subgraph "Officeless Platform - Multi-Cloud Deployment"
+        subgraph "AWS"
+            AWS_EKS[EKS Cluster<br/>officeless-production]
+            AWS_VPN[Site-to-Site VPN]
+        end
+        
+        subgraph "GCP"
+            GCP_GKE[GKE Cluster]
+            GCP_VPN[Cloud VPN]
+        end
+        
+        subgraph "Azure"
+            Azure_AKS[AKS Cluster]
+            Azure_VPN[VPN Gateway]
+        end
+        
+        subgraph "Alibaba Cloud"
+            Alibaba_ACK[ACK Cluster]
+            Alibaba_VPN[VPN Gateway]
+        end
+        
+        subgraph "Oracle Cloud"
+            OCI_OKE[OKE Cluster]
+            OCI_VPN[Site-to-Site VPN]
+        end
+        
+        subgraph "On-Premise"
+            OnPrem_K8s[Kubernetes Cluster<br/>Self-Managed]
+            OnPrem_VPN[VPN Server]
+        end
+    end
+    
+    subgraph "Connectivity"
+        VPN_Tunnel1[Site-to-Site VPN<br/>IPsec]
+        VPN_Tunnel2[Site-to-Site VPN<br/>IPsec]
+        Internet[Internet<br/>HTTPS]
+        DirectConnect[Direct Connect<br/>ExpressRoute]
+    end
+    
+    Oracle --> VPN_Tunnel1
+    SAP --> VPN_Tunnel1
+    Custom1 --> VPN_Tunnel1
+    
+    VPN_Tunnel1 --> AWS_VPN
+    VPN_Tunnel1 --> GCP_VPN
+    VPN_Tunnel1 --> Azure_VPN
+    VPN_Tunnel1 --> OnPrem_VPN
+    
+    AWS_VPN --> AWS_EKS
+    GCP_VPN --> GCP_GKE
+    Azure_VPN --> Azure_AKS
+    OnPrem_VPN --> OnPrem_K8s
+    
+    Salesforce --> Internet
+    ServiceNow --> Internet
+    Custom2 --> Internet
+    
+    Internet --> AWS_EKS
+    Internet --> GCP_GKE
+    Internet --> Azure_AKS
+    
+    AWS_EKS -.Data Sync.-> GCP_GKE
+    GCP_GKE -.Data Sync.-> Azure_AKS
+    Azure_AKS -.Data Sync.-> OnPrem_K8s
+    
+    AWS_EKS --> DirectConnect
+    GCP_GKE --> DirectConnect
+    Azure_AKS --> DirectConnect
+```
+
 ## Supported Platforms
 
 ### Public Cloud Providers

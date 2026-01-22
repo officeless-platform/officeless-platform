@@ -10,6 +10,55 @@ permalink: /docs/01-overview.html
 
 This document provides a high-level overview of the Officeless platform, its core concepts, capabilities, and positioning in enterprise environments.
 
+## Platform Overview
+
+```mermaid
+graph TB
+    subgraph "Officeless Platform"
+        subgraph "Core Platform"
+            Dev[Application Development<br/>Low-Code/No-Code]
+            Integration[Enterprise Integration<br/>API-First]
+            Security[Security & Compliance<br/>Built-in Controls]
+            Scale[Scalability & Performance<br/>Multi-Tenant]
+        end
+        
+        subgraph "Deployment Options"
+            Cloud[Cloud Deployment<br/>AWS, GCP, Azure, etc.]
+            Hybrid[Hybrid Cloud<br/>Cloud + On-Premise]
+            MultiCloud[Multi-Cloud<br/>Multiple Providers]
+            OnPrem[On-Premise<br/>Self-Managed]
+        end
+        
+        subgraph "Enterprise Integration"
+            Oracle[Oracle EBS]
+            SAP[SAP Systems]
+            Salesforce[Salesforce]
+            Custom[Custom Applications]
+        end
+    end
+    
+    subgraph "Target Industries"
+        Finance[Financial Services]
+        Healthcare[Healthcare]
+        Government[Government]
+        Manufacturing[Manufacturing]
+        Retail[Retail & E-commerce]
+    end
+    
+    Dev --> Cloud
+    Dev --> Hybrid
+    Integration --> Oracle
+    Integration --> SAP
+    Integration --> Salesforce
+    Security --> Finance
+    Security --> Healthcare
+    Scale --> Government
+    Scale --> Manufacturing
+    
+    Cloud --> MultiCloud
+    Hybrid --> OnPrem
+```
+
 ## Platform Vision
 
 Officeless is designed to enable organizations to build custom applications tailored to their specific business needs while maintaining enterprise-grade security, scalability, and compliance requirements.

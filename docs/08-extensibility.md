@@ -10,6 +10,77 @@ permalink: /docs/08-extensibility.html
 
 This document describes the extensibility mechanisms, APIs, and customization options available in the Officeless platform.
 
+## Extensibility Architecture
+
+```mermaid
+graph TB
+    subgraph "Extension Points"
+        subgraph "API Extensions"
+            REST[REST APIs<br/>OpenAPI/Swagger]
+            GraphQL[GraphQL APIs<br/>Schema Extensions]
+            Webhooks[Webhooks<br/>Event Notifications]
+        end
+        
+        subgraph "Plugin System"
+            Plugins[Plugin Registry]
+            Plugin1[Custom Plugin 1]
+            Plugin2[Custom Plugin 2]
+            PluginN[Custom Plugin N]
+        end
+        
+        subgraph "Custom Components"
+            UI[Custom UI Components]
+            BusinessLogic[Custom Business Logic]
+            Workflows[Custom Workflows]
+            Integrations[Custom Integrations]
+        end
+    end
+    
+    subgraph "SDK and Libraries"
+        ClientSDK[Client SDKs<br/>JavaScript, Python, etc.]
+        ServerSDK[Server SDKs<br/>Node.js, Go, etc.]
+        Helpers[Helper Libraries]
+    end
+    
+    subgraph "Development Tools"
+        DevEnv[Development Environment]
+        CodeGen[Code Generation]
+        Testing[Testing Frameworks]
+        CI_CD[CI/CD Integration]
+    end
+    
+    subgraph "Core Platform"
+        Platform[Officeless Platform]
+        ExtensionAPI[Extension API]
+    end
+    
+    REST --> ExtensionAPI
+    GraphQL --> ExtensionAPI
+    Webhooks --> ExtensionAPI
+    
+    Plugins --> Plugin1
+    Plugins --> Plugin2
+    Plugins --> PluginN
+    Plugin1 --> ExtensionAPI
+    Plugin2 --> ExtensionAPI
+    PluginN --> ExtensionAPI
+    
+    UI --> Platform
+    BusinessLogic --> Platform
+    Workflows --> Platform
+    Integrations --> Platform
+    
+    ClientSDK --> REST
+    ClientSDK --> GraphQL
+    ServerSDK --> ExtensionAPI
+    
+    DevEnv --> CodeGen
+    CodeGen --> ClientSDK
+    CodeGen --> ServerSDK
+    Testing --> Platform
+    CI_CD --> Platform
+```
+
 ## Extension Points
 
 ### Plugin Architecture
