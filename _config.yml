@@ -3,7 +3,7 @@
 
 title: Officeless Architecture Reference
 description: Enterprise-grade architecture documentation for Officeless Platform
-theme: jekyll-theme-minimal
+# Custom theme - no default theme
 
 # Base URL (adjust if using custom domain or subdirectory)
 baseurl: "" # e.g., "/officeless-platform" if using subdirectory
@@ -47,9 +47,24 @@ exclude:
   - Gemfile.lock
   - node_modules
   - vendor
+  - .github
+  - GITHUB_PAGES_SETUP.md
 
 # Markdown settings
 markdown: kramdown
 kramdown:
   input: GFM
   syntax_highlighter: rouge
+
+# Defaults
+defaults:
+  - scope:
+      path: "docs"
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"

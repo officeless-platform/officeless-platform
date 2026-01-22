@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ page.description | default: site.description }}">
+    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+    
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    {% if page.layout == 'docs' %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" data-theme="prism-light">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" data-theme="prism-dark" media="(prefers-color-scheme: dark)">
+    {% endif %}
+</head>
+<body>
+    {% include header.html %}
+    
+    <div class="container">
+        <aside class="sidebar">
+            {% include sidebar.html %}
+        </aside>
+        
+        <main class="content">
+            {{ content }}
+        </main>
+    </div>
+    
+    {% include footer.html %}
+    
+    <script src="{{ '/assets/js/theme-toggle.js' | relative_url }}"></script>
+    {% if page.layout == 'docs' %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default',
+            themeVariables: {
+                primaryColor: '#0066cc',
+                primaryTextColor: '#ffffff',
+                primaryBorderColor: '#0052a3',
+                lineColor: '#6c757d',
+                secondaryColor: '#f8f9fa',
+                tertiaryColor: '#f1f3f5'
+            }
+        });
+        
+        // Update Mermaid theme when theme changes
+        document.addEventListener('themeChanged', function(e) {
+            mermaid.initialize({ 
+                startOnLoad: false, 
+                theme: e.detail.theme === 'dark' ? 'dark' : 'default' 
+            });
+        });
+    </script>
+</body>
+</html>

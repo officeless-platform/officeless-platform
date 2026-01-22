@@ -1,0 +1,27 @@
+<nav class="sidebar-nav">
+    <div class="sidebar-header">
+        <h2 class="sidebar-title">Documentation</h2>
+    </div>
+    
+    <ul class="nav-list">
+        <li class="nav-item">
+            <a href="{{ '/docs/index.html' | relative_url }}" class="nav-link {% if page.url == '/docs/index.html' %}active{% endif %}">
+                Home
+            </a>
+        </li>
+        {% for item in site.navigation %}
+        <li class="nav-item">
+            <a href="{{ item.url | relative_url }}" class="nav-link {% if page.url == item.url %}active{% endif %}">
+                {{ item.title }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    
+    <div class="sidebar-footer">
+        <div class="version-info">
+            <span class="version-label">Version</span>
+            <span class="version-number">1.0.0</span>
+        </div>
+    </div>
+</nav>

@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Officeless Architecture Reference
+description: Enterprise-grade architecture documentation for Solution Architects, Enterprise IT, and Security/Compliance teams
 ---
 
 # Officeless Architecture Reference
@@ -9,7 +10,9 @@ title: Officeless Architecture Reference
 
 ## What is Officeless?
 
-Officeless is a platform solution designed to build custom applications tailored to your business needs. This documentation provides comprehensive technical architecture guidance for enterprise deployments, hybrid cloud scenarios, and regulatory compliance requirements.
+[Officeless](https://mekari.com/en/product/officeless/) is a platform solution designed to build custom applications tailored to your business needs. This documentation provides comprehensive technical architecture guidance for enterprise deployments, hybrid cloud scenarios, and regulatory compliance requirements.
+
+**Learn more about Officeless:** [Visit the official product page →](https://mekari.com/en/product/officeless/)
 
 ## Intended Audience
 
@@ -52,9 +55,10 @@ This documentation is designed to be **cloud-agnostic**, providing guidance that
 
 ## Getting Started
 
-1. Start with [Overview](./01-overview.md) to understand the platform fundamentals
-2. Review [Platform Architecture](./02-platform-architecture.md) for system design details
-3. Explore specific areas based on your role and requirements
+1. Learn about [Officeless product](https://mekari.com/en/product/officeless/) and its capabilities
+2. Start with [Overview](./01-overview.md) to understand the platform fundamentals
+3. Review [Platform Architecture](./02-platform-architecture.md) for system design details
+4. Explore specific areas based on your role and requirements
 
 ## Contributing
 
