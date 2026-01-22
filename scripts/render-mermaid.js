@@ -105,6 +105,13 @@ function renderMermaidToSVG(mermaidCode, outputPath) {
 // Function to process a markdown file
 function processMarkdownFile(filePath) {
     const content = fs.readFileSync(filePath, 'utf8');
+    
+    // Skip if file has already been processed (contains mermaid-diagram-container)
+    if (content.includes('mermaid-diagram-container')) {
+        console.log(`  Skipping ${path.basename(filePath)} (already processed)`);
+        return false;
+    }
+    
     const mermaidRegex = /```mermaid\n([\s\S]*?)```/g;
     let match;
     let newContent = content;
@@ -135,14 +142,15 @@ function processMarkdownFile(filePath) {
         // Generate filename for this diagram
         const diagramFilename = generateDiagramFilename(mermaidCode, i, fileBaseName);
         const diagramPath = path.join(DIAGRAMS_DIR, diagramFilename);
-        // Use path relative to docs directory (go up one level to reach assets)
-        const relativePath = path.join('..', 'assets', 'diagrams', 'rendered', diagramFilename).replace(/\\/g, '/');
+        // Use Jekyll baseurl format for proper path resolution
+        const relativePath = `{{ site.baseurl }}/assets/diagrams/rendered/${diagramFilename}`;
         
         // Render diagram
         console.log(`  Rendering diagram ${i + 1}/${matches.length}...`);
         if (renderMermaidToSVG(mermaidCode, diagramPath)) {
             // Create replacement with rendered SVG and collapsible code
             // Using HTML details/summary for collapsible section
+            // Use absolute path from site root for Jekyll (without baseurl, Jekyll will handle it)
             const replacement = `<div class="mermaid-diagram-container">
 
 ![Mermaid Diagram](${relativePath})

@@ -26,7 +26,7 @@ graph LR
     
     subgraph<div class="mermaid-diagram-container">
 
-![Mermaid Diagram](../assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-82f1aadf.svg)
+![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-82f1aadf.svg)
 
 <details>
 <summary>View Mermaid source code</summary>
@@ -75,7 +75,7 @@ graph LR
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram](../assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-2-956a66a4.svg)
+![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-2-956a66a4.svg)
 
 <details>
 <summary>View Mermaid source code</summary>

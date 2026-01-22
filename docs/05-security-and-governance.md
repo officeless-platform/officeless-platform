@@ -14,14 +14,7 @@ This document describes the security controls, compliance frameworks, and govern
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram](../assets/diagrams/rendered/05-security-and-governance-diagram-1-10a06bfb.svg)
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-![Mermaid Diagram](../assets/diagrams/rendered/05-security-and-governance-diagram-1-10a06bfb.svg)
+![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/05-security-and-governance-diagram-1-10a06bfb.svg)
 
 <details>
 <summary>View Mermaid source code</summary>

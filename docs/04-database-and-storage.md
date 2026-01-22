@@ -14,14 +14,7 @@ This document describes the data architecture, persistence models, storage solut
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram](../assets/diagrams/rendered/04-database-and-storage-diagram-1-bd370083.svg)
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-![Mermaid Diagram](../assets/diagrams/rendered/04-database-and-storage-diagram-1-bd370083.svg)
+![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/04-database-and-storage-diagram-1-bd370083.svg)
 
 <details>
 <summary>View Mermaid source code</summary>

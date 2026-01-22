@@ -14,14 +14,7 @@ This document provides a high-level overview of the Officeless platform, its cor
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram](../assets/diagrams/rendered/01-overview-diagram-1-e6454949.svg)
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-![Mermaid Diagram](../assets/diagrams/rendered/01-overview-diagram-1-e6454949.svg)
+![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/01-overview-diagram-1-e6454949.svg)
 
 <details>
 <summary>View Mermaid source code</summary>

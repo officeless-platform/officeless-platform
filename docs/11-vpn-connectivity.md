@@ -14,14 +14,7 @@ This document describes VPN and connectivity options for the Officeless platform
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram](../assets/diagrams/rendered/11-vpn-connectivity-diagram-1-16c20058.svg)
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-![Mermaid Diagram](../assets/diagrams/rendered/11-vpn-connectivity-diagram-1-16c20058.svg)
+![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/11-vpn-connectivity-diagram-1-16c20058.svg)
 
 <details>
 <summary>View Mermaid source code</summary>

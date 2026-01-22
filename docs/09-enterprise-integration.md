@@ -14,14 +14,7 @@ This document describes integration patterns, enterprise systems connectivity, a
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram](../assets/diagrams/rendered/09-enterprise-integration-diagram-1-eae22d2b.svg)
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-![Mermaid Diagram](../assets/diagrams/rendered/09-enterprise-integration-diagram-1-eae22d2b.svg)
+![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/09-enterprise-integration-diagram-1-eae22d2b.svg)
 
 <details>
 <summary>View Mermaid source code</summary>

@@ -14,14 +14,7 @@ This document describes the actual deployment architecture of the Officeless pla
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram](../assets/diagrams/rendered/03-deployment-architecture-diagram-1-bcef1d50.svg)
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-![Mermaid Diagram](../assets/diagrams/rendered/03-deployment-architecture-diagram-1-bcef1d50.svg)
+![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/03-deployment-architecture-diagram-1-bcef1d50.svg)
 
 <details>
 <summary>View Mermaid source code</summary>

@@ -14,14 +14,7 @@ This document describes the observability strategy for the Officeless platform, 
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram](../assets/diagrams/rendered/06-observability-diagram-1-5d6f799f.svg)
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-![Mermaid Diagram](../assets/diagrams/rendered/06-observability-diagram-1-5d6f799f.svg)
+![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/06-observability-diagram-1-5d6f799f.svg)
 
 <details>
 <summary>View Mermaid source code</summary>

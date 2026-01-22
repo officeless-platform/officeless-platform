@@ -14,14 +14,7 @@ This document describes the extensibility mechanisms, APIs, and customization op
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram](../assets/diagrams/rendered/08-extensibility-diagram-1-f6185bb0.svg)
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-![Mermaid Diagram](../assets/diagrams/rendered/08-extensibility-diagram-1-f6185bb0.svg)
+![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/08-extensibility-diagram-1-f6185bb0.svg)
 
 <details>
 <summary>View Mermaid source code</summary>

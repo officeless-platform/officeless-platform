@@ -14,14 +14,7 @@ This document provides comprehensive deployment guidance for the Officeless plat
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram](../assets/diagrams/rendered/10-multi-cloud-deployment-diagram-1-602726d0.svg)
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-![Mermaid Diagram](../assets/diagrams/rendered/10-multi-cloud-deployment-diagram-1-602726d0.svg)
+![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/10-multi-cloud-deployment-diagram-1-602726d0.svg)
 
 <details>
 <summary>View Mermaid source code</summary>
