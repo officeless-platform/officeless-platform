@@ -108,6 +108,8 @@
                                 const mermaidDiv = document.createElement('div');
                                 mermaidDiv.className = 'mermaid';
                                 mermaidDiv.textContent = content;
+                                // Store original content in data attribute for later use
+                                mermaidDiv.setAttribute('data-mermaid-content', content);
                                 
                                 // Replace the pre element with the mermaid div
                                 if (preElement.parentNode) {
@@ -122,6 +124,7 @@
                             const mermaidDiv = document.createElement('div');
                             mermaidDiv.className = 'mermaid';
                             mermaidDiv.textContent = content;
+                            mermaidDiv.setAttribute('data-mermaid-content', content);
                             if (codeElement.parentNode) {
                                 codeElement.parentNode.replaceChild(mermaidDiv, codeElement);
                             }
@@ -148,24 +151,71 @@
                 function renderMermaidDiagrams() {
                     document.querySelectorAll('.mermaid').forEach(function(element) {
                         if (!element.hasAttribute('data-rendered')) {
-                            const content = element.textContent.trim();
+                            // Get the original text content, not innerHTML
+                            let content = '';
+                            
+                            // Check if element has data attribute with original content
+                            if (element.hasAttribute('data-mermaid-content')) {
+                                content = element.getAttribute('data-mermaid-content');
+                            } else {
+                                // Try to get text content from the element
+                                if (element.textContent) {
+                                    content = element.textContent.trim();
+                                } else if (element.innerText) {
+                                    content = element.innerText.trim();
+                                }
+                            }
+                            
+                            // Skip if content looks like CSS/HTML (already rendered or wrong content)
                             if (content && content.length > 0) {
-                                element.setAttribute('data-rendered', 'true');
-                                const id = element.id || 'mermaid-' + Math.random().toString(36).substr(2, 9);
-                                element.id = id;
+                                // Check if content is CSS/HTML (starts with # or contains font-family, etc.)
+                                const looksLikeCSS = content.startsWith('#') || 
+                                                    content.includes('font-family') || 
+                                                    content.includes('mermaid-') && content.includes('{') ||
+                                                    content.trim().startsWith('<');
                                 
-                                // Clear content before rendering
-                                const originalContent = content;
-                                element.textContent = '';
+                                if (looksLikeCSS) {
+                                    console.warn('Skipping element with CSS/HTML content, not Mermaid code');
+                                    return;
+                                }
                                 
-                                mermaid.render(id, originalContent).then(function(result) {
-                                    element.innerHTML = result.svg;
-                                }).catch(function(err) {
-                                    console.error('Mermaid render error:', err);
-                                    console.error('Diagram content:', originalContent.substring(0, 200));
-                                    // Fallback: show error message
-                                    element.innerHTML = '<div style="padding: 1rem; background: #fee; border: 1px solid #fcc; border-radius: 4px; color: #c33;">Error rendering diagram. Check console for details.</div>';
-                                });
+                                // Check if it's valid Mermaid syntax
+                                const firstLines = content.split('\n').slice(0, 3).join('\n').toLowerCase();
+                                const isMermaid = (
+                                    firstLines.includes('graph') || 
+                                    firstLines.includes('flowchart') || 
+                                    firstLines.includes('sequencediagram') || 
+                                    firstLines.includes('classdiagram') || 
+                                    firstLines.includes('statediagram') ||
+                                    firstLines.includes('erdiagram') ||
+                                    firstLines.includes('journey') ||
+                                    firstLines.includes('gantt') ||
+                                    firstLines.includes('pie') ||
+                                    firstLines.includes('gitgraph')
+                                );
+                                
+                                if (isMermaid) {
+                                    element.setAttribute('data-rendered', 'true');
+                                    const id = element.id || 'mermaid-' + Math.random().toString(36).substr(2, 9);
+                                    element.id = id;
+                                    
+                                    // Store original content in data attribute before clearing
+                                    element.setAttribute('data-mermaid-content', content);
+                                    
+                                    // Clear element content before rendering
+                                    element.textContent = '';
+                                    
+                                    mermaid.render(id, content).then(function(result) {
+                                        element.innerHTML = result.svg;
+                                    }).catch(function(err) {
+                                        console.error('Mermaid render error:', err);
+                                        console.error('Diagram content (first 200 chars):', content.substring(0, 200));
+                                        // Fallback: show error message
+                                        element.innerHTML = '<div style="padding: 1rem; background: #fee; border: 1px solid #fcc; border-radius: 4px; color: #c33;">Error rendering diagram. Check console for details.</div>';
+                                    });
+                                } else {
+                                    console.warn('Element does not contain valid Mermaid syntax:', content.substring(0, 100));
+                                }
                             }
                         }
                     });
