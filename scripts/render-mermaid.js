@@ -237,11 +237,24 @@ function processMarkdownFile(filePath) {
                     }
                     
                     if (found) {
-                        // Replace the entire container
+                        // Replace the entire container, but also update image src if it's different
                         const fullContainer = newContent.substring(containerStart, containerEnd);
-                        newContent = newContent.substring(0, containerStart) + replacement + newContent.substring(containerEnd);
-                        // Adjust offset for subsequent replacements
-                        offset += replacement.length - fullContainer.length;
+                        
+                        // Check if image src needs updating
+                        const imgSrcRegex = /<img src="\{\{ site\.baseurl \}\}\/assets\/diagrams\/rendered\/([^"]+)"/;
+                        const existingImgMatch = fullContainer.match(imgSrcRegex);
+                        const newImgSrc = `<img src="${relativePath}"`;
+                        
+                        // If image src is different, update it
+                        if (existingImgMatch && existingImgMatch[1] !== diagramFilename) {
+                            const updatedContainer = fullContainer.replace(imgSrcRegex, newImgSrc);
+                            newContent = newContent.substring(0, containerStart) + updatedContainer + newContent.substring(containerEnd);
+                            offset += updatedContainer.length - fullContainer.length;
+                        } else {
+                            // Replace the entire container with new structure
+                            newContent = newContent.substring(0, containerStart) + replacement + newContent.substring(containerEnd);
+                            offset += replacement.length - fullContainer.length;
+                        }
                     } else {
                         // Fallback: just replace the code block
                         newContent = newContent.substring(0, adjustedStart) + replacement + newContent.substring(adjustedStart + fullMatch.length);
