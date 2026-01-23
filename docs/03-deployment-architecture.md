@@ -365,7 +365,7 @@ terraform-officeless/
 
 ### Network Segmentation
 - **Public Subnets**: Internet-facing resources (NAT, ALB)
-- **Private Subnets**: Application workloads, EKS nodes
+- **Private Subnets**: Application workloads, Kubernetes nodes
 - **Security Groups**: 
   - Cluster security group
   - Node security group
