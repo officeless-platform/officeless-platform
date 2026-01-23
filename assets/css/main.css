@@ -415,93 +415,115 @@ body {
 /* Mermaid diagram containers */
 .content .mermaid-diagram-container {
     margin: 2rem 0;
-    padding: 1.5rem;
-    background: var(--bg-secondary);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-
-.content .mermaid-diagram-container img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto 1rem;
-    border-radius: 4px;
-    box-shadow: var(--shadow-sm);
-    background: var(--bg-primary);
-    padding: 1rem;
-}
-
-/* Collapsible Mermaid source code */
-.content .mermaid-diagram-container details {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: var(--bg-tertiary);
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-}
-
-.content .mermaid-diagram-container details summary {
-    cursor: pointer;
-    font-weight: 500;
-    color: var(--text-secondary);
-    user-select: none;
-    padding: 0.5rem;
-    margin: -0.5rem;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-}
-
-.content .mermaid-diagram-container details summary:hover {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-}
-
-.content .mermaid-diagram-container details summary::marker {
-    color: var(--text-tertiary);
-}
-
-.content .mermaid-diagram-container details[open] summary {
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-}
-
-.content .mermaid-diagram-container details pre {
-    margin: 0;
-    padding: 1rem;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    overflow-x: auto;
-}
-
-.content .mermaid-diagram-container details pre {
-    margin: 0;
-    padding: 1rem;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    overflow-x: auto;
-    position: relative;
-}
-
-.content .mermaid-diagram-container details pre code {
-    display: block;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: var(--text-primary);
-    white-space: pre;
-    word-wrap: normal;
-    overflow-x: auto;
-    background: transparent;
     padding: 0;
+    background: transparent;
+    border-radius: 8px;
     border: none;
 }
 
-.content .mermaid-diagram-container details pre code.language-mermaid {
-    color: var(--text-primary);
+/* Hide Mermaid source code details section */
+.content .mermaid-diagram-container details {
+    display: none !important;
+}
+
+/* Diagram wrapper for zoom/pan */
+.content .mermaid-diagram-container .diagram-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    border-radius: 8px;
     background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.content .mermaid-diagram-container .diagram-viewport {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    cursor: grab;
+    user-select: none;
+}
+
+.content .mermaid-diagram-container .diagram-viewport:active {
+    cursor: grabbing;
+}
+
+.content .mermaid-diagram-container .diagram-wrapper img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: var(--bg-primary);
+    padding: 1rem;
+    transform-origin: top left;
+}
+
+/* Diagram controls */
+.content .mermaid-diagram-container .diagram-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    display: flex;
+    gap: 8px;
+    background: var(--bg-secondary);
+    padding: 8px;
+    border-radius: 6px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+}
+
+.content .mermaid-diagram-container .diagram-control-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: all 0.2s ease;
+    min-width: 32px;
+    font-family: inherit;
+}
+
+.content .mermaid-diagram-container .diagram-control-btn:hover:not(:disabled) {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.content .mermaid-diagram-container .diagram-control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.content .mermaid-diagram-container .diagram-control-btn:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+/* Fullscreen styles */
+.content .mermaid-diagram-container .diagram-wrapper:fullscreen {
+    background: var(--bg-primary);
+    padding: 2rem;
+}
+
+.content .mermaid-diagram-container .diagram-wrapper:fullscreen .diagram-viewport {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content .mermaid-diagram-container .diagram-wrapper:fullscreen img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
 }
 
 /* Legacy Mermaid rendering (for client-side) */
