@@ -19,20 +19,6 @@ This document provides a high-level overview of the Officeless platform, its cor
 <details>
 <summary>View Mermaid source code</summary>
 
-<div class="mermaid-diagram-container">
-
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/01-overview-diagram-1-fc1dd2c6.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/01-overview-diagram-1-fc1dd2c6.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
-
-<details>
-<summary>View Mermaid source code</summary>
-
 <pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Officeless Platform - Core Capabilities&quot;
         Dev[Application Development&lt;br/&gt;Low-Code/No-Code]
@@ -89,14 +75,6 @@ This document provides a high-level overview of the Officeless platform, its cor
     Scale --&gt; Government
     Scale --&gt; Manufacturing
     Scale --&gt; Retail</code></pre>
-
-</details>
-
-</div>
-
-</details>
-
-</div>
 
 </details>
 
