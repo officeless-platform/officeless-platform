@@ -19,20 +19,6 @@ This document describes the deployment architecture of the Officeless platform a
 <details>
 <summary>View Mermaid source code</summary>
 
-<div class="mermaid-diagram-container">
-
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/03-deployment-architecture-diagram-1-99aa3dae.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/03-deployment-architecture-diagram-1-99aa3dae.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
-
-<details>
-<summary>View Mermaid source code</summary>
-
 <pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Deployment Targets&quot;
         subgraph &quot;AWS Deployment&quot;
@@ -142,14 +128,6 @@ This document describes the deployment architecture of the Officeless platform a
     ByteDance_K8s --&gt; Cache
     Huawei_K8s --&gt; Cache
     OnPrem_K8s --&gt; Cache</code></pre>
-
-</details>
-
-</div>
-
-</details>
-
-</div>
 
 </details>
 

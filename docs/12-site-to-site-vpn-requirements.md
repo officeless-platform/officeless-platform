@@ -24,9 +24,16 @@ flowchart TD
         VPN1[Site-to-Site VPN<br/>IPsec AES-256]
     end
     
-    subgraph<div class="mermaid-diagram-container">
+    subgraph "
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-cf3565da.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-171cd68a.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-171cd68a.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
@@ -44,7 +51,7 @@ flowchart TD
 
 &lt;img src=&quot;{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-3582207b.svg&quot; alt=&quot;Mermaid Diagram&quot; style=&quot;max-width: 100%; height: auto;&quot;&gt;
 
-&lt;details&gt;
+
 &lt;summary&gt;View Mermaid source code&lt;/summary&gt;
 
 &lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart TD
@@ -60,7 +67,7 @@ flowchart TD
 
 &lt;img src=&quot;{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-98741fd8.svg&quot; alt=&quot;Mermaid Diagram&quot; style=&quot;max-width: 100%; height: auto;&quot;&gt;
 
-&lt;details&gt;
+
 &lt;summary&gt;View Mermaid source code&lt;/summary&gt;
 
 &lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart TD
@@ -98,6 +105,10 @@ flowchart TD
     style Middleware fill:#fff4e1
     style VPN1 fill:#ffe1e1
     style VPN2 fill:#ffe1e1</code></pre>
+
+</details>
+
+</div>
 
 </details>
 

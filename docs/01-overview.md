@@ -14,41 +14,40 @@ This document provides a high-level overview of the Officeless platform, its cor
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/01-overview-diagram-1-fc1dd2c6.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/01-overview-diagram-1-230b6126.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
 <pre><code class="language-mermaid">flowchart TD
-    subgraph &quot;Officeless Platform - Core Capabilities&quot;
+    Start[Officeless Platform] 
+    
+    subgraph Core[&quot;Core Capabilities&quot;]
         Dev[Application Development&lt;br/&gt;Low-Code/No-Code]
         Integration[Enterprise Integration&lt;br/&gt;API-First]
         Security[Security &amp; Compliance&lt;br/&gt;Built-in Controls]
         Scale[Scalability &amp; Performance&lt;br/&gt;Multi-Tenant]
     end
     
-    subgraph &quot;Cloud Deployments&quot;
-        AWS[AWS&lt;br/&gt;EKS]
-        GCP[GCP&lt;br/&gt;GKE]
-        Azure[Azure&lt;br/&gt;AKS]
-        Alibaba[Alibaba Cloud&lt;br/&gt;ACK]
-        OCI[Oracle Cloud&lt;br/&gt;OKE]
-        ByteDance[ByteDance Cloud&lt;br/&gt;TKE]
-        Huawei[Huawei Cloud&lt;br/&gt;CCE]
+    subgraph Deploy[&quot;Deployment Options&quot;]
+        Cloud1[AWS EKS]
+        Cloud2[GCP GKE]
+        Cloud3[Azure AKS]
+        Cloud4[Alibaba ACK]
+        Cloud5[Oracle OKE]
+        Cloud6[ByteDance TKE]
+        Cloud7[Huawei CCE]
+        OnPrem[On-Premise&lt;br/&gt;Kubernetes]
     end
     
-    subgraph &quot;On-Premise Deployment&quot;
-        OnPrem[On-Premise&lt;br/&gt;Kubernetes&lt;br/&gt;Rancher/OpenShift/K3s]
-    end
-    
-    subgraph &quot;Enterprise Integration&quot;
+    subgraph Enterprise[&quot;Enterprise Integration&quot;]
         Oracle_App[Oracle EBS]
         SAP_App[SAP Systems]
         Salesforce_App[Salesforce]
         Custom[Custom Applications]
     end
     
-    subgraph &quot;Target Industries&quot;
+    subgraph Industries[&quot;Target Industries&quot;]
         Finance[Financial Services]
         Healthcare[Healthcare]
         Government[Government]
@@ -56,13 +55,18 @@ This document provides a high-level overview of the Officeless platform, its cor
         Retail[Retail &amp; E-commerce]
     end
     
-    Dev --&gt; AWS
-    Dev --&gt; GCP
-    Dev --&gt; Azure
-    Dev --&gt; Alibaba
-    Dev --&gt; OCI
-    Dev --&gt; ByteDance
-    Dev --&gt; Huawei
+    Start --&gt; Core
+    Core --&gt; Deploy
+    Core --&gt; Enterprise
+    Core --&gt; Industries
+    
+    Dev --&gt; Cloud1
+    Dev --&gt; Cloud2
+    Dev --&gt; Cloud3
+    Dev --&gt; Cloud4
+    Dev --&gt; Cloud5
+    Dev --&gt; Cloud6
+    Dev --&gt; Cloud7
     Dev --&gt; OnPrem
     
     Integration --&gt; Oracle_App

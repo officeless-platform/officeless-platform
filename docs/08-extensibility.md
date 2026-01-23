@@ -19,20 +19,6 @@ This document describes the extensibility mechanisms, APIs, and customization op
 <details>
 <summary>View Mermaid source code</summary>
 
-<div class="mermaid-diagram-container">
-
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/08-extensibility-diagram-1-2a9ef05e.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/08-extensibility-diagram-1-2a9ef05e.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
-
-<details>
-<summary>View Mermaid source code</summary>
-
 <pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Extension Points&quot;
         subgraph &quot;API Extensions&quot;
@@ -99,14 +85,6 @@ This document describes the extensibility mechanisms, APIs, and customization op
     CodeGen --&gt; ServerSDK
     Testing --&gt; Platform
     CI_CD --&gt; Platform</code></pre>
-
-</details>
-
-</div>
-
-</details>
-
-</div>
 
 </details>
 

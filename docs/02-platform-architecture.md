@@ -14,21 +14,7 @@ This document describes the high-level architecture of the Officeless platform, 
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/02-platform-architecture-diagram-1-5e6e21af.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/02-platform-architecture-diagram-1-5e6e21af.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<div class="mermaid-diagram-container">
-
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/02-platform-architecture-diagram-1-5e6e21af.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/02-platform-architecture-diagram-1-82e1bac8.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
@@ -88,57 +74,32 @@ This document describes the high-level architecture of the Officeless platform, 
         CI_CD[CI/CD Agent]
     end
     
+    Client --&gt; LB
     Web --&gt; AppLB
     Mobile --&gt; AppLB
     API_Client --&gt; AppLB
     VPN_Client --&gt; VPNServer
     
-    AppLB --&gt; AppService1
-    AppLB --&gt; AppService2
-    AppLB --&gt; AppServiceN
-    NetLB --&gt; AppService1
+    LB --&gt; K8s
+    AppLB --&gt; Apps
+    NetLB --&gt; Apps
     
-    AppService1 --&gt; BlockStorage
-    AppService2 --&gt; BlockStorage
-    AppServiceN --&gt; BlockStorage
+    K8s --&gt; Storage
+    Apps --&gt; BlockStorage
+    Apps --&gt; FileStorage
+    Apps --&gt; Cache
     
-    AppService1 --&gt; FileStorage
-    AppService2 --&gt; FileStorage
+    Monitoring --&gt; ObjectStorage
+    Apps --&gt; Monitoring
     
-    AppService1 --&gt; Cache
-    AppService2 --&gt; Cache
+    K8s --&gt; Cloud
+    System --&gt; CloudIAM
+    Apps --&gt; SecretsMgr
+    Apps --&gt; CloudLogs
     
-    Mimir --&gt; ObjectStorage
-    Loki --&gt; ObjectStorage
-    Tempo --&gt; ObjectStorage
-    Alertmanager --&gt; ObjectStorage
-    
-    AppService1 --&gt; Mimir
-    AppService2 --&gt; Loki
-    AppServiceN --&gt; Tempo
-    
-    AppService1 --&gt; SecretsMgr
-    AppService2 --&gt; SecretsMgr
-    
-    Autoscaler --&gt; CloudLogs
-    AppService1 --&gt; CloudLogs
-    
-    LBC --&gt; CloudIAM
-    BlockCSI --&gt; CloudIAM
-    FileCSI --&gt; CloudIAM
-    SecretCSI --&gt; CloudIAM
-    AppService1 --&gt; CloudIAM
-    
+    VPN --&gt; K8s
     VPNServer --&gt; CI_CD
-    CI_CD --&gt; AppService1</code></pre>
-
-</details>
-
-</div>
-
-</details>
-
-</div>
+    CI_CD --&gt; Apps</code></pre>
 
 </details>
 
