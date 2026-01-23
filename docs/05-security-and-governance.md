@@ -14,12 +14,12 @@ This document describes the security controls, compliance frameworks, and govern
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/05-security-and-governance-diagram-1-80e2502c.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/05-security-and-governance-diagram-1-5e88a1b0.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-<pre><code class="language-mermaid">graph TB
+<pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Security Layers&quot;
         subgraph &quot;Network Security&quot;
             VNet[Virtual Network&lt;br/&gt;Isolated Network]

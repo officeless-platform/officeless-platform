@@ -14,12 +14,12 @@ This document describes integration patterns, enterprise systems connectivity, a
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/09-enterprise-integration-diagram-1-eae22d2b.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/09-enterprise-integration-diagram-1-18f04f87.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-<pre><code class="language-mermaid">graph TB
+<pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Enterprise Network A&quot;
         Oracle[Oracle E-Business Suite&lt;br/&gt;Port: 1521, 8000, 443]
         SAP[SAP ECC&lt;br/&gt;Port: 3300, 8000, 443]

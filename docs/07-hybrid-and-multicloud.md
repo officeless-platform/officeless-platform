@@ -14,12 +14,12 @@ This document describes deployment patterns and strategies for hybrid and multi-
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/07-hybrid-and-multicloud-diagram-1-9dcfed49.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/07-hybrid-and-multicloud-diagram-1-211d4544.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-<pre><code class="language-mermaid">graph TB
+<pre><code class="language-mermaid">flowchart TD
     subgraph &quot;On-Premise Deployment&quot;
         OnPrem_App[On-Premise Applications]
         OnPrem_Data[On-Premise Data]

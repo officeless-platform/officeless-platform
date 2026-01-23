@@ -14,12 +14,12 @@ This document describes the deployment architecture of the Officeless platform a
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/03-deployment-architecture-diagram-1-a0af33c9.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/03-deployment-architecture-diagram-1-99aa3dae.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-<pre><code class="language-mermaid">graph TB
+<pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Deployment Targets&quot;
         subgraph &quot;AWS Deployment&quot;
             AWS_VPC[AWS VPC&lt;br/&gt;Public/Private Subnets]

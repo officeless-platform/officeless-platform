@@ -26,12 +26,12 @@ graph LR
     
     subgraph<div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-82f1aadf.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-98741fd8.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-<pre><code class="language-mermaid">graph LR
+<pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Enterprise Network A&quot;
         AppA[Enterprise App A&lt;br/&gt;Oracle/SAP/etc]
     end
@@ -73,12 +73,12 @@ graph LR
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-2-956a66a4.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-2-42d77ae8.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-<pre><code class="language-mermaid">graph TB
+<pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Enterprise Network A&quot;
         Oracle[Oracle E-Business Suite&lt;br/&gt;Port: 1521, 8000, 443]
         SAP[SAP ECC&lt;br/&gt;Port: 3300, 8000, 443]

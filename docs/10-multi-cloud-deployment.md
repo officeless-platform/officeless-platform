@@ -14,12 +14,12 @@ This document provides comprehensive deployment guidance for the Officeless plat
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/10-multi-cloud-deployment-diagram-1-602726d0.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/10-multi-cloud-deployment-diagram-1-645664a9.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-<pre><code class="language-mermaid">graph TB
+<pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Enterprise Networks&quot;
         subgraph &quot;Enterprise A&quot;
             Oracle[Oracle EBS&lt;br/&gt;On-Premise]

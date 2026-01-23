@@ -14,12 +14,12 @@ This document describes the extensibility mechanisms, APIs, and customization op
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/08-extensibility-diagram-1-f6185bb0.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/08-extensibility-diagram-1-2a9ef05e.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-<pre><code class="language-mermaid">graph TB
+<pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Extension Points&quot;
         subgraph &quot;API Extensions&quot;
             REST[REST APIs&lt;br/&gt;OpenAPI/Swagger]

@@ -14,12 +14,12 @@ This document describes the data architecture, persistence models, storage solut
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/04-database-and-storage-diagram-1-f4a3e81b.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/04-database-and-storage-diagram-1-048ab817.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-<pre><code class="language-mermaid">graph TB
+<pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Application Layer - Kubernetes Pods&quot;
         App1[Application Pod 1]
         App2[Application Pod 2]

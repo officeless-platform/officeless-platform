@@ -14,12 +14,12 @@ This document describes the observability strategy for the Officeless platform, 
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/06-observability-diagram-1-fd753900.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/06-observability-diagram-1-4a0d8f60.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-<pre><code class="language-mermaid">graph TB
+<pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Application Layer&quot;
         App1[Application Pod 1]
         App2[Application Pod 2]
