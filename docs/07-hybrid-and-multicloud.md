@@ -14,81 +14,55 @@ This document describes deployment patterns and strategies for hybrid and multi-
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/07-hybrid-and-multicloud-diagram-1-211d4544.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/07-hybrid-and-multicloud-diagram-1-11e55c56.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
 <pre><code class="language-mermaid">flowchart TD
-    subgraph &quot;On-Premise Deployment&quot;
+    Start[Hybrid &amp; Multi-Cloud Architecture]
+    
+    subgraph OnPrem[&quot;On-Premise Deployment&quot;]
         OnPrem_App[On-Premise Applications]
-        OnPrem_Data[On-Premise Data]
         OnPrem_K8s[Kubernetes Cluster&lt;br/&gt;Rancher/OpenShift/K3s]
-        Legacy[Legacy Systems]
     end
     
-    subgraph &quot;Cloud Deployments&quot;
-        AWS[AWS&lt;br/&gt;EKS Cluster]
-        GCP[GCP&lt;br/&gt;GKE Cluster]
-        Azure[Azure&lt;br/&gt;AKS Cluster]
-        Alibaba[Alibaba Cloud&lt;br/&gt;ACK Cluster]
-        OCI[Oracle Cloud&lt;br/&gt;OKE Cluster]
-        ByteDance[ByteDance Cloud&lt;br/&gt;TKE Cluster]
-        Huawei[Huawei Cloud&lt;br/&gt;CCE Cluster]
+    subgraph Cloud[&quot;Cloud Deployments&quot;]
+        AWS[AWS EKS]
+        GCP[GCP GKE]
+        Azure[Azure AKS]
+        Alibaba[Alibaba ACK]
+        OCI[Oracle OKE]
+        ByteDance[ByteDance TKE]
+        Huawei[Huawei CCE]
     end
     
-    subgraph &quot;Connectivity&quot;
-        VPN_Tunnel1[Site-to-Site VPN&lt;br/&gt;IPsec]
-        VPN_Tunnel2[Site-to-Site VPN&lt;br/&gt;IPsec]
+    subgraph Connectivity[&quot;Connectivity&quot;]
+        VPN[Site-to-Site VPN&lt;br/&gt;IPsec]
         DirectConnect[Direct Connect&lt;br/&gt;ExpressRoute/Interconnect]
         Internet[Internet&lt;br/&gt;HTTPS]
     end
     
-    subgraph &quot;Data Synchronization&quot;
-        DataSync[Data Sync Service&lt;br/&gt;Cross-Cloud]
+    subgraph DataSync[&quot;Data Synchronization&quot;]
+        SyncService[Data Sync Service&lt;br/&gt;Cross-Cloud]
         Replication[Data Replication&lt;br/&gt;Multi-Region]
     end
     
-    OnPrem_App --&gt; VPN_Tunnel1
-    OnPrem_Data --&gt; VPN_Tunnel1
-    Legacy --&gt; VPN_Tunnel1
+    Start --&gt; OnPrem
+    Start --&gt; Cloud
     
-    VPN_Tunnel1 --&gt; AWS
-    VPN_Tunnel1 --&gt; GCP
-    VPN_Tunnel1 --&gt; Azure
-    VPN_Tunnel1 --&gt; Alibaba
-    VPN_Tunnel1 --&gt; OCI
-    VPN_Tunnel1 --&gt; ByteDance
-    VPN_Tunnel1 --&gt; Huawei
-    VPN_Tunnel1 --&gt; OnPrem_K8s
+    OnPrem --&gt; Connectivity
+    Cloud --&gt; Connectivity
     
-    AWS --&gt; DataSync
-    GCP --&gt; DataSync
-    Azure --&gt; DataSync
-    Alibaba --&gt; DataSync
-    OCI --&gt; DataSync
-    ByteDance --&gt; DataSync
-    Huawei --&gt; DataSync
-    OnPrem_K8s --&gt; DataSync
+    Connectivity --&gt; DataSync
+    VPN --&gt; Cloud
+    VPN --&gt; OnPrem
+    DirectConnect --&gt; Cloud
+    Internet --&gt; Cloud
     
-    DataSync --&gt; Replication
-    
-    AWS -.Data Sync.-&gt; GCP
-    GCP -.Data Sync.-&gt; Azure
-    Azure -.Data Sync.-&gt; Alibaba
-    Alibaba -.Data Sync.-&gt; OCI
-    OCI -.Data Sync.-&gt; ByteDance
-    ByteDance -.Data Sync.-&gt; Huawei
-    Huawei -.Data Sync.-&gt; OnPrem_K8s
-    OnPrem_K8s -.Data Sync.-&gt; AWS
-    
-    AWS --&gt; DirectConnect
-    GCP --&gt; DirectConnect
-    Azure --&gt; DirectConnect
-    Alibaba --&gt; DirectConnect
-    OCI --&gt; DirectConnect
-    ByteDance --&gt; DirectConnect
-    Huawei --&gt; DirectConnect</code></pre>
+    Cloud --&gt; DataSync
+    OnPrem --&gt; DataSync
+    DataSync --&gt; Replication</code></pre>
 
 </details>
 

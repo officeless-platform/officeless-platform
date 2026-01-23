@@ -14,83 +14,89 @@ This document describes the security controls, compliance frameworks, and govern
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/05-security-and-governance-diagram-1-5e88a1b0.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/05-security-and-governance-diagram-1-a45f8874.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
 <pre><code class="language-mermaid">flowchart TD
-    subgraph &quot;Security Layers&quot;
-        subgraph &quot;Network Security&quot;
-            VNet[Virtual Network&lt;br/&gt;Isolated Network]
-            FW[Firewall Rules&lt;br/&gt;Security Groups/NACLs]
-            NetworkACL[Network ACLs]
-            VPN[VPN Gateway&lt;br/&gt;Site-to-Site]
-        end
-        
-        subgraph &quot;Identity &amp; Access&quot;
-            CloudIAM[Cloud IAM&lt;br/&gt;Provider-Specific]
-            PodIdentity[Pod Identity&lt;br/&gt;Workload Identity]
-            OIDC[OIDC Provider&lt;br/&gt;Service Account Integration]
-            RBAC[Kubernetes RBAC]
-            SA[Service Accounts]
-        end
-        
-        subgraph &quot;Data Security&quot;
-            Encrypt_Transit[Encryption in Transit&lt;br/&gt;TLS/SSL]
-            Encrypt_Rest[Encryption at Rest&lt;br/&gt;Cloud KMS]
-            Secrets[Secrets Manager&lt;br/&gt;Cloud Secrets]
-            KeyMgmt[Key Management&lt;br/&gt;HSM/KMS]
-        end
-        
-        subgraph &quot;Application Security&quot;
-            WAF[Web Application Firewall]
-            DDoS[DDoS Protection]
-            Scan[Vulnerability Scanning]
-            Audit[Audit Logging]
-        end
-        
-        subgraph &quot;Compliance&quot;
-            ISO[ISO 27001]
-            SOC[SOC 2]
-            GDPR[GDPR]
-            HIPAA[HIPAA]
-        end
+    Start[Security Architecture]
+    
+    subgraph Network[&quot;Network Security&quot;]
+        VNet[Virtual Network&lt;br/&gt;Isolated Network]
+        FW[Firewall Rules&lt;br/&gt;Security Groups/NACLs]
+        VPN[VPN Gateway&lt;br/&gt;Site-to-Site]
     end
     
-    subgraph &quot;Kubernetes Cluster&quot;
+    subgraph Identity[&quot;Identity &amp; Access&quot;]
+        CloudIAM[Cloud IAM&lt;br/&gt;Provider-Specific]
+        PodIdentity[Pod Identity&lt;br/&gt;Workload Identity]
+        OIDC[OIDC Provider&lt;br/&gt;Service Account Integration]
+        RBAC[Kubernetes RBAC]
+    end
+    
+    subgraph Data[&quot;Data Security&quot;]
+        Encrypt_Transit[Encryption in Transit&lt;br/&gt;TLS/SSL]
+        Encrypt_Rest[Encryption at Rest&lt;br/&gt;Cloud KMS]
+        Secrets[Secrets Manager&lt;br/&gt;Cloud Secrets]
+        KeyMgmt[Key Management&lt;br/&gt;HSM/KMS]
+    end
+    
+    subgraph Application[&quot;Application Security&quot;]
+        WAF[Web Application Firewall]
+        DDoS[DDoS Protection]
+        Scan[Vulnerability Scanning]
+        Audit[Audit Logging]
+    end
+    
+    subgraph Compliance[&quot;Compliance&quot;]
+        ISO[ISO 27001]
+        SOC[SOC 2]
+        GDPR[GDPR]
+        HIPAA[HIPAA]
+    end
+    
+    subgraph K8s[&quot;Kubernetes Cluster&quot;]
         ControlPlane[Control Plane&lt;br/&gt;Private Endpoint]
         Nodes[Worker Nodes&lt;br/&gt;Private Subnets]
         Pods[Application Pods]
     end
     
+    Start --&gt; Network
+    Start --&gt; Identity
+    Start --&gt; Data
+    Start --&gt; Application
+    Start --&gt; Compliance
+    
+    Network --&gt; K8s
+    Identity --&gt; K8s
+    Data --&gt; K8s
+    Application --&gt; K8s
+    Compliance --&gt; K8s
+    
     VNet --&gt; FW
-    FW --&gt; NetworkACL
-    VPN --&gt; VNet
+    FW --&gt; VPN
     
     CloudIAM --&gt; PodIdentity
     PodIdentity --&gt; OIDC
-    OIDC --&gt; SA
-    SA --&gt; RBAC
+    OIDC --&gt; RBAC
     RBAC --&gt; Pods
     
     Encrypt_Transit --&gt; ControlPlane
     Encrypt_Transit --&gt; Nodes
-    Encrypt_Rest --&gt; BlockStorage
-    Encrypt_Rest --&gt; FileStorage
-    Encrypt_Rest --&gt; ObjectStorage
+    Encrypt_Rest --&gt; Data
     Secrets --&gt; Pods
     KeyMgmt --&gt; Encrypt_Rest
     
-    WAF --&gt; LoadBalancer
-    DDoS --&gt; VNet
+    WAF --&gt; Application
+    DDoS --&gt; Network
     Scan --&gt; Pods
-    Audit --&gt; Logging
+    Audit --&gt; Application
     
-    ISO --&gt; Encrypt_Rest
-    SOC --&gt; Audit
-    GDPR --&gt; DataPrivacy
-    HIPAA --&gt; Encrypt_Rest</code></pre>
+    ISO --&gt; Compliance
+    SOC --&gt; Compliance
+    GDPR --&gt; Compliance
+    HIPAA --&gt; Compliance</code></pre>
 
 </details>
 

@@ -14,120 +14,68 @@ This document describes the deployment architecture of the Officeless platform a
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/03-deployment-architecture-diagram-1-99aa3dae.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/03-deployment-architecture-diagram-1-0d64137d.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
 <pre><code class="language-mermaid">flowchart TD
-    subgraph &quot;Deployment Targets&quot;
-        subgraph &quot;AWS Deployment&quot;
-            AWS_VPC[AWS VPC&lt;br/&gt;Public/Private Subnets]
-            AWS_K8s[EKS Cluster&lt;br/&gt;Kubernetes]
-            AWS_LB[Application Load Balancer]
-            AWS_Storage[S3, EBS, EFS]
-        end
-        
-        subgraph &quot;GCP Deployment&quot;
-            GCP_VPC[GCP VPC&lt;br/&gt;Subnets]
-            GCP_K8s[GKE Cluster&lt;br/&gt;Kubernetes]
-            GCP_LB[HTTPS Load Balancer]
-            GCP_Storage[Cloud Storage, Persistent Disk, Filestore]
-        end
-        
-        subgraph &quot;Azure Deployment&quot;
-            Azure_VNet[Azure Virtual Network&lt;br/&gt;Subnets]
-            Azure_K8s[AKS Cluster&lt;br/&gt;Kubernetes]
-            Azure_LB[Application Gateway]
-            Azure_Storage[Blob Storage, Managed Disks, Files]
-        end
-        
-        subgraph &quot;Alibaba Cloud Deployment&quot;
-            Alibaba_VPC[Alibaba VPC&lt;br/&gt;VSwitches]
-            Alibaba_K8s[ACK Cluster&lt;br/&gt;Kubernetes]
-            Alibaba_LB[SLB Load Balancer]
-            Alibaba_Storage[OSS, EBS, NAS]
-        end
-        
-        subgraph &quot;Oracle Cloud Deployment&quot;
-            OCI_VCN[OCI VCN&lt;br/&gt;Subnets]
-            OCI_K8s[OKE Cluster&lt;br/&gt;Kubernetes]
-            OCI_LB[Load Balancer]
-            OCI_Storage[Object Storage, Block Volume, File Storage]
-        end
-        
-        subgraph &quot;ByteDance Cloud Deployment&quot;
-            ByteDance_VPC[ByteDance VPC&lt;br/&gt;Subnets]
-            ByteDance_K8s[TKE Cluster&lt;br/&gt;Kubernetes]
-            ByteDance_LB[CLB Load Balancer]
-            ByteDance_Storage[TOS, EBS, NAS]
-        end
-        
-        subgraph &quot;Huawei Cloud Deployment&quot;
-            Huawei_VPC[Huawei VPC&lt;br/&gt;Subnets]
-            Huawei_K8s[CCE Cluster&lt;br/&gt;Kubernetes]
-            Huawei_LB[ELB Load Balancer]
-            Huawei_Storage[OBS, EVS, SFS]
-        end
-        
-        subgraph &quot;On-Premise Deployment&quot;
-            OnPrem_Network[Private Network&lt;br/&gt;VLANs/Subnets]
-            OnPrem_K8s[Kubernetes Cluster&lt;br/&gt;Rancher/OpenShift/K3s]
-            OnPrem_LB[Load Balancer&lt;br/&gt;HAProxy/Nginx]
-            OnPrem_Storage[Local Storage&lt;br/&gt;NFS/Ceph/GlusterFS]
-        end
+    Start[Deployment Architecture]
+    
+    subgraph Cloud[&quot;Cloud Deployments&quot;]
+        AWS[AWS EKS]
+        GCP[GCP GKE]
+        Azure[Azure AKS]
+        Alibaba[Alibaba ACK]
+        OCI[Oracle OKE]
+        ByteDance[ByteDance TKE]
+        Huawei[Huawei CCE]
     end
     
-    subgraph &quot;Common Components&quot;
+    subgraph OnPrem[&quot;On-Premise Deployment&quot;]
+        OnPrem_K8s[Kubernetes Cluster&lt;br/&gt;Rancher/OpenShift/K3s]
+    end
+    
+    subgraph Network[&quot;Network Layer&quot;]
+        VPC[Virtual Network&lt;br/&gt;VPC/VNet/VCN]
+        LB[Load Balancer&lt;br/&gt;Application/Network]
+    end
+    
+    subgraph K8s[&quot;Kubernetes Cluster&quot;]
+        Nodes[Worker Nodes&lt;br/&gt;Multi-AZ]
+        ControlPlane[Control Plane&lt;br/&gt;Private Endpoint]
+    end
+    
+    subgraph Storage[&quot;Storage Layer&quot;]
+        BlockStorage[Block Storage&lt;br/&gt;EBS/Persistent Disk/Managed Disks]
+        FileStorage[File Storage&lt;br/&gt;EFS/Filestore/Files/NAS]
+        ObjectStorage[Object Storage&lt;br/&gt;S3/Cloud Storage/Blob/OSS]
+    end
+    
+    subgraph Common[&quot;Common Components&quot;]
         VPN[VPN Gateway&lt;br/&gt;Site-to-Site]
         Monitoring[Observability Stack&lt;br/&gt;Mimir, Loki, Tempo]
         Cache[Cache Layer&lt;br/&gt;Redis/Valkey]
     end
     
-    AWS_K8s --&gt; AWS_LB
-    GCP_K8s --&gt; GCP_LB
-    Azure_K8s --&gt; Azure_LB
-    Alibaba_K8s --&gt; Alibaba_LB
-    OCI_K8s --&gt; OCI_LB
-    ByteDance_K8s --&gt; ByteDance_LB
-    Huawei_K8s --&gt; Huawei_LB
-    OnPrem_K8s --&gt; OnPrem_LB
+    Start --&gt; Cloud
+    Start --&gt; OnPrem
     
-    AWS_K8s --&gt; AWS_Storage
-    GCP_K8s --&gt; GCP_Storage
-    Azure_K8s --&gt; Azure_Storage
-    Alibaba_K8s --&gt; Alibaba_Storage
-    OCI_K8s --&gt; OCI_Storage
-    ByteDance_K8s --&gt; ByteDance_Storage
-    Huawei_K8s --&gt; Huawei_Storage
-    OnPrem_K8s --&gt; OnPrem_Storage
+    Cloud --&gt; Network
+    OnPrem --&gt; Network
     
-    AWS_K8s --&gt; VPN
-    GCP_K8s --&gt; VPN
-    Azure_K8s --&gt; VPN
-    Alibaba_K8s --&gt; VPN
-    OCI_K8s --&gt; VPN
-    ByteDance_K8s --&gt; VPN
-    Huawei_K8s --&gt; VPN
-    OnPrem_K8s --&gt; VPN
+    Network --&gt; K8s
+    LB --&gt; K8s
     
-    AWS_K8s --&gt; Monitoring
-    GCP_K8s --&gt; Monitoring
-    Azure_K8s --&gt; Monitoring
-    Alibaba_K8s --&gt; Monitoring
-    OCI_K8s --&gt; Monitoring
-    ByteDance_K8s --&gt; Monitoring
-    Huawei_K8s --&gt; Monitoring
-    OnPrem_K8s --&gt; Monitoring
+    K8s --&gt; Storage
+    Nodes --&gt; BlockStorage
+    Nodes --&gt; FileStorage
+    Nodes --&gt; ObjectStorage
     
-    AWS_K8s --&gt; Cache
-    GCP_K8s --&gt; Cache
-    Azure_K8s --&gt; Cache
-    Alibaba_K8s --&gt; Cache
-    OCI_K8s --&gt; Cache
-    ByteDance_K8s --&gt; Cache
-    Huawei_K8s --&gt; Cache
-    OnPrem_K8s --&gt; Cache</code></pre>
+    K8s --&gt; Common
+    Nodes --&gt; VPN
+    Nodes --&gt; Monitoring
+    Nodes --&gt; Cache</code></pre>
 
 </details>
 

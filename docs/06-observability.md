@@ -14,84 +14,88 @@ This document describes the observability strategy for the Officeless platform, 
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/06-observability-diagram-1-4a0d8f60.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/06-observability-diagram-1-52ed57d2.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
 <pre><code class="language-mermaid">flowchart TD
-    subgraph &quot;Application Layer&quot;
+    Start[Application Layer]
+    
+    subgraph Apps[&quot;Kubernetes Pods&quot;]
         App1[Application Pod 1]
         App2[Application Pod 2]
         App3[Application Pod 3]
         K8s_Cluster[Kubernetes Control Plane]
     end
     
-    subgraph &quot;Metrics Collection&quot;
+    subgraph Metrics[&quot;Metrics Collection&quot;]
         MetricsServer[Metrics Server&lt;br/&gt;Kubernetes Metrics]
-        Mimir[Mimir&lt;br/&gt;Long-term Metrics]
         Prometheus[Prometheus&lt;br/&gt;Scraping]
+        Mimir[Mimir&lt;br/&gt;Long-term Metrics]
     end
     
-    subgraph &quot;Log Collection&quot;
-        Loki[Loki&lt;br/&gt;Log Aggregation]
+    subgraph Logs[&quot;Log Collection&quot;]
         CloudLogs[Cloud Logging&lt;br/&gt;Kubernetes Cluster Logs]
+        Loki[Loki&lt;br/&gt;Log Aggregation]
     end
     
-    subgraph &quot;Tracing&quot;
-        Tempo[Tempo&lt;br/&gt;Distributed Tracing]
+    subgraph Tracing[&quot;Tracing&quot;]
         OpenTelemetry[OpenTelemetry&lt;br/&gt;Instrumentation]
+        Tempo[Tempo&lt;br/&gt;Distributed Tracing]
     end
     
-    subgraph &quot;Alerting&quot;
+    subgraph Alerting[&quot;Alerting&quot;]
         Alertmanager[Alertmanager&lt;br/&gt;Alert Management]
         Notifications[Notifications&lt;br/&gt;Email, Slack, PagerDuty]
     end
     
-    subgraph &quot;Object Storage&quot;
+    subgraph Storage[&quot;Object Storage&quot;]
         Object_Metrics[(Metrics Storage&lt;br/&gt;mimir-metrics)]
         Object_Logs[(Log Storage&lt;br/&gt;loki-chunks)]
         Object_Traces[(Trace Storage&lt;br/&gt;tempo-traces)]
         Object_Alerts[(Alert Storage&lt;br/&gt;mimir-alertmanager)]
     end
     
-    subgraph &quot;Visualization&quot;
+    subgraph Visualization[&quot;Visualization&quot;]
         Grafana[Grafana&lt;br/&gt;Dashboards]
         Dashboards[Custom Dashboards]
     end
     
-    App1 --&gt; MetricsServer
-    App2 --&gt; MetricsServer
-    App3 --&gt; MetricsServer
-    K8s_Cluster --&gt; CloudLogs
+    Start --&gt; Apps
     
+    Apps --&gt; Metrics
+    Apps --&gt; Logs
+    Apps --&gt; Tracing
+    
+    Metrics --&gt; Storage
+    Logs --&gt; Storage
+    Tracing --&gt; Storage
+    
+    Metrics --&gt; Alerting
+    Alerting --&gt; Notifications
+    
+    Metrics --&gt; Visualization
+    Logs --&gt; Visualization
+    Tracing --&gt; Visualization
+    Visualization --&gt; Dashboards
+    
+    Apps --&gt; MetricsServer
     MetricsServer --&gt; Prometheus
     Prometheus --&gt; Mimir
-    App1 --&gt; Mimir
-    App2 --&gt; Mimir
+    Mimir --&gt; Object_Metrics
     
-    App1 --&gt; Loki
-    App2 --&gt; Loki
-    App3 --&gt; Loki
+    K8s_Cluster --&gt; CloudLogs
     CloudLogs --&gt; Loki
+    Apps --&gt; Loki
+    Loki --&gt; Object_Logs
     
-    App1 --&gt; OpenTelemetry
-    App2 --&gt; OpenTelemetry
-    App3 --&gt; OpenTelemetry
+    Apps --&gt; OpenTelemetry
     OpenTelemetry --&gt; Tempo
+    Tempo --&gt; Object_Traces
     
     Mimir --&gt; Alertmanager
-    Alertmanager --&gt; Notifications
-    
-    Mimir --&gt; Object_Metrics
-    Loki --&gt; Object_Logs
-    Tempo --&gt; Object_Traces
-    Alertmanager --&gt; Object_Alerts
-    
-    Mimir --&gt; Grafana
-    Loki --&gt; Grafana
-    Tempo --&gt; Grafana
-    Grafana --&gt; Dashboards</code></pre>
+    Alertmanager --&gt; Object_Alerts</code></pre>
 
 </details>
 

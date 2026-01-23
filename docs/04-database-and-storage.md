@@ -14,85 +14,64 @@ This document describes the data architecture, persistence models, storage solut
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/04-database-and-storage-diagram-1-048ab817.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/04-database-and-storage-diagram-1-3e0af2f4.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
 <pre><code class="language-mermaid">flowchart TD
-    subgraph &quot;Application Layer - Kubernetes Pods&quot;
+    Start[Application Layer]
+    
+    subgraph Apps[&quot;Kubernetes Pods&quot;]
         App1[Application Pod 1]
         App2[Application Pod 2]
         App3[Application Pod 3]
     end
     
-    subgraph &quot;Block Storage&quot;
-        Block1[(Block Volume 1&lt;br/&gt;Encrypted&lt;br/&gt;Zone-Aware)]
-        Block2[(Block Volume 2&lt;br/&gt;Encrypted&lt;br/&gt;Zone-Aware)]
-        Block3[(Block Volume 3&lt;br/&gt;Encrypted&lt;br/&gt;Zone-Aware)]
+    subgraph Storage[&quot;Storage Layer&quot;]
+        BlockStorage[(Block Storage&lt;br/&gt;Encrypted, Zone-Aware)]
+        FileStorage[(File Storage&lt;br/&gt;Shared Access, Multi-AZ)]
+        ObjectStorage[(Object Storage&lt;br/&gt;Versioned, Encrypted)]
     end
     
-    subgraph &quot;File Storage&quot;
-        FileStorage[(File Storage&lt;br/&gt;Shared Access&lt;br/&gt;Encrypted&lt;br/&gt;Multi-AZ)]
-        FileAP1[Access Point 1]
-        FileAP2[Access Point 2]
+    subgraph Database[&quot;Database Layer&quot;]
+        DB1[(Database Pod 1&lt;br/&gt;PostgreSQL/MySQL)]
+        DB2[(Database Pod 2&lt;br/&gt;PostgreSQL/MySQL)]
     end
     
-    subgraph &quot;Object Storage&quot;
-        Object_App[Application Buckets&lt;br/&gt;Versioned&lt;br/&gt;Encrypted]
-        Object_Metrics[(Metrics Storage&lt;br/&gt;mimir-metrics)]
-        Object_Logs[(Log Storage&lt;br/&gt;loki-chunks)]
-        Object_Traces[(Trace Storage&lt;br/&gt;tempo-traces)]
-        Object_Alerts[(Alert Storage&lt;br/&gt;mimir-alertmanager)]
+    subgraph Cache[&quot;Cache Layer&quot;]
+        CacheCluster[(Cache Cluster&lt;br/&gt;Redis/Valkey&lt;br/&gt;High Availability)]
     end
     
-    subgraph &quot;Cache Layer&quot;
-        Cache[(Cache Cluster&lt;br/&gt;Redis/Valkey Compatible&lt;br/&gt;High Availability)]
+    subgraph Observability[&quot;Observability Stack&quot;]
+        Mimir[Mimir Metrics]
+        Loki[Loki Logs]
+        Tempo[Tempo Traces]
     end
     
-    subgraph &quot;Database Layer&quot;
-        DB1[(Database Pod 1&lt;br/&gt;PostgreSQL/MySQL&lt;br/&gt;on Block Storage)]
-        DB2[(Database Pod 2&lt;br/&gt;PostgreSQL/MySQL&lt;br/&gt;on Block Storage)]
+    subgraph ObservabilityStorage[&quot;Observability Storage&quot;]
+        MetricsStore[(Metrics Storage&lt;br/&gt;mimir-metrics)]
+        LogStore[(Log Storage&lt;br/&gt;loki-chunks)]
+        TraceStore[(Trace Storage&lt;br/&gt;tempo-traces)]
+        AlertStore[(Alert Storage&lt;br/&gt;mimir-alertmanager)]
     end
     
-    subgraph &quot;Observability Stack&quot;
-        Mimir[Mimir]
-        Loki[Loki]
-        Tempo[Tempo]
-    end
+    Start --&gt; Apps
     
-    App1 --&gt; Block1
-    App2 --&gt; Block2
-    App3 --&gt; Block3
+    Apps --&gt; Storage
+    Apps --&gt; Database
+    Apps --&gt; Cache
+    Apps --&gt; Observability
     
-    App1 --&gt; FileAP1
-    App2 --&gt; FileAP1
-    App3 --&gt; FileAP2
-    FileAP1 --&gt; FileStorage
-    FileAP2 --&gt; FileStorage
+    Database --&gt; BlockStorage
+    Apps --&gt; FileStorage
+    Apps --&gt; ObjectStorage
     
-    App1 --&gt; Object_App
-    App2 --&gt; Object_App
-    App3 --&gt; Object_App
-    
-    App1 --&gt; Cache
-    App2 --&gt; Cache
-    App3 --&gt; Cache
-    
-    App1 --&gt; DB1
-    App2 --&gt; DB1
-    App3 --&gt; DB2
-    DB1 --&gt; Block1
-    DB2 --&gt; Block2
-    
-    Mimir --&gt; Object_Metrics
-    Loki --&gt; Object_Logs
-    Tempo --&gt; Object_Traces
-    Mimir --&gt; Object_Alerts
-    
-    App1 --&gt; Mimir
-    App2 --&gt; Loki
-    App3 --&gt; Tempo</code></pre>
+    Observability --&gt; ObservabilityStorage
+    Mimir --&gt; MetricsStore
+    Loki --&gt; LogStore
+    Tempo --&gt; TraceStore
+    Mimir --&gt; AlertStore</code></pre>
 
 </details>
 
