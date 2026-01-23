@@ -14,101 +14,95 @@ This document describes integration patterns, enterprise systems connectivity, a
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/09-enterprise-integration-diagram-1-eae22d2b.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/09-enterprise-integration-diagram-1-eae22d2b.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "Enterprise Network A"
-        Oracle[Oracle E-Business Suite<br/>Port: 1521, 8000, 443]
-        SAP[SAP ECC<br/>Port: 3300, 8000, 443]
-        Custom_App1[Custom Enterprise App<br/>Application Ports]
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;Enterprise Network A&quot;
+        Oracle[Oracle E-Business Suite&lt;br/&gt;Port: 1521, 8000, 443]
+        SAP[SAP ECC&lt;br/&gt;Port: 3300, 8000, 443]
+        Custom_App1[Custom Enterprise App&lt;br/&gt;Application Ports]
     end
     
-    subgraph "VPN Connectivity"
-        VPN_Gateway_A[VPN Gateway A<br/>Site-to-Site IPsec]
-        VPN_Tunnel[VPN Tunnel<br/>AES-256, IKEv2]
-        VPN_Gateway_B[VPN Gateway B<br/>Officeless Platform]
+    subgraph &quot;VPN Connectivity&quot;
+        VPN_Gateway_A[VPN Gateway A&lt;br/&gt;Site-to-Site IPsec]
+        VPN_Tunnel[VPN Tunnel&lt;br/&gt;AES-256, IKEv2]
+        VPN_Gateway_B[VPN Gateway B&lt;br/&gt;Officeless Platform]
     end
     
-    subgraph "Officeless Platform - Middleware"
-        subgraph "Integration Layer"
-            API_Gateway[API Gateway<br/>Request Routing]
-            Transform[Data Transformation<br/>Format Conversion]
-            Orchestrate[Workflow Orchestration<br/>Process Coordination]
+    subgraph &quot;Officeless Platform - Middleware&quot;
+        subgraph &quot;Integration Layer&quot;
+            API_Gateway[API Gateway&lt;br/&gt;Request Routing]
+            Transform[Data Transformation&lt;br/&gt;Format Conversion]
+            Orchestrate[Workflow Orchestration&lt;br/&gt;Process Coordination]
         end
         
-        subgraph "Application Services"
-            Service1[Integration Service 1<br/>Oracle Connector]
-            Service2[Integration Service 2<br/>SAP Connector]
-            Service3[Integration Service 3<br/>Custom Connector]
+        subgraph &quot;Application Services&quot;
+            Service1[Integration Service 1&lt;br/&gt;Oracle Connector]
+            Service2[Integration Service 2&lt;br/&gt;SAP Connector]
+            Service3[Integration Service 3&lt;br/&gt;Custom Connector]
         end
         
-        subgraph "Data Layer"
-            Cache[(Cache Layer<br/>Valkey/Redis)]
-            Queue[Message Queue<br/>Async Processing]
-            Storage[(Object Storage<br/>S3/GCS/Blob)]
+        subgraph &quot;Data Layer&quot;
+            Cache[(Cache Layer&lt;br/&gt;Valkey/Redis)]
+            Queue[Message Queue&lt;br/&gt;Async Processing]
+            Storage[(Object Storage&lt;br/&gt;S3/GCS/Blob)]
         end
     end
     
-    subgraph "Enterprise Network B"
-        Salesforce[Salesforce<br/>Port: 443<br/>REST/SOAP API]
-        ServiceNow[ServiceNow<br/>Port: 443<br/>REST/SOAP API]
-        Custom_App2[Custom Enterprise App<br/>Application Ports]
+    subgraph &quot;Enterprise Network B&quot;
+        Salesforce[Salesforce&lt;br/&gt;Port: 443&lt;br/&gt;REST/SOAP API]
+        ServiceNow[ServiceNow&lt;br/&gt;Port: 443&lt;br/&gt;REST/SOAP API]
+        Custom_App2[Custom Enterprise App&lt;br/&gt;Application Ports]
     end
     
-    subgraph "Connectivity Options"
-        VPN_Option[Site-to-Site VPN<br/>For On-Premise Apps]
-        Internet_Option[Internet HTTPS<br/>For Cloud Apps]
-        DirectConnect[Direct Connect<br/>ExpressRoute<br/>For High Bandwidth]
+    subgraph &quot;Connectivity Options&quot;
+        VPN_Option[Site-to-Site VPN&lt;br/&gt;For On-Premise Apps]
+        Internet_Option[Internet HTTPS&lt;br/&gt;For Cloud Apps]
+        DirectConnect[Direct Connect&lt;br/&gt;ExpressRoute&lt;br/&gt;For High Bandwidth]
     end
     
-    Oracle --> VPN_Gateway_A
-    SAP --> VPN_Gateway_A
-    Custom_App1 --> VPN_Gateway_A
+    Oracle --&gt; VPN_Gateway_A
+    SAP --&gt; VPN_Gateway_A
+    Custom_App1 --&gt; VPN_Gateway_A
     
-    VPN_Gateway_A --> VPN_Tunnel
-    VPN_Tunnel --> VPN_Gateway_B
-    VPN_Gateway_B --> API_Gateway
+    VPN_Gateway_A --&gt; VPN_Tunnel
+    VPN_Tunnel --&gt; VPN_Gateway_B
+    VPN_Gateway_B --&gt; API_Gateway
     
-    API_Gateway --> Transform
-    Transform --> Orchestrate
+    API_Gateway --&gt; Transform
+    Transform --&gt; Orchestrate
     
-    Orchestrate --> Service1
-    Orchestrate --> Service2
-    Orchestrate --> Service3
+    Orchestrate --&gt; Service1
+    Orchestrate --&gt; Service2
+    Orchestrate --&gt; Service3
     
-    Service1 --> Cache
-    Service2 --> Queue
-    Service3 --> Storage
+    Service1 --&gt; Cache
+    Service2 --&gt; Queue
+    Service3 --&gt; Storage
     
-    Service1 --> VPN_Option
-    Service2 --> VPN_Option
-    Service3 --> VPN_Option
+    Service1 --&gt; VPN_Option
+    Service2 --&gt; VPN_Option
+    Service3 --&gt; VPN_Option
     
-    Service1 --> Internet_Option
-    Service2 --> Internet_Option
-    Service3 --> Internet_Option
+    Service1 --&gt; Internet_Option
+    Service2 --&gt; Internet_Option
+    Service3 --&gt; Internet_Option
     
-    VPN_Option --> Salesforce
-    Internet_Option --> Salesforce
-    Internet_Option --> ServiceNow
-    DirectConnect --> Custom_App2
+    VPN_Option --&gt; Salesforce
+    Internet_Option --&gt; Salesforce
+    Internet_Option --&gt; ServiceNow
+    DirectConnect --&gt; Custom_App2
     
-    Service1 -.Oracle Protocol.-> Oracle
-    Service2 -.SAP RFC/IDoc.-> SAP
-    Service3 -.Custom Protocol.-> Custom_App1
+    Service1 -.Oracle Protocol.-&gt; Oracle
+    Service2 -.SAP RFC/IDoc.-&gt; SAP
+    Service3 -.Custom Protocol.-&gt; Custom_App1
     
-    Service1 -.REST API.-> Salesforce
-    Service2 -.REST API.-> ServiceNow
-    Service3 -.Custom API.-> Custom_App2
-```
-
-</details>
-
-</div>
+    Service1 -.REST API.-&gt; Salesforce
+    Service2 -.REST API.-&gt; ServiceNow
+    Service3 -.Custom API.-&gt; Custom_App2</code></pre>
 
 </details>
 

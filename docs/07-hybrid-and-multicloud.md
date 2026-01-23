@@ -14,79 +14,73 @@ This document describes deployment patterns and strategies for hybrid and multi-
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/07-hybrid-and-multicloud-diagram-1-a86f58ec.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/07-hybrid-and-multicloud-diagram-1-a86f58ec.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "On-Premise"
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;On-Premise&quot;
         OnPrem_App[On-Premise Applications]
         OnPrem_Data[On-Premise Data]
         Legacy[Legacy Systems]
     end
     
-    subgraph "Cloud Provider 1 - AWS"
+    subgraph &quot;Cloud Provider 1 - AWS&quot;
         AWS_EKS[AWS EKS Cluster]
         AWS_VPN[Site-to-Site VPN]
         AWS_Services[AWS Services]
     end
     
-    subgraph "Cloud Provider 2 - GCP"
+    subgraph &quot;Cloud Provider 2 - GCP&quot;
         GCP_GKE[GCP GKE Cluster]
         GCP_VPN[Cloud VPN]
         GCP_Services[GCP Services]
     end
     
-    subgraph "Cloud Provider 3 - Azure"
+    subgraph &quot;Cloud Provider 3 - Azure&quot;
         Azure_AKS[Azure AKS Cluster]
         Azure_VPN[VPN Gateway]
         Azure_Services[Azure Services]
     end
     
-    subgraph "Connectivity"
-        VPN_Tunnel1[Site-to-Site VPN<br/>IPsec]
-        VPN_Tunnel2[Site-to-Site VPN<br/>IPsec]
-        DirectConnect[Direct Connect<br/>ExpressRoute<br/>Interconnect]
-        Internet[Internet<br/>HTTPS]
+    subgraph &quot;Connectivity&quot;
+        VPN_Tunnel1[Site-to-Site VPN&lt;br/&gt;IPsec]
+        VPN_Tunnel2[Site-to-Site VPN&lt;br/&gt;IPsec]
+        DirectConnect[Direct Connect&lt;br/&gt;ExpressRoute&lt;br/&gt;Interconnect]
+        Internet[Internet&lt;br/&gt;HTTPS]
     end
     
-    subgraph "Data Synchronization"
+    subgraph &quot;Data Synchronization&quot;
         DataSync[Data Sync Service]
         Replication[Cross-Cloud Replication]
     end
     
-    OnPrem_App --> VPN_Tunnel1
-    OnPrem_Data --> VPN_Tunnel1
-    Legacy --> VPN_Tunnel1
+    OnPrem_App --&gt; VPN_Tunnel1
+    OnPrem_Data --&gt; VPN_Tunnel1
+    Legacy --&gt; VPN_Tunnel1
     
-    VPN_Tunnel1 --> AWS_VPN
-    VPN_Tunnel1 --> GCP_VPN
-    VPN_Tunnel1 --> Azure_VPN
+    VPN_Tunnel1 --&gt; AWS_VPN
+    VPN_Tunnel1 --&gt; GCP_VPN
+    VPN_Tunnel1 --&gt; Azure_VPN
     
-    AWS_VPN --> AWS_EKS
-    GCP_VPN --> GCP_GKE
-    Azure_VPN --> Azure_AKS
+    AWS_VPN --&gt; AWS_EKS
+    GCP_VPN --&gt; GCP_GKE
+    Azure_VPN --&gt; Azure_AKS
     
-    AWS_EKS --> DataSync
-    GCP_GKE --> DataSync
-    Azure_AKS --> DataSync
+    AWS_EKS --&gt; DataSync
+    GCP_GKE --&gt; DataSync
+    Azure_AKS --&gt; DataSync
     
-    DataSync --> Replication
+    DataSync --&gt; Replication
     
-    AWS_EKS -.Data Sync.-> GCP_GKE
-    GCP_GKE -.Data Sync.-> Azure_AKS
-    Azure_AKS -.Data Sync.-> AWS_EKS
+    AWS_EKS -.Data Sync.-&gt; GCP_GKE
+    GCP_GKE -.Data Sync.-&gt; Azure_AKS
+    Azure_AKS -.Data Sync.-&gt; AWS_EKS
     
-    AWS_EKS --> DirectConnect
-    GCP_GKE --> DirectConnect
-    Azure_AKS --> DirectConnect
-```
-
-</details>
-
-</div>
+    AWS_EKS --&gt; DirectConnect
+    GCP_GKE --&gt; DirectConnect
+    Azure_AKS --&gt; DirectConnect</code></pre>
 
 </details>
 

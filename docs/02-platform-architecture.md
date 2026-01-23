@@ -14,27 +14,26 @@ This document describes the high-level architecture of the Officeless platform, 
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/02-platform-architecture-diagram-1-9c5650af.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/02-platform-architecture-diagram-1-9c5650af.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "Client Layer"
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;Client Layer&quot;
         Web[Web Application]
         Mobile[Mobile App]
         API_Client[API Clients]
         VPN_Client[VPN Clients]
     end
     
-    subgraph "AWS Load Balancer"
+    subgraph &quot;AWS Load Balancer&quot;
         ALB[Application Load Balancer]
         NLB[Network Load Balancer]
     end
     
-    subgraph "EKS Cluster: production-cluster"
-        subgraph "kube-system"
+    subgraph &quot;EKS Cluster: production-cluster&quot;
+        subgraph &quot;kube-system&quot;
             LBC[AWS Load Balancer Controller]
             Autoscaler[Cluster Autoscaler]
             MetricsServer[Metrics Server]
@@ -43,13 +42,13 @@ graph TB
             SecretCSI[Secret Store CSI Driver]
         end
         
-        subgraph "Application Namespaces"
+        subgraph &quot;Application Namespaces&quot;
             AppService1[Application Service 1]
             AppService2[Application Service 2]
             AppServiceN[Application Service N]
         end
         
-        subgraph "Monitoring Namespace"
+        subgraph &quot;Monitoring Namespace&quot;
             Mimir[Mimir]
             Loki[Loki]
             Tempo[Tempo]
@@ -57,74 +56,69 @@ graph TB
         end
     end
     
-    subgraph "Storage Layer"
-        EBS[(EBS Volumes<br/>gp3)]
-        EFS[(EFS File System<br/>eks-shared-storage)]
+    subgraph &quot;Storage Layer&quot;
+        EBS[(EBS Volumes&lt;br/&gt;gp3)]
+        EFS[(EFS File System&lt;br/&gt;eks-shared-storage)]
         S3_Mimir[(S3: Mimir Metrics)]
         S3_Loki[(S3: Loki Logs)]
         S3_Tempo[(S3: Tempo Traces)]
         Valkey[(Valkey Cache)]
     end
     
-    subgraph "AWS Services"
-        IAM[IAM Roles<br/>Pod Identity]
+    subgraph &quot;AWS Services&quot;
+        IAM[IAM Roles&lt;br/&gt;Pod Identity]
         Secrets[Secrets Manager]
         CloudWatch[CloudWatch Logs]
     end
     
-    subgraph "VPN Server"
-        VPN[Pritunl VPN<br/>EC2 t3.large]
+    subgraph &quot;VPN Server&quot;
+        VPN[Pritunl VPN&lt;br/&gt;EC2 t3.large]
         Jenkins[Jenkins Agent]
     end
     
-    Web --> ALB
-    Mobile --> ALB
-    API_Client --> ALB
-    VPN_Client --> VPN
+    Web --&gt; ALB
+    Mobile --&gt; ALB
+    API_Client --&gt; ALB
+    VPN_Client --&gt; VPN
     
-    ALB --> AppService1
-    ALB --> AppService2
-    ALB --> AppServiceN
-    NLB --> AppService1
+    ALB --&gt; AppService1
+    ALB --&gt; AppService2
+    ALB --&gt; AppServiceN
+    NLB --&gt; AppService1
     
-    AppService1 --> EBS
-    AppService2 --> EBS
-    AppServiceN --> EBS
+    AppService1 --&gt; EBS
+    AppService2 --&gt; EBS
+    AppServiceN --&gt; EBS
     
-    AppService1 --> EFS
-    AppService2 --> EFS
+    AppService1 --&gt; EFS
+    AppService2 --&gt; EFS
     
-    AppService1 --> Valkey
-    AppService2 --> Valkey
+    AppService1 --&gt; Valkey
+    AppService2 --&gt; Valkey
     
-    Mimir --> S3_Mimir
-    Loki --> S3_Loki
-    Tempo --> S3_Tempo
-    Alertmanager --> S3_Mimir
+    Mimir --&gt; S3_Mimir
+    Loki --&gt; S3_Loki
+    Tempo --&gt; S3_Tempo
+    Alertmanager --&gt; S3_Mimir
     
-    AppService1 --> Mimir
-    AppService2 --> Loki
-    AppServiceN --> Tempo
+    AppService1 --&gt; Mimir
+    AppService2 --&gt; Loki
+    AppServiceN --&gt; Tempo
     
-    AppService1 --> Secrets
-    AppService2 --> Secrets
+    AppService1 --&gt; Secrets
+    AppService2 --&gt; Secrets
     
-    Autoscaler --> CloudWatch
-    AppService1 --> CloudWatch
+    Autoscaler --&gt; CloudWatch
+    AppService1 --&gt; CloudWatch
     
-    LBC --> IAM
-    EBSCSI --> IAM
-    EFSCSI --> IAM
-    SecretCSI --> IAM
-    AppService1 --> IAM
+    LBC --&gt; IAM
+    EBSCSI --&gt; IAM
+    EFSCSI --&gt; IAM
+    SecretCSI --&gt; IAM
+    AppService1 --&gt; IAM
     
-    VPN --> Jenkins
-    Jenkins --> AppService1
-```
-
-</details>
-
-</div>
+    VPN --&gt; Jenkins
+    Jenkins --&gt; AppService1</code></pre>
 
 </details>
 

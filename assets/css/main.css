@@ -428,6 +428,8 @@ body {
     margin: 0 auto 1rem;
     border-radius: 4px;
     box-shadow: var(--shadow-sm);
+    background: var(--bg-primary);
+    padding: 1rem;
 }
 
 /* Collapsible Mermaid source code */
@@ -471,6 +473,35 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 4px;
     overflow-x: auto;
+}
+
+.content .mermaid-diagram-container details pre {
+    margin: 0;
+    padding: 1rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow-x: auto;
+    position: relative;
+}
+
+.content .mermaid-diagram-container details pre code {
+    display: block;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    white-space: pre;
+    word-wrap: normal;
+    overflow-x: auto;
+    background: transparent;
+    padding: 0;
+    border: none;
+}
+
+.content .mermaid-diagram-container details pre code.language-mermaid {
+    color: var(--text-primary);
+    background: var(--bg-primary);
 }
 
 /* Legacy Mermaid rendering (for client-side) */

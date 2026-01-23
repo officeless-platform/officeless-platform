@@ -106,9 +106,21 @@ function renderMermaidToSVG(mermaidCode, outputPath) {
 function processMarkdownFile(filePath) {
     const content = fs.readFileSync(filePath, 'utf8');
     
-    // Skip if file has already been processed (contains mermaid-diagram-container)
-    if (content.includes('mermaid-diagram-container')) {
-        console.log(`  Skipping ${path.basename(filePath)} (already processed)`);
+    // Check if file needs reprocessing (has markdown image syntax or markdown code blocks in details)
+    const needsReprocessing = content.includes('mermaid-diagram-container') && 
+                              (content.includes('![Mermaid Diagram]') || content.includes('```mermaid'));
+    
+    if (needsReprocessing) {
+        console.log(`  Reprocessing ${path.basename(filePath)} (converting to HTML format)`);
+        // Remove existing mermaid-diagram-container blocks to reprocess
+        content = content.replace(/<div class="mermaid-diagram-container">[\s\S]*?<\/div>/g, '');
+        // Restore original mermaid code blocks
+        // This is a bit complex, so we'll just reprocess from scratch
+    }
+    
+    // Skip if already processed with HTML format (has <img> tag)
+    if (content.includes('mermaid-diagram-container') && content.includes('<img src="{{ site.baseurl }}')) {
+        console.log(`  Skipping ${path.basename(filePath)} (already in HTML format)`);
         return false;
     }
     
@@ -150,17 +162,23 @@ function processMarkdownFile(filePath) {
         if (renderMermaidToSVG(mermaidCode, diagramPath)) {
             // Create replacement with rendered SVG and collapsible code
             // Using HTML details/summary for collapsible section
-            // Use absolute path from site root for Jekyll (without baseurl, Jekyll will handle it)
+            // Use HTML img tag with Jekyll baseurl for proper image rendering
+            // Use HTML pre/code tags instead of markdown code blocks (markdown doesn't process inside HTML)
+            const escapedCode = mermaidCode
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            
             const replacement = `<div class="mermaid-diagram-container">
 
-![Mermaid Diagram](${relativePath})
+<img src="${relativePath}" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-\`\`\`mermaid
-${mermaidCode}
-\`\`\`
+<pre><code class="language-mermaid">${escapedCode}</code></pre>
 
 </details>
 

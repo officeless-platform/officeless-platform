@@ -14,94 +14,88 @@ This document describes the actual deployment architecture of the Officeless pla
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/03-deployment-architecture-diagram-1-bcef1d50.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/03-deployment-architecture-diagram-1-bcef1d50.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "AWS Region"
-        subgraph "VPC: 10.1.0.0/16"
-            subgraph "Public Subnets"
-                subgraph "AZ-1a: 10.1.0.0/20"
-                    NAT[NAT Gateway<br/>Elastic IP]
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;AWS Region&quot;
+        subgraph &quot;VPC: 10.1.0.0/16&quot;
+            subgraph &quot;Public Subnets&quot;
+                subgraph &quot;AZ-1a: 10.1.0.0/20&quot;
+                    NAT[NAT Gateway&lt;br/&gt;Elastic IP]
                     IGW[Internet Gateway]
-                    VPN_Instance[VPN Server<br/>EC2 t3.large<br/>Pritunl]
+                    VPN_Instance[VPN Server&lt;br/&gt;EC2 t3.large&lt;br/&gt;Pritunl]
                 end
-                subgraph "AZ-1b: 10.1.16.0/20"
-                    ALB_Public[ALB Public<br/>Subnet]
+                subgraph &quot;AZ-1b: 10.1.16.0/20&quot;
+                    ALB_Public[ALB Public&lt;br/&gt;Subnet]
                 end
-                subgraph "AZ-1c: 10.1.80.0/20"
-                    ALB_Public2[ALB Public<br/>Subnet]
-                end
-            end
-            
-            subgraph "Private Subnets"
-                subgraph "AZ-1a: 10.1.32.0/20"
-                    Node1[EKS Node 1<br/>t3.xlarge<br/>Bottlerocket]
-                    EFS_Mount1[EFS Mount<br/>Target]
-                end
-                subgraph "AZ-1b: 10.1.48.0/20"
-                    Node2[EKS Node 2<br/>t3.xlarge<br/>Bottlerocket]
-                    EFS_Mount2[EFS Mount<br/>Target]
-                end
-                subgraph "AZ-1c: 10.1.64.0/20"
-                    Node3[EKS Node 3<br/>t3.xlarge<br/>Bottlerocket]
-                    EFS_Mount3[EFS Mount<br/>Target]
+                subgraph &quot;AZ-1c: 10.1.80.0/20&quot;
+                    ALB_Public2[ALB Public&lt;br/&gt;Subnet]
                 end
             end
             
-            subgraph "EKS Control Plane"
-                EKS[EKS Cluster<br/>production-cluster<br/>K8s 1.33<br/>Private Endpoint Only]
+            subgraph &quot;Private Subnets&quot;
+                subgraph &quot;AZ-1a: 10.1.32.0/20&quot;
+                    Node1[EKS Node 1&lt;br/&gt;t3.xlarge&lt;br/&gt;Bottlerocket]
+                    EFS_Mount1[EFS Mount&lt;br/&gt;Target]
+                end
+                subgraph &quot;AZ-1b: 10.1.48.0/20&quot;
+                    Node2[EKS Node 2&lt;br/&gt;t3.xlarge&lt;br/&gt;Bottlerocket]
+                    EFS_Mount2[EFS Mount&lt;br/&gt;Target]
+                end
+                subgraph &quot;AZ-1c: 10.1.64.0/20&quot;
+                    Node3[EKS Node 3&lt;br/&gt;t3.xlarge&lt;br/&gt;Bottlerocket]
+                    EFS_Mount3[EFS Mount&lt;br/&gt;Target]
+                end
+            end
+            
+            subgraph &quot;EKS Control Plane&quot;
+                EKS[EKS Cluster&lt;br/&gt;production-cluster&lt;br/&gt;K8s 1.33&lt;br/&gt;Private Endpoint Only]
             end
         end
         
-        subgraph "AWS Managed Services"
-            S3_Buckets[S3 Buckets<br/>Mimir, Loki, Tempo<br/>Application Data]
-            Valkey_Service[Valkey<br/>ElastiCache]
-            CloudWatch_Logs[CloudWatch Logs<br/>EKS Cluster Logs]
+        subgraph &quot;AWS Managed Services&quot;
+            S3_Buckets[S3 Buckets&lt;br/&gt;Mimir, Loki, Tempo&lt;br/&gt;Application Data]
+            Valkey_Service[Valkey&lt;br/&gt;ElastiCache]
+            CloudWatch_Logs[CloudWatch Logs&lt;br/&gt;EKS Cluster Logs]
         end
     end
     
-    Internet[Internet] --> IGW
-    IGW --> ALB_Public
-    IGW --> ALB_Public2
-    IGW --> VPN_Instance
+    Internet[Internet] --&gt; IGW
+    IGW --&gt; ALB_Public
+    IGW --&gt; ALB_Public2
+    IGW --&gt; VPN_Instance
     
-    ALB_Public --> Node1
-    ALB_Public2 --> Node2
-    ALB_Public --> Node3
+    ALB_Public --&gt; Node1
+    ALB_Public2 --&gt; Node2
+    ALB_Public --&gt; Node3
     
-    Node1 --> NAT
-    Node2 --> NAT
-    Node3 --> NAT
-    NAT --> IGW
+    Node1 --&gt; NAT
+    Node2 --&gt; NAT
+    Node3 --&gt; NAT
+    NAT --&gt; IGW
     
-    Node1 --> EKS
-    Node2 --> EKS
-    Node3 --> EKS
+    Node1 --&gt; EKS
+    Node2 --&gt; EKS
+    Node3 --&gt; EKS
     
-    Node1 --> EFS_Mount1
-    Node2 --> EFS_Mount2
-    Node3 --> EFS_Mount3
+    Node1 --&gt; EFS_Mount1
+    Node2 --&gt; EFS_Mount2
+    Node3 --&gt; EFS_Mount3
     
-    Node1 --> S3_Buckets
-    Node2 --> S3_Buckets
-    Node3 --> S3_Buckets
+    Node1 --&gt; S3_Buckets
+    Node2 --&gt; S3_Buckets
+    Node3 --&gt; S3_Buckets
     
-    Node1 --> Valkey_Service
-    Node2 --> Valkey_Service
+    Node1 --&gt; Valkey_Service
+    Node2 --&gt; Valkey_Service
     
-    EKS --> CloudWatch_Logs
+    EKS --&gt; CloudWatch_Logs
     
-    VPN_Instance -.VPN Tunnel.-> Node1
-    VPN_Instance -.VPN Tunnel.-> Node2
-```
-
-</details>
-
-</div>
+    VPN_Instance -.VPN Tunnel.-&gt; Node1
+    VPN_Instance -.VPN Tunnel.-&gt; Node2</code></pre>
 
 </details>
 

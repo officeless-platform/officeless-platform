@@ -14,100 +14,94 @@ This document provides comprehensive deployment guidance for the Officeless plat
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/10-multi-cloud-deployment-diagram-1-602726d0.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/10-multi-cloud-deployment-diagram-1-602726d0.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "Enterprise Networks"
-        subgraph "Enterprise A"
-            Oracle[Oracle EBS<br/>On-Premise]
-            SAP[SAP ECC<br/>On-Premise]
-            Custom1[Custom App<br/>On-Premise]
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;Enterprise Networks&quot;
+        subgraph &quot;Enterprise A&quot;
+            Oracle[Oracle EBS&lt;br/&gt;On-Premise]
+            SAP[SAP ECC&lt;br/&gt;On-Premise]
+            Custom1[Custom App&lt;br/&gt;On-Premise]
         end
         
-        subgraph "Enterprise B"
-            Salesforce[Salesforce<br/>Cloud]
-            ServiceNow[ServiceNow<br/>Cloud]
-            Custom2[Custom App<br/>Cloud]
+        subgraph &quot;Enterprise B&quot;
+            Salesforce[Salesforce&lt;br/&gt;Cloud]
+            ServiceNow[ServiceNow&lt;br/&gt;Cloud]
+            Custom2[Custom App&lt;br/&gt;Cloud]
         end
     end
     
-    subgraph "Officeless Platform - Multi-Cloud Deployment"
-        subgraph "AWS"
-            AWS_EKS[EKS Cluster<br/>production-cluster]
+    subgraph &quot;Officeless Platform - Multi-Cloud Deployment&quot;
+        subgraph &quot;AWS&quot;
+            AWS_EKS[EKS Cluster&lt;br/&gt;production-cluster]
             AWS_VPN[Site-to-Site VPN]
         end
         
-        subgraph "GCP"
+        subgraph &quot;GCP&quot;
             GCP_GKE[GKE Cluster]
             GCP_VPN[Cloud VPN]
         end
         
-        subgraph "Azure"
+        subgraph &quot;Azure&quot;
             Azure_AKS[AKS Cluster]
             Azure_VPN[VPN Gateway]
         end
         
-        subgraph "Alibaba Cloud"
+        subgraph &quot;Alibaba Cloud&quot;
             Alibaba_ACK[ACK Cluster]
             Alibaba_VPN[VPN Gateway]
         end
         
-        subgraph "Oracle Cloud"
+        subgraph &quot;Oracle Cloud&quot;
             OCI_OKE[OKE Cluster]
             OCI_VPN[Site-to-Site VPN]
         end
         
-        subgraph "On-Premise"
-            OnPrem_K8s[Kubernetes Cluster<br/>Self-Managed]
+        subgraph &quot;On-Premise&quot;
+            OnPrem_K8s[Kubernetes Cluster&lt;br/&gt;Self-Managed]
             OnPrem_VPN[VPN Server]
         end
     end
     
-    subgraph "Connectivity"
-        VPN_Tunnel1[Site-to-Site VPN<br/>IPsec]
-        VPN_Tunnel2[Site-to-Site VPN<br/>IPsec]
-        Internet[Internet<br/>HTTPS]
-        DirectConnect[Direct Connect<br/>ExpressRoute]
+    subgraph &quot;Connectivity&quot;
+        VPN_Tunnel1[Site-to-Site VPN&lt;br/&gt;IPsec]
+        VPN_Tunnel2[Site-to-Site VPN&lt;br/&gt;IPsec]
+        Internet[Internet&lt;br/&gt;HTTPS]
+        DirectConnect[Direct Connect&lt;br/&gt;ExpressRoute]
     end
     
-    Oracle --> VPN_Tunnel1
-    SAP --> VPN_Tunnel1
-    Custom1 --> VPN_Tunnel1
+    Oracle --&gt; VPN_Tunnel1
+    SAP --&gt; VPN_Tunnel1
+    Custom1 --&gt; VPN_Tunnel1
     
-    VPN_Tunnel1 --> AWS_VPN
-    VPN_Tunnel1 --> GCP_VPN
-    VPN_Tunnel1 --> Azure_VPN
-    VPN_Tunnel1 --> OnPrem_VPN
+    VPN_Tunnel1 --&gt; AWS_VPN
+    VPN_Tunnel1 --&gt; GCP_VPN
+    VPN_Tunnel1 --&gt; Azure_VPN
+    VPN_Tunnel1 --&gt; OnPrem_VPN
     
-    AWS_VPN --> AWS_EKS
-    GCP_VPN --> GCP_GKE
-    Azure_VPN --> Azure_AKS
-    OnPrem_VPN --> OnPrem_K8s
+    AWS_VPN --&gt; AWS_EKS
+    GCP_VPN --&gt; GCP_GKE
+    Azure_VPN --&gt; Azure_AKS
+    OnPrem_VPN --&gt; OnPrem_K8s
     
-    Salesforce --> Internet
-    ServiceNow --> Internet
-    Custom2 --> Internet
+    Salesforce --&gt; Internet
+    ServiceNow --&gt; Internet
+    Custom2 --&gt; Internet
     
-    Internet --> AWS_EKS
-    Internet --> GCP_GKE
-    Internet --> Azure_AKS
+    Internet --&gt; AWS_EKS
+    Internet --&gt; GCP_GKE
+    Internet --&gt; Azure_AKS
     
-    AWS_EKS -.Data Sync.-> GCP_GKE
-    GCP_GKE -.Data Sync.-> Azure_AKS
-    Azure_AKS -.Data Sync.-> OnPrem_K8s
+    AWS_EKS -.Data Sync.-&gt; GCP_GKE
+    GCP_GKE -.Data Sync.-&gt; Azure_AKS
+    Azure_AKS -.Data Sync.-&gt; OnPrem_K8s
     
-    AWS_EKS --> DirectConnect
-    GCP_GKE --> DirectConnect
-    Azure_AKS --> DirectConnect
-```
-
-</details>
-
-</div>
+    AWS_EKS --&gt; DirectConnect
+    GCP_GKE --&gt; DirectConnect
+    Azure_AKS --&gt; DirectConnect</code></pre>
 
 </details>
 

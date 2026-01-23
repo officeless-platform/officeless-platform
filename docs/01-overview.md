@@ -14,29 +14,28 @@ This document provides a high-level overview of the Officeless platform, its cor
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/01-overview-diagram-1-e6454949.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/01-overview-diagram-1-e6454949.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "Officeless Platform"
-        subgraph "Core Platform"
-            Dev[Application Development<br/>Low-Code/No-Code]
-            Integration[Enterprise Integration<br/>API-First]
-            Security[Security & Compliance<br/>Built-in Controls]
-            Scale[Scalability & Performance<br/>Multi-Tenant]
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;Officeless Platform&quot;
+        subgraph &quot;Core Platform&quot;
+            Dev[Application Development&lt;br/&gt;Low-Code/No-Code]
+            Integration[Enterprise Integration&lt;br/&gt;API-First]
+            Security[Security &amp; Compliance&lt;br/&gt;Built-in Controls]
+            Scale[Scalability &amp; Performance&lt;br/&gt;Multi-Tenant]
         end
         
-        subgraph "Deployment Options"
-            Cloud[Cloud Deployment<br/>AWS, GCP, Azure, etc.]
-            Hybrid[Hybrid Cloud<br/>Cloud + On-Premise]
-            MultiCloud[Multi-Cloud<br/>Multiple Providers]
-            OnPrem[On-Premise<br/>Self-Managed]
+        subgraph &quot;Deployment Options&quot;
+            Cloud[Cloud Deployment&lt;br/&gt;AWS, GCP, Azure, etc.]
+            Hybrid[Hybrid Cloud&lt;br/&gt;Cloud + On-Premise]
+            MultiCloud[Multi-Cloud&lt;br/&gt;Multiple Providers]
+            OnPrem[On-Premise&lt;br/&gt;Self-Managed]
         end
         
-        subgraph "Enterprise Integration"
+        subgraph &quot;Enterprise Integration&quot;
             Oracle[Oracle EBS]
             SAP[SAP Systems]
             Salesforce[Salesforce]
@@ -44,31 +43,26 @@ graph TB
         end
     end
     
-    subgraph "Target Industries"
+    subgraph &quot;Target Industries&quot;
         Finance[Financial Services]
         Healthcare[Healthcare]
         Government[Government]
         Manufacturing[Manufacturing]
-        Retail[Retail & E-commerce]
+        Retail[Retail &amp; E-commerce]
     end
     
-    Dev --> Cloud
-    Dev --> Hybrid
-    Integration --> Oracle
-    Integration --> SAP
-    Integration --> Salesforce
-    Security --> Finance
-    Security --> Healthcare
-    Scale --> Government
-    Scale --> Manufacturing
+    Dev --&gt; Cloud
+    Dev --&gt; Hybrid
+    Integration --&gt; Oracle
+    Integration --&gt; SAP
+    Integration --&gt; Salesforce
+    Security --&gt; Finance
+    Security --&gt; Healthcare
+    Scale --&gt; Government
+    Scale --&gt; Manufacturing
     
-    Cloud --> MultiCloud
-    Hybrid --> OnPrem
-```
-
-</details>
-
-</div>
+    Cloud --&gt; MultiCloud
+    Hybrid --&gt; OnPrem</code></pre>
 
 </details>
 

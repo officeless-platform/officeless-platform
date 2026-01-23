@@ -14,43 +14,42 @@ This document describes the security controls, compliance frameworks, and govern
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/05-security-and-governance-diagram-1-10a06bfb.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/05-security-and-governance-diagram-1-10a06bfb.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "Security Layers"
-        subgraph "Network Security"
-            VPC[VPC Isolation<br/>10.1.0.0/16]
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;Security Layers&quot;
+        subgraph &quot;Network Security&quot;
+            VPC[VPC Isolation&lt;br/&gt;10.1.0.0/16]
             SG[Security Groups]
             NACL[Network ACLs]
-            VPN[VPN Gateway<br/>Site-to-Site]
+            VPN[VPN Gateway&lt;br/&gt;Site-to-Site]
         end
         
-        subgraph "Identity & Access"
-            IAM[IAM Roles<br/>Pod Identity]
-            OIDC[OIDC Provider<br/>IRSA]
+        subgraph &quot;Identity &amp; Access&quot;
+            IAM[IAM Roles&lt;br/&gt;Pod Identity]
+            OIDC[OIDC Provider&lt;br/&gt;IRSA]
             RBAC[Kubernetes RBAC]
             SA[Service Accounts]
         end
         
-        subgraph "Data Security"
-            Encrypt_Transit[Encryption in Transit<br/>TLS/SSL]
-            Encrypt_Rest[Encryption at Rest<br/>AWS KMS]
-            Secrets[Secrets Manager<br/>AWS Secrets]
+        subgraph &quot;Data Security&quot;
+            Encrypt_Transit[Encryption in Transit&lt;br/&gt;TLS/SSL]
+            Encrypt_Rest[Encryption at Rest&lt;br/&gt;AWS KMS]
+            Secrets[Secrets Manager&lt;br/&gt;AWS Secrets]
             KeyMgmt[Key Management]
         end
         
-        subgraph "Application Security"
+        subgraph &quot;Application Security&quot;
             WAF[Web Application Firewall]
             DDoS[DDoS Protection]
             Scan[Vulnerability Scanning]
             Audit[Audit Logging]
         end
         
-        subgraph "Compliance"
+        subgraph &quot;Compliance&quot;
             ISO[ISO 27001]
             SOC[SOC 2]
             GDPR[GDPR]
@@ -58,43 +57,38 @@ graph TB
         end
     end
     
-    subgraph "EKS Cluster"
-        ControlPlane[Control Plane<br/>Private Endpoint]
-        Nodes[Worker Nodes<br/>Private Subnets]
+    subgraph &quot;EKS Cluster&quot;
+        ControlPlane[Control Plane&lt;br/&gt;Private Endpoint]
+        Nodes[Worker Nodes&lt;br/&gt;Private Subnets]
         Pods[Application Pods]
     end
     
-    VPC --> SG
-    SG --> NACL
-    VPN --> VPC
+    VPC --&gt; SG
+    SG --&gt; NACL
+    VPN --&gt; VPC
     
-    IAM --> OIDC
-    OIDC --> SA
-    SA --> RBAC
-    RBAC --> Pods
+    IAM --&gt; OIDC
+    OIDC --&gt; SA
+    SA --&gt; RBAC
+    RBAC --&gt; Pods
     
-    Encrypt_Transit --> ControlPlane
-    Encrypt_Transit --> Nodes
-    Encrypt_Rest --> EBS
-    Encrypt_Rest --> EFS
-    Encrypt_Rest --> S3
-    Secrets --> Pods
-    KeyMgmt --> Encrypt_Rest
+    Encrypt_Transit --&gt; ControlPlane
+    Encrypt_Transit --&gt; Nodes
+    Encrypt_Rest --&gt; EBS
+    Encrypt_Rest --&gt; EFS
+    Encrypt_Rest --&gt; S3
+    Secrets --&gt; Pods
+    KeyMgmt --&gt; Encrypt_Rest
     
-    WAF --> ALB
-    DDoS --> VPC
-    Scan --> Pods
-    Audit --> CloudWatch
+    WAF --&gt; ALB
+    DDoS --&gt; VPC
+    Scan --&gt; Pods
+    Audit --&gt; CloudWatch
     
-    ISO --> Encrypt_Rest
-    SOC --> Audit
-    GDPR --> DataPrivacy
-    HIPAA --> Encrypt_Rest
-```
-
-</details>
-
-</div>
+    ISO --&gt; Encrypt_Rest
+    SOC --&gt; Audit
+    GDPR --&gt; DataPrivacy
+    HIPAA --&gt; Encrypt_Rest</code></pre>
 
 </details>
 

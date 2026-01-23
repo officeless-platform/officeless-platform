@@ -26,48 +26,46 @@ graph LR
     
     subgraph<div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-82f1aadf.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-82f1aadf.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph LR
-    subgraph "Enterprise Network A"
-        AppA[Enterprise App A<br/>Oracle/SAP/etc]
+<pre><code class="language-mermaid">graph LR
+    subgraph &quot;Enterprise Network A&quot;
+        AppA[Enterprise App A&lt;br/&gt;Oracle/SAP/etc]
     end
     
-    subgraph "VPN Tunnel 1"
-        VPN1[Site-to-Site VPN<br/>IPsec AES-256]
+    subgraph &quot;VPN Tunnel 1&quot;
+        VPN1[Site-to-Site VPN&lt;br/&gt;IPsec AES-256]
     end
     
-    subgraph "Officeless Platform"
-        Middleware[Officeless<br/>Middleware Solution]
+    subgraph &quot;Officeless Platform&quot;
+        Middleware[Officeless&lt;br/&gt;Middleware Solution]
         Transform[Data Transformation]
         Orchestrate[Workflow Orchestration]
     end
     
-    subgraph "VPN Tunnel 2"
-        VPN2[Site-to-Site VPN<br/>IPsec AES-256]
+    subgraph &quot;VPN Tunnel 2&quot;
+        VPN2[Site-to-Site VPN&lt;br/&gt;IPsec AES-256]
     end
     
-    subgraph "Enterprise Network B"
-        AppB[Enterprise App B<br/>Salesforce/etc]
+    subgraph &quot;Enterprise Network B&quot;
+        AppB[Enterprise App B&lt;br/&gt;Salesforce/etc]
     end
     
-    AppA --> VPN1
-    VPN1 --> Middleware
-    Middleware --> Transform
-    Transform --> Orchestrate
-    Orchestrate --> VPN2
-    VPN2 --> AppB
+    AppA --&gt; VPN1
+    VPN1 --&gt; Middleware
+    Middleware --&gt; Transform
+    Transform --&gt; Orchestrate
+    Orchestrate --&gt; VPN2
+    VPN2 --&gt; AppB
     
     style AppA fill:#e1f5ff
     style AppB fill:#e1f5ff
     style Middleware fill:#fff4e1
     style VPN1 fill:#ffe1e1
-    style VPN2 fill:#ffe1e1
-```
+    style VPN2 fill:#ffe1e1</code></pre>
 
 </details>
 
@@ -75,99 +73,93 @@ graph LR
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-2-956a66a4.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-2-956a66a4.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "Enterprise Network A"
-        Oracle[Oracle E-Business Suite<br/>Port: 1521, 8000, 443]
-        SAP[SAP ECC<br/>Port: 3300, 8000, 443]
-        Custom_App1[Custom Enterprise App<br/>Application Ports]
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;Enterprise Network A&quot;
+        Oracle[Oracle E-Business Suite&lt;br/&gt;Port: 1521, 8000, 443]
+        SAP[SAP ECC&lt;br/&gt;Port: 3300, 8000, 443]
+        Custom_App1[Custom Enterprise App&lt;br/&gt;Application Ports]
     end
     
-    subgraph "VPN Connectivity A"
-        VPN_Gateway_A[VPN Gateway A<br/>Customer Gateway]
-        VPN_Tunnel_A[VPN Tunnel A<br/>IPsec Phase 1 & 2<br/>AES-256, SHA-256]
+    subgraph &quot;VPN Connectivity A&quot;
+        VPN_Gateway_A[VPN Gateway A&lt;br/&gt;Customer Gateway]
+        VPN_Tunnel_A[VPN Tunnel A&lt;br/&gt;IPsec Phase 1 &amp; 2&lt;br/&gt;AES-256, SHA-256]
         VPN_Gateway_Platform_A[Platform VPN Gateway A]
     end
     
-    subgraph "Officeless Platform - Middleware"
-        subgraph "Integration Layer"
-            API_Gateway[API Gateway<br/>Request Routing]
-            Transform[Data Transformation<br/>Format Conversion]
-            Orchestrate[Workflow Orchestration<br/>Process Coordination]
+    subgraph &quot;Officeless Platform - Middleware&quot;
+        subgraph &quot;Integration Layer&quot;
+            API_Gateway[API Gateway&lt;br/&gt;Request Routing]
+            Transform[Data Transformation&lt;br/&gt;Format Conversion]
+            Orchestrate[Workflow Orchestration&lt;br/&gt;Process Coordination]
         end
         
-        subgraph "Application Services"
-            Service1[Integration Service 1<br/>Oracle Connector]
-            Service2[Integration Service 2<br/>SAP Connector]
-            Service3[Integration Service 3<br/>Custom Connector]
+        subgraph &quot;Application Services&quot;
+            Service1[Integration Service 1&lt;br/&gt;Oracle Connector]
+            Service2[Integration Service 2&lt;br/&gt;SAP Connector]
+            Service3[Integration Service 3&lt;br/&gt;Custom Connector]
         end
         
-        subgraph "Data Layer"
-            Cache[(Cache Layer<br/>Valkey/Redis)]
-            Queue[Message Queue<br/>Async Processing]
-            Storage[(Object Storage<br/>S3/GCS/Blob)]
+        subgraph &quot;Data Layer&quot;
+            Cache[(Cache Layer&lt;br/&gt;Valkey/Redis)]
+            Queue[Message Queue&lt;br/&gt;Async Processing]
+            Storage[(Object Storage&lt;br/&gt;S3/GCS/Blob)]
         end
     end
     
-    subgraph "VPN Connectivity B"
+    subgraph &quot;VPN Connectivity B&quot;
         VPN_Gateway_Platform_B[Platform VPN Gateway B]
-        VPN_Tunnel_B[VPN Tunnel B<br/>IPsec Phase 1 & 2<br/>AES-256, SHA-256]
-        VPN_Gateway_B[VPN Gateway B<br/>Customer Gateway]
+        VPN_Tunnel_B[VPN Tunnel B&lt;br/&gt;IPsec Phase 1 &amp; 2&lt;br/&gt;AES-256, SHA-256]
+        VPN_Gateway_B[VPN Gateway B&lt;br/&gt;Customer Gateway]
     end
     
-    subgraph "Enterprise Network B"
-        Salesforce[Salesforce<br/>Port: 443<br/>REST/SOAP API]
-        ServiceNow[ServiceNow<br/>Port: 443<br/>REST/SOAP API]
-        Custom_App2[Custom Enterprise App<br/>Application Ports]
+    subgraph &quot;Enterprise Network B&quot;
+        Salesforce[Salesforce&lt;br/&gt;Port: 443&lt;br/&gt;REST/SOAP API]
+        ServiceNow[ServiceNow&lt;br/&gt;Port: 443&lt;br/&gt;REST/SOAP API]
+        Custom_App2[Custom Enterprise App&lt;br/&gt;Application Ports]
     end
     
-    Oracle --> VPN_Gateway_A
-    SAP --> VPN_Gateway_A
-    Custom_App1 --> VPN_Gateway_A
+    Oracle --&gt; VPN_Gateway_A
+    SAP --&gt; VPN_Gateway_A
+    Custom_App1 --&gt; VPN_Gateway_A
     
-    VPN_Gateway_A --> VPN_Tunnel_A
-    VPN_Tunnel_A --> VPN_Gateway_Platform_A
-    VPN_Gateway_Platform_A --> API_Gateway
+    VPN_Gateway_A --&gt; VPN_Tunnel_A
+    VPN_Tunnel_A --&gt; VPN_Gateway_Platform_A
+    VPN_Gateway_Platform_A --&gt; API_Gateway
     
-    API_Gateway --> Transform
-    Transform --> Orchestrate
+    API_Gateway --&gt; Transform
+    Transform --&gt; Orchestrate
     
-    Orchestrate --> Service1
-    Orchestrate --> Service2
-    Orchestrate --> Service3
+    Orchestrate --&gt; Service1
+    Orchestrate --&gt; Service2
+    Orchestrate --&gt; Service3
     
-    Service1 --> Cache
-    Service2 --> Queue
-    Service3 --> Storage
+    Service1 --&gt; Cache
+    Service2 --&gt; Queue
+    Service3 --&gt; Storage
     
-    Service1 --> VPN_Gateway_Platform_B
-    Service2 --> VPN_Gateway_Platform_B
-    Service3 --> VPN_Gateway_Platform_B
+    Service1 --&gt; VPN_Gateway_Platform_B
+    Service2 --&gt; VPN_Gateway_Platform_B
+    Service3 --&gt; VPN_Gateway_Platform_B
     
-    VPN_Gateway_Platform_B --> VPN_Tunnel_B
-    VPN_Tunnel_B --> VPN_Gateway_B
+    VPN_Gateway_Platform_B --&gt; VPN_Tunnel_B
+    VPN_Tunnel_B --&gt; VPN_Gateway_B
     
-    VPN_Gateway_B --> Salesforce
-    VPN_Gateway_B --> ServiceNow
-    VPN_Gateway_B --> Custom_App2
+    VPN_Gateway_B --&gt; Salesforce
+    VPN_Gateway_B --&gt; ServiceNow
+    VPN_Gateway_B --&gt; Custom_App2
     
-    Service1 -.Oracle Protocol.-> Oracle
-    Service2 -.SAP RFC/IDoc.-> SAP
-    Service3 -.Custom Protocol.-> Custom_App1
+    Service1 -.Oracle Protocol.-&gt; Oracle
+    Service2 -.SAP RFC/IDoc.-&gt; SAP
+    Service3 -.Custom Protocol.-&gt; Custom_App1
     
-    Service1 -.REST API.-> Salesforce
-    Service2 -.REST API.-> ServiceNow
-    Service3 -.Custom API.-> Custom_App2
-```
-
-</details>
-
-</div>
+    Service1 -.REST API.-&gt; Salesforce
+    Service2 -.REST API.-&gt; ServiceNow
+    Service3 -.Custom API.-&gt; Custom_App2</code></pre>
 
 </details>
 

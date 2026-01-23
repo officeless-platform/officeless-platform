@@ -14,90 +14,84 @@ This document describes the observability strategy for the Officeless platform, 
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/06-observability-diagram-1-5d6f799f.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/06-observability-diagram-1-5d6f799f.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "Application Layer"
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;Application Layer&quot;
         App1[Application Pod 1]
         App2[Application Pod 2]
         App3[Application Pod 3]
         EKS_Cluster[EKS Control Plane]
     end
     
-    subgraph "Metrics Collection"
-        MetricsServer[Metrics Server<br/>Kubernetes Metrics]
-        Mimir[Mimir<br/>Long-term Metrics]
-        Prometheus[Prometheus<br/>Scraping]
+    subgraph &quot;Metrics Collection&quot;
+        MetricsServer[Metrics Server&lt;br/&gt;Kubernetes Metrics]
+        Mimir[Mimir&lt;br/&gt;Long-term Metrics]
+        Prometheus[Prometheus&lt;br/&gt;Scraping]
     end
     
-    subgraph "Log Collection"
-        Loki[Loki<br/>Log Aggregation]
-        CloudWatch[CloudWatch Logs<br/>EKS Cluster Logs]
+    subgraph &quot;Log Collection&quot;
+        Loki[Loki&lt;br/&gt;Log Aggregation]
+        CloudWatch[CloudWatch Logs&lt;br/&gt;EKS Cluster Logs]
     end
     
-    subgraph "Tracing"
-        Tempo[Tempo<br/>Distributed Tracing]
-        OpenTelemetry[OpenTelemetry<br/>Instrumentation]
+    subgraph &quot;Tracing&quot;
+        Tempo[Tempo&lt;br/&gt;Distributed Tracing]
+        OpenTelemetry[OpenTelemetry&lt;br/&gt;Instrumentation]
     end
     
-    subgraph "Alerting"
-        Alertmanager[Alertmanager<br/>Alert Management]
-        Notifications[Notifications<br/>Email, Slack, PagerDuty]
+    subgraph &quot;Alerting&quot;
+        Alertmanager[Alertmanager&lt;br/&gt;Alert Management]
+        Notifications[Notifications&lt;br/&gt;Email, Slack, PagerDuty]
     end
     
-    subgraph "Storage - S3"
-        S3_Mimir[(S3: Mimir Metrics<br/>mimir-metrics)]
-        S3_Loki[(S3: Loki Logs<br/>loki-chunks)]
-        S3_Tempo[(S3: Tempo Traces<br/>tempo-traces)]
-        S3_Alert[(S3: Alertmanager<br/>mimir-alertmanager)]
+    subgraph &quot;Storage - S3&quot;
+        S3_Mimir[(S3: Mimir Metrics&lt;br/&gt;mimir-metrics)]
+        S3_Loki[(S3: Loki Logs&lt;br/&gt;loki-chunks)]
+        S3_Tempo[(S3: Tempo Traces&lt;br/&gt;tempo-traces)]
+        S3_Alert[(S3: Alertmanager&lt;br/&gt;mimir-alertmanager)]
     end
     
-    subgraph "Visualization"
-        Grafana[Grafana<br/>Dashboards]
+    subgraph &quot;Visualization&quot;
+        Grafana[Grafana&lt;br/&gt;Dashboards]
         Dashboards[Custom Dashboards]
     end
     
-    App1 --> MetricsServer
-    App2 --> MetricsServer
-    App3 --> MetricsServer
-    EKS_Cluster --> CloudWatch
+    App1 --&gt; MetricsServer
+    App2 --&gt; MetricsServer
+    App3 --&gt; MetricsServer
+    EKS_Cluster --&gt; CloudWatch
     
-    MetricsServer --> Prometheus
-    Prometheus --> Mimir
-    App1 --> Mimir
-    App2 --> Mimir
+    MetricsServer --&gt; Prometheus
+    Prometheus --&gt; Mimir
+    App1 --&gt; Mimir
+    App2 --&gt; Mimir
     
-    App1 --> Loki
-    App2 --> Loki
-    App3 --> Loki
-    CloudWatch --> Loki
+    App1 --&gt; Loki
+    App2 --&gt; Loki
+    App3 --&gt; Loki
+    CloudWatch --&gt; Loki
     
-    App1 --> OpenTelemetry
-    App2 --> OpenTelemetry
-    App3 --> OpenTelemetry
-    OpenTelemetry --> Tempo
+    App1 --&gt; OpenTelemetry
+    App2 --&gt; OpenTelemetry
+    App3 --&gt; OpenTelemetry
+    OpenTelemetry --&gt; Tempo
     
-    Mimir --> Alertmanager
-    Alertmanager --> Notifications
+    Mimir --&gt; Alertmanager
+    Alertmanager --&gt; Notifications
     
-    Mimir --> S3_Mimir
-    Loki --> S3_Loki
-    Tempo --> S3_Tempo
-    Alertmanager --> S3_Alert
+    Mimir --&gt; S3_Mimir
+    Loki --&gt; S3_Loki
+    Tempo --&gt; S3_Tempo
+    Alertmanager --&gt; S3_Alert
     
-    Mimir --> Grafana
-    Loki --> Grafana
-    Tempo --> Grafana
-    Grafana --> Dashboards
-```
-
-</details>
-
-</div>
+    Mimir --&gt; Grafana
+    Loki --&gt; Grafana
+    Tempo --&gt; Grafana
+    Grafana --&gt; Dashboards</code></pre>
 
 </details>
 

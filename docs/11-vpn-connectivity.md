@@ -14,84 +14,78 @@ This document describes VPN and connectivity options for the Officeless platform
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/11-vpn-connectivity-diagram-1-16c20058.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/11-vpn-connectivity-diagram-1-16c20058.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "Access Patterns"
-        subgraph "Point-to-Site VPN"
-            User1[User 1<br/>VPN Client]
-            User2[User 2<br/>VPN Client]
-            Mobile[Mobile Device<br/>VPN Client]
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;Access Patterns&quot;
+        subgraph &quot;Point-to-Site VPN&quot;
+            User1[User 1&lt;br/&gt;VPN Client]
+            User2[User 2&lt;br/&gt;VPN Client]
+            Mobile[Mobile Device&lt;br/&gt;VPN Client]
         end
         
-        subgraph "Site-to-Site VPN"
-            Enterprise[Enterprise Network<br/>VPN Gateway]
-            Branch[Branch Office<br/>VPN Gateway]
+        subgraph &quot;Site-to-Site VPN&quot;
+            Enterprise[Enterprise Network&lt;br/&gt;VPN Gateway]
+            Branch[Branch Office&lt;br/&gt;VPN Gateway]
         end
         
-        subgraph "Direct Connect"
+        subgraph &quot;Direct Connect&quot;
             DC_AWS[AWS Direct Connect]
             DC_GCP[GCP Interconnect]
             DC_Azure[Azure ExpressRoute]
         end
     end
     
-    subgraph "VPN Types"
-        IPsec[IPsec VPN<br/>Site-to-Site]
-        SSL[SSL/TLS VPN<br/>OpenVPN, SSTP]
-        WireGuard[WireGuard VPN<br/>Modern Protocol]
+    subgraph &quot;VPN Types&quot;
+        IPsec[IPsec VPN&lt;br/&gt;Site-to-Site]
+        SSL[SSL/TLS VPN&lt;br/&gt;OpenVPN, SSTP]
+        WireGuard[WireGuard VPN&lt;br/&gt;Modern Protocol]
     end
     
-    subgraph "Officeless Platform"
-        subgraph "Cloud Deployment"
+    subgraph &quot;Officeless Platform&quot;
+        subgraph &quot;Cloud Deployment&quot;
             Cloud_VPN[Cloud VPN Gateway]
             Cloud_Cluster[Kubernetes Cluster]
         end
         
-        subgraph "On-Premise Deployment"
-            OnPrem_VPN[VPN Server<br/>Pritunl/OpenVPN]
+        subgraph &quot;On-Premise Deployment&quot;
+            OnPrem_VPN[VPN Server&lt;br/&gt;Pritunl/OpenVPN]
             OnPrem_Cluster[Kubernetes Cluster]
         end
     end
     
-    subgraph "Security"
-        Encryption[Encryption<br/>AES-256]
-        Auth[Authentication<br/>Certificates/PSK]
-        Monitoring[VPN Monitoring<br/>Health Checks]
+    subgraph &quot;Security&quot;
+        Encryption[Encryption&lt;br/&gt;AES-256]
+        Auth[Authentication&lt;br/&gt;Certificates/PSK]
+        Monitoring[VPN Monitoring&lt;br/&gt;Health Checks]
     end
     
-    User1 --> SSL
-    User2 --> SSL
-    Mobile --> SSL
-    Enterprise --> IPsec
-    Branch --> IPsec
+    User1 --&gt; SSL
+    User2 --&gt; SSL
+    Mobile --&gt; SSL
+    Enterprise --&gt; IPsec
+    Branch --&gt; IPsec
     
-    SSL --> Cloud_VPN
-    IPsec --> Cloud_VPN
-    WireGuard --> OnPrem_VPN
+    SSL --&gt; Cloud_VPN
+    IPsec --&gt; Cloud_VPN
+    WireGuard --&gt; OnPrem_VPN
     
-    Cloud_VPN --> Cloud_Cluster
-    OnPrem_VPN --> OnPrem_Cluster
+    Cloud_VPN --&gt; Cloud_Cluster
+    OnPrem_VPN --&gt; OnPrem_Cluster
     
-    DC_AWS --> Cloud_Cluster
-    DC_GCP --> Cloud_Cluster
-    DC_Azure --> Cloud_Cluster
+    DC_AWS --&gt; Cloud_Cluster
+    DC_GCP --&gt; Cloud_Cluster
+    DC_Azure --&gt; Cloud_Cluster
     
-    IPsec --> Encryption
-    SSL --> Encryption
-    WireGuard --> Encryption
+    IPsec --&gt; Encryption
+    SSL --&gt; Encryption
+    WireGuard --&gt; Encryption
     
-    Encryption --> Auth
-    Auth --> Monitoring
-```
-
-</details>
-
-</div>
+    Encryption --&gt; Auth
+    Auth --&gt; Monitoring</code></pre>
 
 </details>
 

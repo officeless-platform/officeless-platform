@@ -14,28 +14,27 @@ This document describes the extensibility mechanisms, APIs, and customization op
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/08-extensibility-diagram-1-f6185bb0.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/08-extensibility-diagram-1-f6185bb0.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "Extension Points"
-        subgraph "API Extensions"
-            REST[REST APIs<br/>OpenAPI/Swagger]
-            GraphQL[GraphQL APIs<br/>Schema Extensions]
-            Webhooks[Webhooks<br/>Event Notifications]
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;Extension Points&quot;
+        subgraph &quot;API Extensions&quot;
+            REST[REST APIs&lt;br/&gt;OpenAPI/Swagger]
+            GraphQL[GraphQL APIs&lt;br/&gt;Schema Extensions]
+            Webhooks[Webhooks&lt;br/&gt;Event Notifications]
         end
         
-        subgraph "Plugin System"
+        subgraph &quot;Plugin System&quot;
             Plugins[Plugin Registry]
             Plugin1[Custom Plugin 1]
             Plugin2[Custom Plugin 2]
             PluginN[Custom Plugin N]
         end
         
-        subgraph "Custom Components"
+        subgraph &quot;Custom Components&quot;
             UI[Custom UI Components]
             BusinessLogic[Custom Business Logic]
             Workflows[Custom Workflows]
@@ -43,54 +42,49 @@ graph TB
         end
     end
     
-    subgraph "SDK and Libraries"
-        ClientSDK[Client SDKs<br/>JavaScript, Python, etc.]
-        ServerSDK[Server SDKs<br/>Node.js, Go, etc.]
+    subgraph &quot;SDK and Libraries&quot;
+        ClientSDK[Client SDKs&lt;br/&gt;JavaScript, Python, etc.]
+        ServerSDK[Server SDKs&lt;br/&gt;Node.js, Go, etc.]
         Helpers[Helper Libraries]
     end
     
-    subgraph "Development Tools"
+    subgraph &quot;Development Tools&quot;
         DevEnv[Development Environment]
         CodeGen[Code Generation]
         Testing[Testing Frameworks]
         CI_CD[CI/CD Integration]
     end
     
-    subgraph "Core Platform"
+    subgraph &quot;Core Platform&quot;
         Platform[Officeless Platform]
         ExtensionAPI[Extension API]
     end
     
-    REST --> ExtensionAPI
-    GraphQL --> ExtensionAPI
-    Webhooks --> ExtensionAPI
+    REST --&gt; ExtensionAPI
+    GraphQL --&gt; ExtensionAPI
+    Webhooks --&gt; ExtensionAPI
     
-    Plugins --> Plugin1
-    Plugins --> Plugin2
-    Plugins --> PluginN
-    Plugin1 --> ExtensionAPI
-    Plugin2 --> ExtensionAPI
-    PluginN --> ExtensionAPI
+    Plugins --&gt; Plugin1
+    Plugins --&gt; Plugin2
+    Plugins --&gt; PluginN
+    Plugin1 --&gt; ExtensionAPI
+    Plugin2 --&gt; ExtensionAPI
+    PluginN --&gt; ExtensionAPI
     
-    UI --> Platform
-    BusinessLogic --> Platform
-    Workflows --> Platform
-    Integrations --> Platform
+    UI --&gt; Platform
+    BusinessLogic --&gt; Platform
+    Workflows --&gt; Platform
+    Integrations --&gt; Platform
     
-    ClientSDK --> REST
-    ClientSDK --> GraphQL
-    ServerSDK --> ExtensionAPI
+    ClientSDK --&gt; REST
+    ClientSDK --&gt; GraphQL
+    ServerSDK --&gt; ExtensionAPI
     
-    DevEnv --> CodeGen
-    CodeGen --> ClientSDK
-    CodeGen --> ServerSDK
-    Testing --> Platform
-    CI_CD --> Platform
-```
-
-</details>
-
-</div>
+    DevEnv --&gt; CodeGen
+    CodeGen --&gt; ClientSDK
+    CodeGen --&gt; ServerSDK
+    Testing --&gt; Platform
+    CI_CD --&gt; Platform</code></pre>
 
 </details>
 

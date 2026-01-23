@@ -14,91 +14,85 @@ This document describes the data architecture, persistence models, storage solut
 
 <div class="mermaid-diagram-container">
 
-![Mermaid Diagram]({{ site.baseurl }}/assets/diagrams/rendered/04-database-and-storage-diagram-1-bd370083.svg)
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/04-database-and-storage-diagram-1-bd370083.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
-```mermaid
-graph TB
-    subgraph "Application Layer - EKS Pods"
+<pre><code class="language-mermaid">graph TB
+    subgraph &quot;Application Layer - EKS Pods&quot;
         App1[Application Pod 1]
         App2[Application Pod 2]
         App3[Application Pod 3]
     end
     
-    subgraph "Block Storage - EBS"
-        EBS1[(EBS Volume 1<br/>gp3<br/>200GB)]
-        EBS2[(EBS Volume 2<br/>gp3<br/>200GB)]
-        EBS3[(EBS Volume 3<br/>gp3<br/>200GB)]
+    subgraph &quot;Block Storage - EBS&quot;
+        EBS1[(EBS Volume 1&lt;br/&gt;gp3&lt;br/&gt;200GB)]
+        EBS2[(EBS Volume 2&lt;br/&gt;gp3&lt;br/&gt;200GB)]
+        EBS3[(EBS Volume 3&lt;br/&gt;gp3&lt;br/&gt;200GB)]
     end
     
-    subgraph "File Storage - EFS"
-        EFS[(EFS File System<br/>eks-shared-storage<br/>Encrypted<br/>General Purpose)]
+    subgraph &quot;File Storage - EFS&quot;
+        EFS[(EFS File System&lt;br/&gt;eks-shared-storage&lt;br/&gt;Encrypted&lt;br/&gt;General Purpose)]
         EFS_AP1[EFS Access Point 1]
         EFS_AP2[EFS Access Point 2]
     end
     
-    subgraph "Object Storage - S3"
+    subgraph &quot;Object Storage - S3&quot;
         S3_App[S3 Application Buckets]
-        S3_Mimir[(S3: Mimir Metrics<br/>mimir-metrics)]
-        S3_Loki[(S3: Loki Logs<br/>loki-chunks)]
-        S3_Tempo[(S3: Tempo Traces<br/>tempo-traces)]
-        S3_Alert[(S3: Alertmanager<br/>mimir-alertmanager)]
+        S3_Mimir[(S3: Mimir Metrics&lt;br/&gt;mimir-metrics)]
+        S3_Loki[(S3: Loki Logs&lt;br/&gt;loki-chunks)]
+        S3_Tempo[(S3: Tempo Traces&lt;br/&gt;tempo-traces)]
+        S3_Alert[(S3: Alertmanager&lt;br/&gt;mimir-alertmanager)]
     end
     
-    subgraph "Cache Layer - Valkey"
-        Valkey[(Valkey Cluster<br/>Redis-Compatible<br/>ElastiCache)]
+    subgraph &quot;Cache Layer - Valkey&quot;
+        Valkey[(Valkey Cluster&lt;br/&gt;Redis-Compatible&lt;br/&gt;ElastiCache)]
     end
     
-    subgraph "Database Layer"
-        DB1[(Database Pod 1<br/>PostgreSQL/MySQL<br/>on EBS)]
-        DB2[(Database Pod 2<br/>PostgreSQL/MySQL<br/>on EBS)]
+    subgraph &quot;Database Layer&quot;
+        DB1[(Database Pod 1&lt;br/&gt;PostgreSQL/MySQL&lt;br/&gt;on EBS)]
+        DB2[(Database Pod 2&lt;br/&gt;PostgreSQL/MySQL&lt;br/&gt;on EBS)]
     end
     
-    subgraph "Monitoring Stack"
+    subgraph &quot;Monitoring Stack&quot;
         Mimir[Mimir]
         Loki[Loki]
         Tempo[Tempo]
     end
     
-    App1 --> EBS1
-    App2 --> EBS2
-    App3 --> EBS3
+    App1 --&gt; EBS1
+    App2 --&gt; EBS2
+    App3 --&gt; EBS3
     
-    App1 --> EFS_AP1
-    App2 --> EFS_AP1
-    App3 --> EFS_AP2
-    EFS_AP1 --> EFS
-    EFS_AP2 --> EFS
+    App1 --&gt; EFS_AP1
+    App2 --&gt; EFS_AP1
+    App3 --&gt; EFS_AP2
+    EFS_AP1 --&gt; EFS
+    EFS_AP2 --&gt; EFS
     
-    App1 --> S3_App
-    App2 --> S3_App
-    App3 --> S3_App
+    App1 --&gt; S3_App
+    App2 --&gt; S3_App
+    App3 --&gt; S3_App
     
-    App1 --> Valkey
-    App2 --> Valkey
-    App3 --> Valkey
+    App1 --&gt; Valkey
+    App2 --&gt; Valkey
+    App3 --&gt; Valkey
     
-    App1 --> DB1
-    App2 --> DB1
-    App3 --> DB2
-    DB1 --> EBS1
-    DB2 --> EBS2
+    App1 --&gt; DB1
+    App2 --&gt; DB1
+    App3 --&gt; DB2
+    DB1 --&gt; EBS1
+    DB2 --&gt; EBS2
     
-    Mimir --> S3_Mimir
-    Loki --> S3_Loki
-    Tempo --> S3_Tempo
-    Mimir --> S3_Alert
+    Mimir --&gt; S3_Mimir
+    Loki --&gt; S3_Loki
+    Tempo --&gt; S3_Tempo
+    Mimir --&gt; S3_Alert
     
-    App1 --> Mimir
-    App2 --> Loki
-    App3 --> Tempo
-```
-
-</details>
-
-</div>
+    App1 --&gt; Mimir
+    App2 --&gt; Loki
+    App3 --&gt; Tempo</code></pre>
 
 </details>
 
