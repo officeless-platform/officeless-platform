@@ -106,22 +106,25 @@ function renderMermaidToSVG(mermaidCode, outputPath) {
 function processMarkdownFile(filePath) {
     const content = fs.readFileSync(filePath, 'utf8');
     
-    // Define regex for mermaid code blocks
-    const mermaidRegex = /```mermaid\n([\s\S]*?)```/g;
+    // Define regex for both markdown and HTML mermaid code blocks
+    const markdownMermaidRegex = /```mermaid\n([\s\S]*?)```/g;
+    const htmlMermaidRegex = /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g;
     
     // Check if file has mermaid code blocks that need rendering
-    // Skip only if it has both HTML img tag AND no mermaid code blocks
-    const hasMermaidCode = mermaidRegex.test(content);
+    const hasMarkdownMermaid = markdownMermaidRegex.test(content);
+    const hasHtmlMermaid = htmlMermaidRegex.test(content);
     const hasRenderedDiagram = content.includes('mermaid-diagram-container') && content.includes('<img src="{{ site.baseurl }}');
     
-    if (hasRenderedDiagram && !hasMermaidCode) {
+    // Skip only if it has rendered diagrams AND no mermaid code blocks at all
+    if (hasRenderedDiagram && !hasMarkdownMermaid && !hasHtmlMermaid) {
         console.log(`  Skipping ${path.basename(filePath)} (already rendered, no mermaid code blocks)`);
         return false;
     }
     
-    // If it has mermaid code blocks, we need to process them (even if some diagrams are already rendered)
-    // Reset regex for actual matching
-    mermaidRegex.lastIndex = 0;
+    // Reset regexes for actual matching
+    markdownMermaidRegex.lastIndex = 0;
+    htmlMermaidRegex.lastIndex = 0;
+    
     let match;
     let newContent = content;
     let offset = 0;
@@ -129,12 +132,32 @@ function processMarkdownFile(filePath) {
     const fileBaseName = path.basename(filePath, '.md');
     const matches = [];
     
-    // Collect all matches first
-    while ((match = mermaidRegex.exec(content)) !== null) {
+    // Collect all markdown mermaid code blocks
+    while ((match = markdownMermaidRegex.exec(content)) !== null) {
         matches.push({
             fullMatch: match[0],
             mermaidCode: match[1].trim(),
-            startIndex: match.index
+            startIndex: match.index,
+            type: 'markdown'
+        });
+    }
+    
+    // Collect all HTML mermaid code blocks
+    while ((match = htmlMermaidRegex.exec(content)) !== null) {
+        // Unescape HTML entities
+        const mermaidCode = match[1]
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&amp;/g, '&')
+            .replace(/&#39;/g, "'")
+            .trim();
+        
+        matches.push({
+            fullMatch: match[0],
+            mermaidCode: mermaidCode,
+            startIndex: match.index,
+            type: 'html'
         });
     }
     
@@ -146,7 +169,7 @@ function processMarkdownFile(filePath) {
     
     // Process matches in reverse order to maintain correct indices
     for (let i = matches.length - 1; i >= 0; i--) {
-        const { fullMatch, mermaidCode, startIndex } = matches[i];
+        const { fullMatch, mermaidCode, startIndex, type } = matches[i];
         
         // Generate filename for this diagram
         const diagramFilename = generateDiagramFilename(mermaidCode, i, fileBaseName);
@@ -181,14 +204,60 @@ function processMarkdownFile(filePath) {
 
 </div>`;
             
-            // Replace in newContent (processing in reverse to maintain indices)
-            const adjustedStart = startIndex + offset;
-            const before = newContent.substring(0, adjustedStart);
-            const after = newContent.substring(adjustedStart + fullMatch.length);
-            newContent = before + replacement + after;
-            
-            // Update offset for next replacement
-            offset += replacement.length - fullMatch.length;
+            // Replace the code block (markdown or HTML) with the HTML structure
+            // For HTML blocks, we need to find the full container structure and replace it
+            if (type === 'html') {
+                // Find the mermaid-diagram-container that contains this code block
+                const adjustedStart = startIndex + offset;
+                const beforeMatch = newContent.substring(0, adjustedStart);
+                
+                // Find the start of the mermaid-diagram-container
+                const containerStart = beforeMatch.lastIndexOf('<div class="mermaid-diagram-container">');
+                
+                if (containerStart !== -1) {
+                    // Find the matching closing </div> for the container
+                    // Count div tags to find the right closing tag
+                    let divCount = 0;
+                    let containerEnd = containerStart;
+                    let found = false;
+                    
+                    for (let i = containerStart; i < newContent.length; i++) {
+                        const substr = newContent.substring(i, i + 4);
+                        const endSubstr = newContent.substring(i, i + 6);
+                        if (substr === '<div') {
+                            divCount++;
+                        } else if (endSubstr === '</div>') {
+                            divCount--;
+                            if (divCount === 0) {
+                                containerEnd = i + 6;
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (found) {
+                        // Replace the entire container
+                        const fullContainer = newContent.substring(containerStart, containerEnd);
+                        newContent = newContent.substring(0, containerStart) + replacement + newContent.substring(containerEnd);
+                        // Adjust offset for subsequent replacements
+                        offset += replacement.length - fullContainer.length;
+                    } else {
+                        // Fallback: just replace the code block
+                        newContent = newContent.substring(0, adjustedStart) + replacement + newContent.substring(adjustedStart + fullMatch.length);
+                        offset += replacement.length - fullMatch.length;
+                    }
+                } else {
+                    // No container found, just replace the code block
+                    newContent = newContent.substring(0, adjustedStart) + replacement + newContent.substring(adjustedStart + fullMatch.length);
+                    offset += replacement.length - fullMatch.length;
+                }
+            } else {
+                // Markdown block - simple replacement
+                const adjustedStart = startIndex + offset;
+                newContent = newContent.substring(0, adjustedStart) + replacement + newContent.substring(adjustedStart + fullMatch.length);
+                offset += replacement.length - fullMatch.length;
+            }
             
             diagramIndex++;
         }

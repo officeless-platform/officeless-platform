@@ -19,6 +19,20 @@ This document describes the security controls, compliance frameworks, and govern
 <details>
 <summary>View Mermaid source code</summary>
 
+<div class="mermaid-diagram-container">
+
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/05-security-and-governance-diagram-1-5e88a1b0.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/05-security-and-governance-diagram-1-5e88a1b0.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+
+<details>
+<summary>View Mermaid source code</summary>
+
 <pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Security Layers&quot;
         subgraph &quot;Network Security&quot;
@@ -91,6 +105,14 @@ This document describes the security controls, compliance frameworks, and govern
     SOC --&gt; Audit
     GDPR --&gt; DataPrivacy
     HIPAA --&gt; Encrypt_Rest</code></pre>
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 </details>
 

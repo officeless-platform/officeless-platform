@@ -19,6 +19,20 @@ This document describes the high-level architecture of the Officeless platform, 
 <details>
 <summary>View Mermaid source code</summary>
 
+<div class="mermaid-diagram-container">
+
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/02-platform-architecture-diagram-1-5e6e21af.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/02-platform-architecture-diagram-1-5e6e21af.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+
+<details>
+<summary>View Mermaid source code</summary>
+
 <pre><code class="language-mermaid">flowchart TD
     subgraph Client[&quot;Client Layer&quot;]
         Web[Web Application]
@@ -117,6 +131,14 @@ This document describes the high-level architecture of the Officeless platform, 
     
     VPNServer --&gt; CI_CD
     CI_CD --&gt; AppService1</code></pre>
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 </details>
 

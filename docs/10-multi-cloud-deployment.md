@@ -19,6 +19,20 @@ This document provides comprehensive deployment guidance for the Officeless plat
 <details>
 <summary>View Mermaid source code</summary>
 
+<div class="mermaid-diagram-container">
+
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/10-multi-cloud-deployment-diagram-1-645664a9.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+
+<details>
+<summary>View Mermaid source code</summary>
+
+<div class="mermaid-diagram-container">
+
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/10-multi-cloud-deployment-diagram-1-645664a9.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+
+<details>
+<summary>View Mermaid source code</summary>
+
 <pre><code class="language-mermaid">flowchart TD
     subgraph &quot;Enterprise Networks&quot;
         subgraph &quot;Enterprise A&quot;
@@ -102,6 +116,14 @@ This document provides comprehensive deployment guidance for the Officeless plat
     AWS_EKS --&gt; DirectConnect
     GCP_GKE --&gt; DirectConnect
     Azure_AKS --&gt; DirectConnect</code></pre>
+
+</details>
+
+</div>
+
+</details>
+
+</div>
 
 </details>
 

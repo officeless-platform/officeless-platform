@@ -26,12 +26,44 @@ flowchart TD
     
     subgraph<div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-98741fd8.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-cf3565da.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
 <pre><code class="language-mermaid">flowchart TD
+    subgraph &quot;Enterprise Network A&quot;
+        AppA[Enterprise App A&lt;br/&gt;Oracle/SAP/etc]
+    end
+    
+    subgraph &quot;VPN Tunnel 1&quot;
+        VPN1[Site-to-Site VPN&lt;br/&gt;IPsec AES-256]
+    end
+    
+    subgraph &quot;O&lt;div class=&quot;mermaid-diagram-container&quot;&gt;
+
+&lt;img src=&quot;{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-3582207b.svg&quot; alt=&quot;Mermaid Diagram&quot; style=&quot;max-width: 100%; height: auto;&quot;&gt;
+
+&lt;details&gt;
+&lt;summary&gt;View Mermaid source code&lt;/summary&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart TD
+    subgraph &quot;Enterprise Network A&quot;
+        AppA[Enterprise App A&lt;br/&gt;Oracle/SAP/etc]
+    end
+    
+    subgraph &quot;VPN Tunnel 1&quot;
+        VPN1[Site-to-Site VPN&lt;br/&gt;IPsec AES-256]
+    end
+    
+    subgraph &quot;O&lt;div class=&quot;mermaid-diagram-container&quot;&gt;
+
+&lt;img src=&quot;{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-1-98741fd8.svg&quot; alt=&quot;Mermaid Diagram&quot; style=&quot;max-width: 100%; height: auto;&quot;&gt;
+
+&lt;details&gt;
+&lt;summary&gt;View Mermaid source code&lt;/summary&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart TD
     subgraph &quot;Enterprise Network A&quot;
         AppA[Enterprise App A&lt;br/&gt;Oracle/SAP/etc]
     end
@@ -69,97 +101,7 @@ flowchart TD
 
 </details>
 
-</div>urce code</summary>
-
-<div class="mermaid-diagram-container">
-
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/12-site-to-site-vpn-requirements-diagram-2-42d77ae8.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
-
-<details>
-<summary>View Mermaid source code</summary>
-
-<pre><code class="language-mermaid">flowchart TD
-    subgraph &quot;Enterprise Network A&quot;
-        Oracle[Oracle E-Business Suite&lt;br/&gt;Port: 1521, 8000, 443]
-        SAP[SAP ECC&lt;br/&gt;Port: 3300, 8000, 443]
-        Custom_App1[Custom Enterprise App&lt;br/&gt;Application Ports]
-    end
-    
-    subgraph &quot;VPN Connectivity A&quot;
-        VPN_Gateway_A[VPN Gateway A&lt;br/&gt;Customer Gateway]
-        VPN_Tunnel_A[VPN Tunnel A&lt;br/&gt;IPsec Phase 1 &amp; 2&lt;br/&gt;AES-256, SHA-256]
-        VPN_Gateway_Platform_A[Platform VPN Gateway A]
-    end
-    
-    subgraph &quot;Officeless Platform - Middleware&quot;
-        subgraph &quot;Integration Layer&quot;
-            API_Gateway[API Gateway&lt;br/&gt;Request Routing]
-            Transform[Data Transformation&lt;br/&gt;Format Conversion]
-            Orchestrate[Workflow Orchestration&lt;br/&gt;Process Coordination]
-        end
-        
-        subgraph &quot;Application Services&quot;
-            Service1[Integration Service 1&lt;br/&gt;Oracle Connector]
-            Service2[Integration Service 2&lt;br/&gt;SAP Connector]
-            Service3[Integration Service 3&lt;br/&gt;Custom Connector]
-        end
-        
-        subgraph &quot;Data Layer&quot;
-            Cache[(Cache Layer&lt;br/&gt;Valkey/Redis)]
-            Queue[Message Queue&lt;br/&gt;Async Processing]
-            Storage[(Object Storage&lt;br/&gt;S3/GCS/Blob)]
-        end
-    end
-    
-    subgraph &quot;VPN Connectivity B&quot;
-        VPN_Gateway_Platform_B[Platform VPN Gateway B]
-        VPN_Tunnel_B[VPN Tunnel B&lt;br/&gt;IPsec Phase 1 &amp; 2&lt;br/&gt;AES-256, SHA-256]
-        VPN_Gateway_B[VPN Gateway B&lt;br/&gt;Customer Gateway]
-    end
-    
-    subgraph &quot;Enterprise Network B&quot;
-        Salesforce[Salesforce&lt;br/&gt;Port: 443&lt;br/&gt;REST/SOAP API]
-        ServiceNow[ServiceNow&lt;br/&gt;Port: 443&lt;br/&gt;REST/SOAP API]
-        Custom_App2[Custom Enterprise App&lt;br/&gt;Application Ports]
-    end
-    
-    Oracle --&gt; VPN_Gateway_A
-    SAP --&gt; VPN_Gateway_A
-    Custom_App1 --&gt; VPN_Gateway_A
-    
-    VPN_Gateway_A --&gt; VPN_Tunnel_A
-    VPN_Tunnel_A --&gt; VPN_Gateway_Platform_A
-    VPN_Gateway_Platform_A --&gt; API_Gateway
-    
-    API_Gateway --&gt; Transform
-    Transform --&gt; Orchestrate
-    
-    Orchestrate --&gt; Service1
-    Orchestrate --&gt; Service2
-    Orchestrate --&gt; Service3
-    
-    Service1 --&gt; Cache
-    Service2 --&gt; Queue
-    Service3 --&gt; Storage
-    
-    Service1 --&gt; VPN_Gateway_Platform_B
-    Service2 --&gt; VPN_Gateway_Platform_B
-    Service3 --&gt; VPN_Gateway_Platform_B
-    
-    VPN_Gateway_Platform_B --&gt; VPN_Tunnel_B
-    VPN_Tunnel_B --&gt; VPN_Gateway_B
-    
-    VPN_Gateway_B --&gt; Salesforce
-    VPN_Gateway_B --&gt; ServiceNow
-    VPN_Gateway_B --&gt; Custom_App2
-    
-    Service1 -.Oracle Protocol.-&gt; Oracle
-    Service2 -.SAP RFC/IDoc.-&gt; SAP
-    Service3 -.Custom Protocol.-&gt; Custom_App1
-    
-    Service1 -.REST API.-&gt; Salesforce
-    Service2 -.REST API.-&gt; ServiceNow
-    Service3 -.Custom API.-&gt; Custom_App2</code></pre>
+</div>
 
 </details>
 
