@@ -1,0 +1,72 @@
+graph TB
+    subgraph "Security Layers"
+        subgraph "Network Security"
+            VNet[Virtual Network<br/>Isolated Network]
+            FW[Firewall Rules<br/>Security Groups/NACLs]
+            NetworkACL[Network ACLs]
+            VPN[VPN Gateway<br/>Site-to-Site]
+        end
+        
+        subgraph "Identity & Access"
+            CloudIAM[Cloud IAM<br/>Provider-Specific]
+            PodIdentity[Pod Identity<br/>Workload Identity]
+            OIDC[OIDC Provider<br/>Service Account Integration]
+            RBAC[Kubernetes RBAC]
+            SA[Service Accounts]
+        end
+        
+        subgraph "Data Security"
+            Encrypt_Transit[Encryption in Transit<br/>TLS/SSL]
+            Encrypt_Rest[Encryption at Rest<br/>Cloud KMS]
+            Secrets[Secrets Manager<br/>Cloud Secrets]
+            KeyMgmt[Key Management<br/>HSM/KMS]
+        end
+        
+        subgraph "Application Security"
+            WAF[Web Application Firewall]
+            DDoS[DDoS Protection]
+            Scan[Vulnerability Scanning]
+            Audit[Audit Logging]
+        end
+        
+        subgraph "Compliance"
+            ISO[ISO 27001]
+            SOC[SOC 2]
+            GDPR[GDPR]
+            HIPAA[HIPAA]
+        end
+    end
+    
+    subgraph "Kubernetes Cluster"
+        ControlPlane[Control Plane<br/>Private Endpoint]
+        Nodes[Worker Nodes<br/>Private Subnets]
+        Pods[Application Pods]
+    end
+    
+    VNet --> FW
+    FW --> NetworkACL
+    VPN --> VNet
+    
+    CloudIAM --> PodIdentity
+    PodIdentity --> OIDC
+    OIDC --> SA
+    SA --> RBAC
+    RBAC --> Pods
+    
+    Encrypt_Transit --> ControlPlane
+    Encrypt_Transit --> Nodes
+    Encrypt_Rest --> BlockStorage
+    Encrypt_Rest --> FileStorage
+    Encrypt_Rest --> ObjectStorage
+    Secrets --> Pods
+    KeyMgmt --> Encrypt_Rest
+    
+    WAF --> LoadBalancer
+    DDoS --> VNet
+    Scan --> Pods
+    Audit --> Logging
+    
+    ISO --> Encrypt_Rest
+    SOC --> Audit
+    GDPR --> DataPrivacy
+    HIPAA --> Encrypt_Rest

@@ -1,0 +1,70 @@
+graph TB
+    subgraph "On-Premise Deployment"
+        OnPrem_App[On-Premise Applications]
+        OnPrem_Data[On-Premise Data]
+        OnPrem_K8s[Kubernetes Cluster<br/>Rancher/OpenShift/K3s]
+        Legacy[Legacy Systems]
+    end
+    
+    subgraph "Cloud Deployments"
+        AWS[AWS<br/>EKS Cluster]
+        GCP[GCP<br/>GKE Cluster]
+        Azure[Azure<br/>AKS Cluster]
+        Alibaba[Alibaba Cloud<br/>ACK Cluster]
+        OCI[Oracle Cloud<br/>OKE Cluster]
+        ByteDance[ByteDance Cloud<br/>TKE Cluster]
+        Huawei[Huawei Cloud<br/>CCE Cluster]
+    end
+    
+    subgraph "Connectivity"
+        VPN_Tunnel1[Site-to-Site VPN<br/>IPsec]
+        VPN_Tunnel2[Site-to-Site VPN<br/>IPsec]
+        DirectConnect[Direct Connect<br/>ExpressRoute/Interconnect]
+        Internet[Internet<br/>HTTPS]
+    end
+    
+    subgraph "Data Synchronization"
+        DataSync[Data Sync Service<br/>Cross-Cloud]
+        Replication[Data Replication<br/>Multi-Region]
+    end
+    
+    OnPrem_App --> VPN_Tunnel1
+    OnPrem_Data --> VPN_Tunnel1
+    Legacy --> VPN_Tunnel1
+    
+    VPN_Tunnel1 --> AWS
+    VPN_Tunnel1 --> GCP
+    VPN_Tunnel1 --> Azure
+    VPN_Tunnel1 --> Alibaba
+    VPN_Tunnel1 --> OCI
+    VPN_Tunnel1 --> ByteDance
+    VPN_Tunnel1 --> Huawei
+    VPN_Tunnel1 --> OnPrem_K8s
+    
+    AWS --> DataSync
+    GCP --> DataSync
+    Azure --> DataSync
+    Alibaba --> DataSync
+    OCI --> DataSync
+    ByteDance --> DataSync
+    Huawei --> DataSync
+    OnPrem_K8s --> DataSync
+    
+    DataSync --> Replication
+    
+    AWS -.Data Sync.-> GCP
+    GCP -.Data Sync.-> Azure
+    Azure -.Data Sync.-> Alibaba
+    Alibaba -.Data Sync.-> OCI
+    OCI -.Data Sync.-> ByteDance
+    ByteDance -.Data Sync.-> Huawei
+    Huawei -.Data Sync.-> OnPrem_K8s
+    OnPrem_K8s -.Data Sync.-> AWS
+    
+    AWS --> DirectConnect
+    GCP --> DirectConnect
+    Azure --> DirectConnect
+    Alibaba --> DirectConnect
+    OCI --> DirectConnect
+    ByteDance --> DirectConnect
+    Huawei --> DirectConnect

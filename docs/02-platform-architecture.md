@@ -8,7 +8,7 @@ permalink: /docs/02-platform-architecture.html
 
 ## Architecture Overview
 
-This document describes the high-level architecture of the Officeless platform, including system components, architectural patterns, and design principles. The platform is deployed on AWS using Amazon EKS (Elastic Kubernetes Service) as the container orchestration platform.
+This document describes the high-level architecture of the Officeless platform, including system components, architectural patterns, and design principles. The platform is designed to be **cloud-agnostic** and can be deployed on any supported cloud provider (AWS, GCP, Azure, Alibaba Cloud, Oracle Cloud, ByteDance Cloud, Huawei Cloud) or on-premises infrastructure using Kubernetes.
 
 ## Platform Architecture Diagram
 
@@ -19,106 +19,104 @@ This document describes the high-level architecture of the Officeless platform, 
 <details>
 <summary>View Mermaid source code</summary>
 
-<pre><code class="language-mermaid">graph TB
-    subgraph &quot;Client Layer&quot;
+<pre><code class="language-mermaid">flowchart TD
+    subgraph Client[&quot;Client Layer&quot;]
         Web[Web Application]
         Mobile[Mobile App]
         API_Client[API Clients]
         VPN_Client[VPN Clients]
     end
     
-    subgraph &quot;AWS Load Balancer&quot;
-        ALB[Application Load Balancer]
-        NLB[Network Load Balancer]
+    subgraph LB[&quot;Load Balancer Layer&quot;]
+        AppLB[Application Load Balancer&lt;br/&gt;HTTP/HTTPS]
+        NetLB[Network Load Balancer&lt;br/&gt;TCP/UDP]
     end
     
-    subgraph &quot;EKS Cluster: production-cluster&quot;
-        subgraph &quot;kube-system&quot;
-            LBC[AWS Load Balancer Controller]
+    subgraph K8s[&quot;Kubernetes Cluster&quot;]
+        subgraph System[&quot;System Components&quot;]
+            LBC[Load Balancer Controller]
             Autoscaler[Cluster Autoscaler]
             MetricsServer[Metrics Server]
-            EBSCSI[EBS CSI Driver]
-            EFSCSI[EFS CSI Driver]
+            BlockCSI[Block Storage CSI Driver]
+            FileCSI[File Storage CSI Driver]
             SecretCSI[Secret Store CSI Driver]
         end
         
-        subgraph &quot;Application Namespaces&quot;
+        subgraph Apps[&quot;Application Services&quot;]
             AppService1[Application Service 1]
             AppService2[Application Service 2]
             AppServiceN[Application Service N]
         end
         
-        subgraph &quot;Monitoring Namespace&quot;
-            Mimir[Mimir]
-            Loki[Loki]
-            Tempo[Tempo]
+        subgraph Monitoring[&quot;Observability Stack&quot;]
+            Mimir[Mimir Metrics]
+            Loki[Loki Logs]
+            Tempo[Tempo Traces]
             Alertmanager[Alertmanager]
         end
     end
     
-    subgraph &quot;Storage Layer&quot;
-        EBS[(EBS Volumes&lt;br/&gt;gp3)]
-        EFS[(EFS File System&lt;br/&gt;eks-shared-storage)]
-        S3_Mimir[(S3: Mimir Metrics)]
-        S3_Loki[(S3: Loki Logs)]
-        S3_Tempo[(S3: Tempo Traces)]
-        Valkey[(Valkey Cache)]
+    subgraph Storage[&quot;Storage Layer&quot;]
+        BlockStorage[(Block Storage&lt;br/&gt;Persistent Volumes)]
+        FileStorage[(File Storage&lt;br/&gt;Shared Filesystem)]
+        ObjectStorage[(Object Storage&lt;br/&gt;Metrics, Logs, Traces)]
+        Cache[(Cache Layer&lt;br/&gt;Redis/Valkey)]
     end
     
-    subgraph &quot;AWS Services&quot;
-        IAM[IAM Roles&lt;br/&gt;Pod Identity]
-        Secrets[Secrets Manager]
-        CloudWatch[CloudWatch Logs]
+    subgraph Cloud[&quot;Cloud Services&quot;]
+        CloudIAM[Cloud IAM&lt;br/&gt;Pod Identity]
+        SecretsMgr[Secrets Manager]
+        CloudLogs[Cloud Logging]
     end
     
-    subgraph &quot;VPN Server&quot;
-        VPN[Pritunl VPN&lt;br/&gt;EC2 t3.large]
-        Jenkins[Jenkins Agent]
+    subgraph VPN[&quot;VPN &amp; CI/CD&quot;]
+        VPNServer[VPN Gateway&lt;br/&gt;Site-to-Site]
+        CI_CD[CI/CD Agent]
     end
     
-    Web --&gt; ALB
-    Mobile --&gt; ALB
-    API_Client --&gt; ALB
-    VPN_Client --&gt; VPN
+    Web --&gt; AppLB
+    Mobile --&gt; AppLB
+    API_Client --&gt; AppLB
+    VPN_Client --&gt; VPNServer
     
-    ALB --&gt; AppService1
-    ALB --&gt; AppService2
-    ALB --&gt; AppServiceN
-    NLB --&gt; AppService1
+    AppLB --&gt; AppService1
+    AppLB --&gt; AppService2
+    AppLB --&gt; AppServiceN
+    NetLB --&gt; AppService1
     
-    AppService1 --&gt; EBS
-    AppService2 --&gt; EBS
-    AppServiceN --&gt; EBS
+    AppService1 --&gt; BlockStorage
+    AppService2 --&gt; BlockStorage
+    AppServiceN --&gt; BlockStorage
     
-    AppService1 --&gt; EFS
-    AppService2 --&gt; EFS
+    AppService1 --&gt; FileStorage
+    AppService2 --&gt; FileStorage
     
-    AppService1 --&gt; Valkey
-    AppService2 --&gt; Valkey
+    AppService1 --&gt; Cache
+    AppService2 --&gt; Cache
     
-    Mimir --&gt; S3_Mimir
-    Loki --&gt; S3_Loki
-    Tempo --&gt; S3_Tempo
-    Alertmanager --&gt; S3_Mimir
+    Mimir --&gt; ObjectStorage
+    Loki --&gt; ObjectStorage
+    Tempo --&gt; ObjectStorage
+    Alertmanager --&gt; ObjectStorage
     
     AppService1 --&gt; Mimir
     AppService2 --&gt; Loki
     AppServiceN --&gt; Tempo
     
-    AppService1 --&gt; Secrets
-    AppService2 --&gt; Secrets
+    AppService1 --&gt; SecretsMgr
+    AppService2 --&gt; SecretsMgr
     
-    Autoscaler --&gt; CloudWatch
-    AppService1 --&gt; CloudWatch
+    Autoscaler --&gt; CloudLogs
+    AppService1 --&gt; CloudLogs
     
-    LBC --&gt; IAM
-    EBSCSI --&gt; IAM
-    EFSCSI --&gt; IAM
-    SecretCSI --&gt; IAM
-    AppService1 --&gt; IAM
+    LBC --&gt; CloudIAM
+    BlockCSI --&gt; CloudIAM
+    FileCSI --&gt; CloudIAM
+    SecretCSI --&gt; CloudIAM
+    AppService1 --&gt; CloudIAM
     
-    VPN --&gt; Jenkins
-    Jenkins --&gt; AppService1</code></pre>
+    VPNServer --&gt; CI_CD
+    CI_CD --&gt; AppService1</code></pre>
 
 </details>
 
@@ -126,95 +124,92 @@ This document describes the high-level architecture of the Officeless platform, 
 
 ## Infrastructure Foundation
 
-### AWS EKS Cluster
-- **Cluster Name**: `production-cluster`
-- **Kubernetes Version**: 1.33
-- **Region**: AWS region (e.g., us-east-1)
+### Kubernetes Cluster
+- **Deployment**: Cloud provider managed Kubernetes or self-managed
+- **Kubernetes Version**: Latest stable (1.33+)
 - **Endpoint Configuration**:
-  - Private endpoint access: Enabled
-  - Public endpoint access: Disabled (production security best practice)
-  - Authentication mode: CONFIG_MAP
+  - Private endpoint access: Enabled (production security best practice)
+  - Public endpoint access: Disabled
+  - Authentication mode: Cloud provider integration or CONFIG_MAP
 - **Cluster Logging**: Enabled for API, audit, authenticator, controller manager, and scheduler logs
-- **Log Retention**: 7 days in CloudWatch
+- **Log Retention**: Configurable (typically 7-30 days)
 
 ### Compute Nodes
-- **Node Group**: `worker-nodes`
-- **Instance Types**: 
-  - Primary: `t3.xlarge` (4 vCPU, 16 GB RAM)
-  - Alternative: `m6i.large` (2 vCPU, 8 GB RAM)
-- **AMI Type**: Bottlerocket (AWS-optimized Linux for containers)
-- **Capacity Type**: ON_DEMAND
-- **Disk Size**: 200 GB per node
+- **Node Groups**: Worker nodes distributed across availability zones
+- **Instance Types**: Cloud provider specific (configurable based on workload)
+- **Container OS**: Cloud provider optimized or standard Linux distributions
+- **Capacity Type**: On-demand or spot instances (configurable)
+- **Disk Size**: Configurable per node (typically 100-500 GB)
 - **Scaling Configuration**:
-  - Minimum: 3 nodes
-  - Desired: 3 nodes
-  - Maximum: 6 nodes
-- **Update Strategy**: Max unavailable = 1 (rolling updates)
+  - Minimum: 3 nodes (for high availability)
+  - Desired: Auto-managed by cluster autoscaler
+  - Maximum: Configurable based on requirements
+- **Update Strategy**: Rolling updates with configurable max unavailable nodes
 
 ## System Components
 
 ### Core Platform Services
 
 #### Application Runtime
-- **Container Orchestration**: Amazon EKS (Kubernetes 1.33)
-- **Container Runtime**: Containerd (via Bottlerocket)
+- **Container Orchestration**: Kubernetes (cloud provider managed or self-managed)
+- **Container Runtime**: Containerd or Docker (cloud provider specific)
 - **Multi-tenant isolation**: Kubernetes namespaces and RBAC
 - **Resource management**: Kubernetes resource quotas and limits
 
 #### Load Balancing and Ingress
-- **AWS Load Balancer Controller**: v1.12.0 (Helm chart)
+- **Load Balancer Controller**: Cloud provider specific (AWS Load Balancer Controller, GCP Ingress Controller, Azure Application Gateway, etc.)
 - **Load Balancer Types**:
-  - Application Load Balancer (ALB) for HTTP/HTTPS
-  - Network Load Balancer (NLB) for TCP/UDP
-- **Ingress**: Kubernetes Ingress resources with AWS ALB integration
-- **Subnet Tagging**: Public and private subnets tagged for ELB placement
+  - Application/HTTP(S) Load Balancer for HTTP/HTTPS traffic
+  - Network Load Balancer for TCP/UDP traffic
+- **Ingress**: Kubernetes Ingress resources with cloud provider integration
+- **Subnet/Network Configuration**: Public and private subnets configured for load balancer placement
 
 #### Data Services
-- **Block Storage**: AWS EBS CSI Driver (v1.42.0-eksbuild.1)
-  - Storage class: gp3 (provisioned)
-  - Volume binding: WaitForFirstConsumer
+- **Block Storage**: Cloud provider block storage CSI Driver
+  - Storage class: Cloud provider specific (gp3, pd-ssd, Premium SSD, etc.)
+  - Volume binding: WaitForFirstConsumer (zone-aware)
   - Volume expansion: Enabled
-- **File Storage**: AWS EFS CSI Driver (v3.1.8)
-  - Storage class: efs
-  - Provisioning mode: EFS Access Points
+- **File Storage**: Cloud provider file storage CSI Driver
+  - Storage class: Cloud provider specific
+  - Provisioning mode: Access Points or similar multi-tenancy support
   - Encryption: Enabled at rest
-  - Performance mode: General Purpose
-  - Throughput mode: Bursting
-- **Object Storage**: Amazon S3 buckets for:
+  - Performance mode: General Purpose or High Performance
+  - Throughput mode: Bursting or Provisioned
+- **Object Storage**: Cloud provider object storage for:
   - Application data
   - Monitoring data (Mimir, Loki, Tempo)
   - Backup and archival
-- **Caching**: Valkey (Redis-compatible) via ElastiCache module
+- **Caching**: Redis/Valkey compatible cache service (cloud provider managed or self-managed)
 
 #### Integration Services
-- **VPN Access**: EC2-based VPN server (Pritunl)
-- **CI/CD Integration**: Jenkins agent on VPN instance
-- **Container Registry**: Docker registry support
+- **VPN Access**: Cloud provider VPN gateway or self-managed VPN server
+- **CI/CD Integration**: CI/CD agents (Jenkins, GitLab Runner, GitHub Actions, etc.)
+- **Container Registry**: Cloud provider container registry or self-hosted
 
 ### Supporting Services
 
 #### Identity and Access Management
-- **AWS IAM Integration**: 
-  - EKS Pod Identity (v1.3.5-eksbuild.2) for service account to IAM role mapping
-  - OIDC Provider integration for IRSA (IAM Roles for Service Accounts)
+- **Cloud Provider IAM Integration**: 
+  - Pod Identity / Workload Identity for service account to cloud IAM role mapping
+  - OIDC Provider integration for service account authentication
 - **Kubernetes RBAC**: Role-based access control
-- **Service Accounts**: Per-namespace service accounts with IAM role associations
+- **Service Accounts**: Per-namespace service accounts with cloud IAM role associations
 
 #### Configuration Management
 - **Kubernetes ConfigMaps**: Environment configuration
 - **Kubernetes Secrets**: Application secrets
-- **AWS Secrets Manager**: External secrets via Secret Store CSI Driver
-- **Pod Identity**: EKS Pod Identity for secure AWS service access
+- **Cloud Secrets Manager**: External secrets via Secret Store CSI Driver
+- **Pod Identity**: Cloud provider pod identity for secure cloud service access
 
 #### Monitoring and Observability
 - **Metrics**: Metrics Server for Kubernetes metrics
 - **Logging**: 
-  - CloudWatch Log Groups for EKS cluster logs
-  - Loki for application logs (S3-backed)
-- **Tracing**: Tempo for distributed tracing (S3-backed)
-- **Metrics Storage**: Mimir for long-term metrics storage (S3-backed)
-- **Alerting**: Alertmanager (S3-backed)
-- **S3 Buckets for Observability**:
+  - Cloud provider logging service for Kubernetes cluster logs
+  - Loki for application logs (object storage-backed)
+- **Tracing**: Tempo for distributed tracing (object storage-backed)
+- **Metrics Storage**: Mimir for long-term metrics storage (object storage-backed)
+- **Alerting**: Alertmanager (object storage-backed)
+- **Object Storage Buckets for Observability**:
   - `mimir-metrics` - Metrics storage
   - `mimir-alertmanager` - Alertmanager state
   - `mimir-ruler` - Recording rules
@@ -223,10 +218,10 @@ This document describes the high-level architecture of the Officeless platform, 
   - `tempo-traces` - Trace storage
 
 #### Auto-Scaling
-- **Cluster Autoscaler**: v9.45.0 (Helm chart)
+- **Cluster Autoscaler**: Latest version (Helm chart)
   - Auto-discovery of node groups
   - Scale based on pod scheduling requirements
-  - Integration with AWS Auto Scaling Groups
+  - Integration with cloud provider auto-scaling services
 
 ## Architectural Patterns
 
@@ -263,17 +258,17 @@ This document describes the high-level architecture of the Officeless platform, 
 ## Technology Stack
 
 ### Runtime
-- **Container Orchestration**: Amazon EKS (Kubernetes 1.33)
-- **Container OS**: Bottlerocket (AWS-optimized)
-- **Service Mesh**: Optional (can be added)
-- **API Gateway**: AWS Application Load Balancer via AWS Load Balancer Controller
+- **Container Orchestration**: Kubernetes (cloud provider managed or self-managed)
+- **Container OS**: Cloud provider optimized or standard Linux distributions
+- **Service Mesh**: Optional (can be added - Istio, Linkerd, etc.)
+- **API Gateway**: Cloud provider load balancer via load balancer controller
 
 ### Data Layer
-- **Block Storage**: AWS EBS (gp3 volumes via EBS CSI Driver)
-- **File Storage**: AWS EFS (via EFS CSI Driver)
-- **Object Storage**: Amazon S3
-- **Caching**: Valkey (Redis-compatible) via ElastiCache
-- **Message Queues**: Application-level (can integrate with SQS, SNS)
+- **Block Storage**: Cloud provider block storage (EBS, Persistent Disk, Managed Disks, etc.)
+- **File Storage**: Cloud provider file storage (EFS, Filestore, Files, NAS, etc.)
+- **Object Storage**: Cloud provider object storage (S3, Cloud Storage, Blob Storage, OSS, etc.)
+- **Caching**: Redis/Valkey compatible cache service (managed or self-managed)
+- **Message Queues**: Application-level (can integrate with cloud provider messaging services)
 
 ### Integration
 - **REST APIs**: Kubernetes-native services
@@ -282,17 +277,18 @@ This document describes the high-level architecture of the Officeless platform, 
 - **Event Streaming**: Application-level
 
 ### Networking
-- **VPC**: Custom VPC with public and private subnets
-- **Load Balancing**: AWS Application/Network Load Balancers
-- **VPN**: EC2-based Pritunl VPN server
-- **DNS**: Route 53 (AWS managed)
+- **Virtual Network**: Cloud provider virtual network (VPC, VNet, VCN, etc.) with public and private subnets
+- **Load Balancing**: Cloud provider application/network load balancers
+- **VPN**: Cloud provider VPN gateway or self-managed VPN server
+- **DNS**: Cloud provider managed DNS service
 
 ## Deployment Models
 
-- **Primary**: AWS EKS in selected AWS region
-- **Network**: VPC-based with private subnets for workloads
-- **Hybrid Capable**: VPN server for on-premises connectivity
-- **Multi-cloud Ready**: Architecture supports extension to other clouds
+- **Cloud Deployment**: Any supported cloud provider (AWS, GCP, Azure, Alibaba, OCI, ByteDance, Huawei)
+- **Network**: Virtual network-based with private subnets for workloads
+- **Hybrid Capable**: VPN gateway/server for on-premises connectivity
+- **Multi-cloud Ready**: Architecture supports deployment across multiple cloud providers
+- **On-Premise Ready**: Can be deployed on self-managed Kubernetes infrastructure
 
 ## Related Documentation
 

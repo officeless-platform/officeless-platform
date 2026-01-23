@@ -1,0 +1,35 @@
+graph LR
+    subgraph "Enterprise Network A"
+        AppA[Enterprise App A<br/>Oracle/SAP/etc]
+    end
+    
+    subgraph "VPN Tunnel 1"
+        VPN1[Site-to-Site VPN<br/>IPsec AES-256]
+    end
+    
+    subgraph "Officeless Platform"
+        Middleware[Officeless<br/>Middleware Solution]
+        Transform[Data Transformation]
+        Orchestrate[Workflow Orchestration]
+    end
+    
+    subgraph "VPN Tunnel 2"
+        VPN2[Site-to-Site VPN<br/>IPsec AES-256]
+    end
+    
+    subgraph "Enterprise Network B"
+        AppB[Enterprise App B<br/>Salesforce/etc]
+    end
+    
+    AppA --> VPN1
+    VPN1 --> Middleware
+    Middleware --> Transform
+    Transform --> Orchestrate
+    Orchestrate --> VPN2
+    VPN2 --> AppB
+    
+    style AppA fill:#e1f5ff
+    style AppB fill:#e1f5ff
+    style Middleware fill:#fff4e1
+    style VPN1 fill:#ffe1e1
+    style VPN2 fill:#ffe1e1

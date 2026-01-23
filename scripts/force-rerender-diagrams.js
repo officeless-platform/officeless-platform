@@ -48,9 +48,9 @@ function renderMermaidToSVG(mermaidCode, outputPath) {
         
         let command;
         if (mermaidCLI === 'npx') {
-            command = `npx -y @mermaid-js/mermaid-cli -i "${tempFile}" -o "${outputPath}" -b transparent -w 1200 -s 2`;
+            command = `npx -y @mermaid-js/mermaid-cli -i "${tempFile}" -o "${outputPath}" -b transparent -w 800 -H auto -s 2`;
         } else {
-            command = `node "${mermaidCLI}" -i "${tempFile}" -o "${outputPath}" -b transparent -w 1200 -s 2`;
+            command = `node "${mermaidCLI}" -i "${tempFile}" -o "${outputPath}" -b transparent -w 800 -H auto -s 2`;
         }
         
         execSync(command, {
