@@ -15,7 +15,7 @@ This document provides detailed requirements for establishing site-to-site VPN c
 ### Architecture Pattern
 
 ```mermaid
-graph LR
+flowchart TD
     subgraph "Enterprise Network A"
         AppA[Enterprise App A<br/>Oracle/SAP/etc]
     end
