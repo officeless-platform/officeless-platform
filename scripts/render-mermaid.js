@@ -106,6 +106,9 @@ function renderMermaidToSVG(mermaidCode, outputPath) {
 function processMarkdownFile(filePath) {
     const content = fs.readFileSync(filePath, 'utf8');
     
+    // Define regex for mermaid code blocks
+    const mermaidRegex = /```mermaid\n([\s\S]*?)```/g;
+    
     // Check if file has mermaid code blocks that need rendering
     // Skip only if it has both HTML img tag AND no mermaid code blocks
     const hasMermaidCode = mermaidRegex.test(content);
@@ -117,8 +120,8 @@ function processMarkdownFile(filePath) {
     }
     
     // If it has mermaid code blocks, we need to process them (even if some diagrams are already rendered)
-    
-    const mermaidRegex = /```mermaid\n([\s\S]*?)```/g;
+    // Reset regex for actual matching
+    mermaidRegex.lastIndex = 0;
     let match;
     let newContent = content;
     let offset = 0;
