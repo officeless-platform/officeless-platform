@@ -71,17 +71,15 @@ function renderMermaidToSVG(mermaidCode, outputPath) {
         
         // Render using mermaid-cli
         // -b transparent: transparent background (no colors/backgrounds)
-        // -w 800: width 800px (more vertical layout)
-        // -H auto: auto height (vertical layout)
+        // -w 800: width 800px (more vertical layout, height auto-calculated)
         // -s 2: scale 2 for better quality
-        // Note: --theme base may not be supported, but -b transparent removes backgrounds
         let command;
         if (mermaidCLI === 'npx') {
             // Use npx which handles ES modules correctly
-            command = `npx -y @mermaid-js/mermaid-cli -i "${tempFile}" -o "${outputPath}" -b transparent -w 800 -H auto -s 2`;
+            command = `npx -y @mermaid-js/mermaid-cli -i "${tempFile}" -o "${outputPath}" -b transparent -w 800 -s 2`;
         } else {
             // For direct path, use node to run the ES module
-            command = `node "${mermaidCLI}" -i "${tempFile}" -o "${outputPath}" -b transparent -w 800 -H auto -s 2`;
+            command = `node "${mermaidCLI}" -i "${tempFile}" -o "${outputPath}" -b transparent -w 800 -s 2`;
         }
         
         execSync(command, {

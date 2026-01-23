@@ -14,7 +14,7 @@ This document describes the high-level architecture of the Officeless platform, 
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/02-platform-architecture-diagram-1-9c5650af.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/02-platform-architecture-diagram-1-5e6e21af.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
