@@ -8,87 +8,87 @@ permalink: /docs/04-database-and-storage.html
 
 ## Data Architecture Overview
 
-This document describes the data architecture, persistence models, storage solutions, and data management strategies for the Officeless platform deployed on AWS.
+This document describes the data architecture, persistence models, storage solutions, and data management strategies for the Officeless platform. The architecture is cloud-agnostic and can be deployed on any supported cloud provider or on-premises infrastructure.
 
 ## Storage Architecture Diagram
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/04-database-and-storage-diagram-1-bd370083.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/04-database-and-storage-diagram-1-f4a3e81b.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
 <pre><code class="language-mermaid">graph TB
-    subgraph &quot;Application Layer - EKS Pods&quot;
+    subgraph &quot;Application Layer - Kubernetes Pods&quot;
         App1[Application Pod 1]
         App2[Application Pod 2]
         App3[Application Pod 3]
     end
     
-    subgraph &quot;Block Storage - EBS&quot;
-        EBS1[(EBS Volume 1&lt;br/&gt;gp3&lt;br/&gt;200GB)]
-        EBS2[(EBS Volume 2&lt;br/&gt;gp3&lt;br/&gt;200GB)]
-        EBS3[(EBS Volume 3&lt;br/&gt;gp3&lt;br/&gt;200GB)]
+    subgraph &quot;Block Storage&quot;
+        Block1[(Block Volume 1&lt;br/&gt;Encrypted&lt;br/&gt;Zone-Aware)]
+        Block2[(Block Volume 2&lt;br/&gt;Encrypted&lt;br/&gt;Zone-Aware)]
+        Block3[(Block Volume 3&lt;br/&gt;Encrypted&lt;br/&gt;Zone-Aware)]
     end
     
-    subgraph &quot;File Storage - EFS&quot;
-        EFS[(EFS File System&lt;br/&gt;eks-shared-storage&lt;br/&gt;Encrypted&lt;br/&gt;General Purpose)]
-        EFS_AP1[EFS Access Point 1]
-        EFS_AP2[EFS Access Point 2]
+    subgraph &quot;File Storage&quot;
+        FileStorage[(File Storage&lt;br/&gt;Shared Access&lt;br/&gt;Encrypted&lt;br/&gt;Multi-AZ)]
+        FileAP1[Access Point 1]
+        FileAP2[Access Point 2]
     end
     
-    subgraph &quot;Object Storage - S3&quot;
-        S3_App[S3 Application Buckets]
-        S3_Mimir[(S3: Mimir Metrics&lt;br/&gt;mimir-metrics)]
-        S3_Loki[(S3: Loki Logs&lt;br/&gt;loki-chunks)]
-        S3_Tempo[(S3: Tempo Traces&lt;br/&gt;tempo-traces)]
-        S3_Alert[(S3: Alertmanager&lt;br/&gt;mimir-alertmanager)]
+    subgraph &quot;Object Storage&quot;
+        Object_App[Application Buckets&lt;br/&gt;Versioned&lt;br/&gt;Encrypted]
+        Object_Metrics[(Metrics Storage&lt;br/&gt;mimir-metrics)]
+        Object_Logs[(Log Storage&lt;br/&gt;loki-chunks)]
+        Object_Traces[(Trace Storage&lt;br/&gt;tempo-traces)]
+        Object_Alerts[(Alert Storage&lt;br/&gt;mimir-alertmanager)]
     end
     
-    subgraph &quot;Cache Layer - Valkey&quot;
-        Valkey[(Valkey Cluster&lt;br/&gt;Redis-Compatible&lt;br/&gt;ElastiCache)]
+    subgraph &quot;Cache Layer&quot;
+        Cache[(Cache Cluster&lt;br/&gt;Redis/Valkey Compatible&lt;br/&gt;High Availability)]
     end
     
     subgraph &quot;Database Layer&quot;
-        DB1[(Database Pod 1&lt;br/&gt;PostgreSQL/MySQL&lt;br/&gt;on EBS)]
-        DB2[(Database Pod 2&lt;br/&gt;PostgreSQL/MySQL&lt;br/&gt;on EBS)]
+        DB1[(Database Pod 1&lt;br/&gt;PostgreSQL/MySQL&lt;br/&gt;on Block Storage)]
+        DB2[(Database Pod 2&lt;br/&gt;PostgreSQL/MySQL&lt;br/&gt;on Block Storage)]
     end
     
-    subgraph &quot;Monitoring Stack&quot;
+    subgraph &quot;Observability Stack&quot;
         Mimir[Mimir]
         Loki[Loki]
         Tempo[Tempo]
     end
     
-    App1 --&gt; EBS1
-    App2 --&gt; EBS2
-    App3 --&gt; EBS3
+    App1 --&gt; Block1
+    App2 --&gt; Block2
+    App3 --&gt; Block3
     
-    App1 --&gt; EFS_AP1
-    App2 --&gt; EFS_AP1
-    App3 --&gt; EFS_AP2
-    EFS_AP1 --&gt; EFS
-    EFS_AP2 --&gt; EFS
+    App1 --&gt; FileAP1
+    App2 --&gt; FileAP1
+    App3 --&gt; FileAP2
+    FileAP1 --&gt; FileStorage
+    FileAP2 --&gt; FileStorage
     
-    App1 --&gt; S3_App
-    App2 --&gt; S3_App
-    App3 --&gt; S3_App
+    App1 --&gt; Object_App
+    App2 --&gt; Object_App
+    App3 --&gt; Object_App
     
-    App1 --&gt; Valkey
-    App2 --&gt; Valkey
-    App3 --&gt; Valkey
+    App1 --&gt; Cache
+    App2 --&gt; Cache
+    App3 --&gt; Cache
     
     App1 --&gt; DB1
     App2 --&gt; DB1
     App3 --&gt; DB2
-    DB1 --&gt; EBS1
-    DB2 --&gt; EBS2
+    DB1 --&gt; Block1
+    DB2 --&gt; Block2
     
-    Mimir --&gt; S3_Mimir
-    Loki --&gt; S3_Loki
-    Tempo --&gt; S3_Tempo
-    Mimir --&gt; S3_Alert
+    Mimir --&gt; Object_Metrics
+    Loki --&gt; Object_Logs
+    Tempo --&gt; Object_Traces
+    Mimir --&gt; Object_Alerts
     
     App1 --&gt; Mimir
     App2 --&gt; Loki
@@ -100,50 +100,55 @@ This document describes the data architecture, persistence models, storage solut
 
 ## Storage Architecture
 
-The Officeless platform uses a multi-tier storage architecture leveraging AWS storage services:
+The Officeless platform uses a multi-tier storage architecture that is cloud-agnostic and can be deployed on any supported cloud provider or on-premises infrastructure.
 
-### Block Storage (EBS)
+### Block Storage
 
-#### AWS EBS CSI Driver
-- **Version**: v1.42.0-eksbuild.1 (EKS Add-on)
-- **Storage Provisioner**: `kubernetes.io/aws-ebs`
-- **Storage Class**: `gp3-sc` (GP3 with provisioned IOPS)
+Block storage provides persistent volumes for databases and stateful applications.
 
-#### Storage Class Configuration
-- **Type**: gp3 (General Purpose SSD)
-- **File System**: ext4
-- **Volume Binding Mode**: WaitForFirstConsumer (zone-aware scheduling)
-- **Reclaim Policy**: Delete
-- **Volume Expansion**: Enabled
-- **IOPS**: Configurable (default 3000)
-- **Throughput**: Configurable (default 125 MB/s)
+#### Common Features
+- **Volume Expansion**: Dynamic volume expansion support
+- **Zone-Aware Binding**: WaitForFirstConsumer mode for zone-aware scheduling
+- **Encryption**: Encryption at rest with cloud provider managed keys
+- **Snapshot Support**: Automated backup via snapshots
+- **Performance**: Configurable IOPS and throughput
+
+#### Cloud Provider Implementations
+- **AWS**: EBS (gp3, io1, io2) via EBS CSI Driver
+- **GCP**: Persistent Disk (pd-standard, pd-ssd) via GCE Persistent Disk CSI Driver
+- **Azure**: Managed Disks (Premium SSD, Standard SSD) via Azure Disk CSI Driver
+- **Alibaba**: Elastic Block Storage via EBS CSI Driver
+- **OCI**: Block Volume via Block Volume CSI Driver
+- **ByteDance**: EBS via EBS CSI Driver
+- **Huawei**: Elastic Volume Service via EVS CSI Driver
+- **On-Premise**: Local storage, Ceph RBD, or cloud-native block storage
 
 #### Use Cases
 - Database persistent volumes (PostgreSQL, MySQL, etc.)
 - Application stateful storage
 - High-performance workloads requiring low latency
-- Single-pod access patterns
+- Single-pod access patterns (ReadWriteOnce)
 
-### File Storage (EFS)
+### File Storage
 
-#### AWS EFS CSI Driver
-- **Version**: v3.1.8 (Helm chart)
-- **Storage Provisioner**: `efs.csi.aws.com`
-- **Storage Class**: `efs`
+File storage provides shared file systems accessible by multiple pods concurrently.
 
-#### EFS File System Configuration
-- **File System ID**: `eks-shared-storage`
-- **Performance Mode**: General Purpose
-- **Throughput Mode**: Bursting
-- **Encryption**: Enabled at rest (AWS managed keys)
-- **Mount Targets**: 3 (one per availability zone in private subnets)
-- **Security**: Uses EKS cluster security group
+#### Common Features
+- **Multi-AZ Access**: Accessible from multiple availability zones
+- **Access Points**: Multi-tenancy support via access points
+- **Encryption**: Encryption at rest
+- **Performance**: General purpose or high-performance modes
+- **Throughput**: Bursting or provisioned throughput modes
 
-#### Storage Class Configuration
-- **Provisioning Mode**: EFS Access Points (efs-ap)
-- **Directory Permissions**: 700
-- **Mount Options**: IAM (for authentication)
-- **Access Points**: Dynamic creation per PersistentVolumeClaim
+#### Cloud Provider Implementations
+- **AWS**: EFS via EFS CSI Driver
+- **GCP**: Filestore (Basic, Enterprise) via Filestore CSI Driver
+- **Azure**: Azure Files via Azure File CSI Driver
+- **Alibaba**: NAS via NAS CSI Driver
+- **OCI**: File Storage via File Storage CSI Driver
+- **ByteDance**: NAS via NAS CSI Driver
+- **Huawei**: Scalable File Service via SFS CSI Driver
+- **On-Premise**: NFS, GlusterFS, CephFS, or cloud-native file storage
 
 #### Use Cases
 - Shared file storage across multiple pods
@@ -152,49 +157,55 @@ The Officeless platform uses a multi-tier storage architecture leveraging AWS st
 - Read-write-many (RWX) access patterns
 - Multi-pod concurrent access
 
-### Object Storage (S3)
+### Object Storage
 
-#### S3 Buckets for Application Data
-- Custom buckets created as needed for application requirements
-- Versioning: Enabled for critical buckets
-- Encryption: Server-side encryption (SSE-S3 or SSE-KMS)
-- Lifecycle policies: Configurable for cost optimization
+Object storage provides scalable, durable storage for application data and observability stack.
 
-#### S3 Buckets for Observability Stack
-- **Mimir Metrics**: `mimir-metrics`
-- **Alertmanager State**: `mimir-alertmanager`
-- **Mimir Rules**: `mimir-ruler`
-- **Loki Chunks**: `loki-chunks`
-- **Loki Rules**: `loki-ruler`
-- **Tempo Traces**: `tempo-traces`
+#### Common Features
+- **Versioning**: Object versioning for data protection
+- **Encryption**: Server-side encryption at rest
+- **Lifecycle Policies**: Automated data lifecycle management
+- **Access Control**: Fine-grained access control policies
+- **S3 API Compatibility**: Standard S3 API for portability
 
-#### S3 Access Management
-- IAM roles with Pod Identity for service accounts
-- Bucket policies for fine-grained access control
-- S3 access via AWS SDK or S3 API
+#### Cloud Provider Implementations
+- **AWS**: S3
+- **GCP**: Cloud Storage (Standard, Nearline, Coldline)
+- **Azure**: Blob Storage (Hot, Cool, Archive tiers)
+- **Alibaba**: Object Storage Service (OSS)
+- **OCI**: Object Storage
+- **ByteDance**: TOS (TikTok Object Storage)
+- **Huawei**: Object Storage Service (OBS)
+- **On-Premise**: MinIO, Ceph Object Gateway, or compatible S3 API
 
-### Caching Layer (Valkey)
+#### Observability Stack Buckets
+- **Metrics Storage**: `mimir-metrics` - Long-term metrics storage
+- **Alertmanager State**: `mimir-alertmanager` - Alert state
+- **Mimir Rules**: `mimir-ruler` - Recording and alerting rules
+- **Log Chunks**: `loki-chunks` - Log data chunks
+- **Log Rules**: `loki-ruler` - Log rules
+- **Trace Storage**: `tempo-traces` - Distributed traces
 
-#### Valkey (Redis-Compatible)
-- **Module**: Gruntwork terraform-aws-cache module
-- **Version**: v1.0.1
-- **Compatibility**: Redis-compatible
-- **Deployment**: ElastiCache-based
+### Caching Layer
 
-#### Configuration Options
-- **Instance Types**: Configurable
-- **Encryption**: 
-  - At rest: Optional
-  - In transit: Optional
-- **High Availability**:
-  - Single instance mode: Optional
-  - Multi-AZ: Optional
-  - Automatic failover: Optional
+Caching layer provides high-performance in-memory data storage.
+
+#### Common Features
+- **Redis-Compatible**: Valkey or Redis for compatibility
+- **High Availability**: Multi-AZ deployment with automatic failover
+- **Encryption**: Encryption at rest and in transit
 - **Scaling**: Auto-scaling support
-- **Security**: 
-  - VPC-based security groups
-  - CIDR block restrictions
-  - Auth token support
+- **Security**: Network isolation and authentication
+
+#### Cloud Provider Implementations
+- **AWS**: ElastiCache (Valkey/Redis)
+- **GCP**: Memorystore (Redis)
+- **Azure**: Azure Cache for Redis
+- **Alibaba**: ApsaraDB for Redis
+- **OCI**: Redis Cache
+- **ByteDance**: Redis Cache Service
+- **Huawei**: Distributed Cache Service (Redis)
+- **On-Premise**: Self-managed Redis/Valkey cluster
 
 #### Use Cases
 - Application caching
@@ -218,19 +229,19 @@ The Officeless platform uses a multi-tier storage architecture leveraging AWS st
 
 ### Data Security
 - **Encryption at Rest**: 
-  - EBS: AWS managed keys (default)
-  - EFS: AWS managed keys (enabled)
-  - S3: Server-side encryption (SSE-S3 or SSE-KMS)
-  - Valkey: Optional encryption at rest
+  - Block Storage: Cloud provider managed keys (default)
+  - File Storage: Cloud provider managed keys (enabled)
+  - Object Storage: Server-side encryption (SSE)
+  - Cache: Optional encryption at rest
 - **Encryption in Transit**: 
   - TLS/SSL for database connections
-  - TLS for EFS (via IAM authentication)
-  - HTTPS for S3
-  - TLS for Valkey (optional)
+  - TLS for file storage (via cloud provider authentication)
+  - HTTPS for object storage
+  - TLS for cache layer (optional)
 - **Access Controls**: 
-  - IAM roles and policies
+  - Cloud provider IAM roles and policies
   - Kubernetes RBAC
-  - Security groups
+  - Firewall rules (Security Groups/Network ACLs)
   - Network policies
 - **Data Masking**: Application-level implementation
 
@@ -265,7 +276,7 @@ The Officeless platform uses a multi-tier storage architecture leveraging AWS st
 **Technologies:**
 - MongoDB
 - CouchDB
-- DynamoDB (AWS)
+- Cloud provider NoSQL services (DynamoDB, Firestore, Cosmos DB, etc.)
 
 #### Key-Value Stores
 **Use Cases:**
@@ -308,7 +319,7 @@ The Officeless platform uses a multi-tier storage architecture leveraging AWS st
 - Backup and archival
 
 **Technologies:**
-- S3 (AWS)
+- Cloud provider object storage (S3, Cloud Storage, Blob Storage, OSS, etc.)
 - Cloud Storage (GCP)
 - Blob Storage (Azure)
 - MinIO (on-premises)

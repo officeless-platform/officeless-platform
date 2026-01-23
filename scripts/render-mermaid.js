@@ -106,23 +106,17 @@ function renderMermaidToSVG(mermaidCode, outputPath) {
 function processMarkdownFile(filePath) {
     const content = fs.readFileSync(filePath, 'utf8');
     
-    // Check if file needs reprocessing (has markdown image syntax or markdown code blocks in details)
-    const needsReprocessing = content.includes('mermaid-diagram-container') && 
-                              (content.includes('![Mermaid Diagram]') || content.includes('```mermaid'));
+    // Check if file has mermaid code blocks that need rendering
+    // Skip only if it has both HTML img tag AND no mermaid code blocks
+    const hasMermaidCode = mermaidRegex.test(content);
+    const hasRenderedDiagram = content.includes('mermaid-diagram-container') && content.includes('<img src="{{ site.baseurl }}');
     
-    if (needsReprocessing) {
-        console.log(`  Reprocessing ${path.basename(filePath)} (converting to HTML format)`);
-        // Remove existing mermaid-diagram-container blocks to reprocess
-        content = content.replace(/<div class="mermaid-diagram-container">[\s\S]*?<\/div>/g, '');
-        // Restore original mermaid code blocks
-        // This is a bit complex, so we'll just reprocess from scratch
-    }
-    
-    // Skip if already processed with HTML format (has <img> tag)
-    if (content.includes('mermaid-diagram-container') && content.includes('<img src="{{ site.baseurl }}')) {
-        console.log(`  Skipping ${path.basename(filePath)} (already in HTML format)`);
+    if (hasRenderedDiagram && !hasMermaidCode) {
+        console.log(`  Skipping ${path.basename(filePath)} (already rendered, no mermaid code blocks)`);
         return false;
     }
+    
+    // If it has mermaid code blocks, we need to process them (even if some diagrams are already rendered)
     
     const mermaidRegex = /```mermaid\n([\s\S]*?)```/g;
     let match;

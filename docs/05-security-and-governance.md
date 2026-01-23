@@ -14,7 +14,7 @@ This document describes the security controls, compliance frameworks, and govern
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/05-security-and-governance-diagram-1-10a06bfb.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/05-security-and-governance-diagram-1-80e2502c.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
@@ -22,24 +22,25 @@ This document describes the security controls, compliance frameworks, and govern
 <pre><code class="language-mermaid">graph TB
     subgraph &quot;Security Layers&quot;
         subgraph &quot;Network Security&quot;
-            VPC[VPC Isolation&lt;br/&gt;10.1.0.0/16]
-            SG[Security Groups]
-            NACL[Network ACLs]
+            VNet[Virtual Network&lt;br/&gt;Isolated Network]
+            FW[Firewall Rules&lt;br/&gt;Security Groups/NACLs]
+            NetworkACL[Network ACLs]
             VPN[VPN Gateway&lt;br/&gt;Site-to-Site]
         end
         
         subgraph &quot;Identity &amp; Access&quot;
-            IAM[IAM Roles&lt;br/&gt;Pod Identity]
-            OIDC[OIDC Provider&lt;br/&gt;IRSA]
+            CloudIAM[Cloud IAM&lt;br/&gt;Provider-Specific]
+            PodIdentity[Pod Identity&lt;br/&gt;Workload Identity]
+            OIDC[OIDC Provider&lt;br/&gt;Service Account Integration]
             RBAC[Kubernetes RBAC]
             SA[Service Accounts]
         end
         
         subgraph &quot;Data Security&quot;
             Encrypt_Transit[Encryption in Transit&lt;br/&gt;TLS/SSL]
-            Encrypt_Rest[Encryption at Rest&lt;br/&gt;AWS KMS]
-            Secrets[Secrets Manager&lt;br/&gt;AWS Secrets]
-            KeyMgmt[Key Management]
+            Encrypt_Rest[Encryption at Rest&lt;br/&gt;Cloud KMS]
+            Secrets[Secrets Manager&lt;br/&gt;Cloud Secrets]
+            KeyMgmt[Key Management&lt;br/&gt;HSM/KMS]
         end
         
         subgraph &quot;Application Security&quot;
@@ -57,33 +58,34 @@ This document describes the security controls, compliance frameworks, and govern
         end
     end
     
-    subgraph &quot;EKS Cluster&quot;
+    subgraph &quot;Kubernetes Cluster&quot;
         ControlPlane[Control Plane&lt;br/&gt;Private Endpoint]
         Nodes[Worker Nodes&lt;br/&gt;Private Subnets]
         Pods[Application Pods]
     end
     
-    VPC --&gt; SG
-    SG --&gt; NACL
-    VPN --&gt; VPC
+    VNet --&gt; FW
+    FW --&gt; NetworkACL
+    VPN --&gt; VNet
     
-    IAM --&gt; OIDC
+    CloudIAM --&gt; PodIdentity
+    PodIdentity --&gt; OIDC
     OIDC --&gt; SA
     SA --&gt; RBAC
     RBAC --&gt; Pods
     
     Encrypt_Transit --&gt; ControlPlane
     Encrypt_Transit --&gt; Nodes
-    Encrypt_Rest --&gt; EBS
-    Encrypt_Rest --&gt; EFS
-    Encrypt_Rest --&gt; S3
+    Encrypt_Rest --&gt; BlockStorage
+    Encrypt_Rest --&gt; FileStorage
+    Encrypt_Rest --&gt; ObjectStorage
     Secrets --&gt; Pods
     KeyMgmt --&gt; Encrypt_Rest
     
-    WAF --&gt; ALB
-    DDoS --&gt; VPC
+    WAF --&gt; LoadBalancer
+    DDoS --&gt; VNet
     Scan --&gt; Pods
-    Audit --&gt; CloudWatch
+    Audit --&gt; Logging
     
     ISO --&gt; Encrypt_Rest
     SOC --&gt; Audit
@@ -109,44 +111,49 @@ This document describes the security controls, compliance frameworks, and govern
 
 ## Authentication and Authorization
 
-### EKS Cluster Authentication
-- **Authentication Mode**: CONFIG_MAP
-- **Bootstrap Cluster Creator**: Admin permissions enabled
+### Kubernetes Cluster Authentication
+- **Authentication Mode**: CONFIG_MAP or cloud provider integration
 - **Endpoint Access**:
-  - Private endpoint: Enabled (from VPC CIDR only)
+  - Private endpoint: Enabled (from private network only)
   - Public endpoint: Disabled (production security best practice)
-- **Access Control**: Kubernetes RBAC
+- **Access Control**: Kubernetes RBAC with cloud provider IAM integration
 
-### AWS IAM Integration
+### Cloud Provider IAM Integration
 
-#### EKS Pod Identity
-- **Add-on**: eks-pod-identity-agent v1.3.5-eksbuild.2
-- **Purpose**: Secure AWS service access from Kubernetes pods
-- **Mechanism**: Service account to IAM role mapping
-- **Benefits**: No need for AWS access keys in pods
+#### Pod Identity / Workload Identity
+All cloud providers support pod identity mechanisms:
+- **AWS**: EKS Pod Identity, IRSA (IAM Roles for Service Accounts)
+- **GCP**: Workload Identity
+- **Azure**: AAD Pod Identity, Workload Identity
+- **Alibaba**: RAM Role for ServiceAccount
+- **OCI**: Workload Identity
+- **ByteDance**: Workload Identity
+- **Huawei**: Workload Identity
+- **On-Premise**: External identity providers (LDAP, OIDC)
 
-#### OIDC Provider
-- **Integration**: AWS IAM OIDC Identity Provider
+#### OIDC Provider Integration
+- **Purpose**: Secure cloud service access from Kubernetes pods
+- **Mechanism**: Service account to cloud IAM role mapping
+- **Benefits**: No cloud access keys in pods, automatic credential rotation
 - **Use Cases**: 
-  - IRSA (IAM Roles for Service Accounts)
-  - EFS CSI Driver authentication
-  - Secret Store CSI Driver authentication
-  - AWS Load Balancer Controller
-  - Custom application IAM roles
+  - CSI Driver authentication (storage, secrets)
+  - Load Balancer Controller access
+  - Cloud service API access
+  - Custom application cloud resource access
 
-#### IAM Roles for Service Accounts
-- **EBS CSI Driver**: Dedicated IAM role with EBS permissions
-- **EFS CSI Driver**: Dedicated IAM role with EFS permissions
-- **Secret Store CSI Driver**: Dedicated IAM role with Secrets Manager permissions
-- **AWS Load Balancer Controller**: Dedicated IAM role with ELB permissions
-- **Monitoring Services**: Dedicated IAM role with S3 permissions
+#### Service Account to Cloud IAM Mapping
+- **Storage CSI Drivers**: Dedicated IAM roles with storage permissions
+- **Secret Store CSI Driver**: Dedicated IAM roles with secrets manager permissions
+- **Load Balancer Controller**: Dedicated IAM roles with load balancer permissions
+- **Monitoring Services**: Dedicated IAM roles with object storage permissions
 - **Application Services**: Custom IAM roles per namespace/service account
 
 ### Kubernetes RBAC
-- **Role-Based Access Control**: Enabled
+- **Role-Based Access Control**: Enabled across all deployments
 - **Service Accounts**: Per-namespace service accounts
 - **Cluster Roles**: System and custom cluster roles
 - **Role Bindings**: Namespace-scoped and cluster-scoped
+- **Network Policies**: Pod-to-pod communication control
 
 ### Authentication Methods (Application Level)
 - Username/password
@@ -158,43 +165,43 @@ This document describes the security controls, compliance frameworks, and govern
 
 ### Authorization Models
 - **Kubernetes RBAC**: Role-based access control
-- **AWS IAM**: Policy-based access control
+- **Cloud Provider IAM**: Policy-based access control
 - **Application-Level**: Custom authorization logic
 - **Fine-grained Permissions**: Per-resource access control
 
 ### Identity Management
 - **Kubernetes Users**: Managed via kubeconfig
 - **Service Accounts**: Kubernetes-native service identity
-- **AWS IAM**: Cloud resource access
+- **Cloud Provider IAM**: Cloud resource access (AWS IAM, GCP IAM, Azure AD, etc.)
 - **Identity Federation**: OIDC-based federation
 
 ## Network Security
 
-### VPC Security
-- **VPC Isolation**: Dedicated VPC (10.1.0.0/16)
+### Virtual Network Security
+- **Network Isolation**: Dedicated virtual network (VPC/VNet/VCN)
 - **DNS**: 
   - DNS support: Enabled
-  - DNS hostnames: Enabled
-- **Flow Logs**: Can be enabled for network monitoring
+  - DNS hostnames: Enabled (where supported)
+- **Flow Logs**: Network flow logging for monitoring and security analysis
 
 ### Network Segmentation
-- **Public Subnets**: Internet-facing resources (NAT, ALB)
-- **Private Subnets**: Application workloads, EKS nodes
-- **Subnet Isolation**: Security groups enforce network policies
+- **Public Subnets**: Internet-facing resources (NAT Gateway, Load Balancers)
+- **Private Subnets**: Application workloads, Kubernetes nodes
+- **Subnet Isolation**: Firewall rules (Security Groups/Network ACLs) enforce network policies
 - **Route Tables**: Separate routing for public and private subnets
 
-### Security Groups
+### Firewall Rules (Security Groups / Network ACLs)
 
-#### EKS Cluster Security Group
-- **Name**: `{cluster-name}-cluster-sg`
+#### Kubernetes Control Plane Security
 - **Ingress Rules**:
-  - Port 443 (HTTPS) from VPC CIDR (10.1.0.0/16)
+  - Port 443 (HTTPS) from private network CIDR only
+  - Restricted to authorized IP ranges
 - **Egress Rules**:
-  - All outbound traffic (0.0.0.0/0)
-- **Purpose**: Control plane access control
+  - Controlled outbound traffic
+- **Purpose**: Control plane access control and isolation
 
 #### Node Security Groups
-- Managed by EKS
+- Managed by cloud provider's Kubernetes service
 - Allows communication between nodes and pods
 - Restricts unnecessary ingress
 
@@ -205,15 +212,15 @@ This document describes the security controls, compliance frameworks, and govern
 
 ### Network Encryption
 - **TLS/SSL**: All HTTPS traffic encrypted
-- **VPN**: Pritunl VPN server for secure remote access
-- **Private Connectivity**: VPC-based private networking
-- **Direct Connect**: Can be added for hybrid connectivity
+- **VPN**: Cloud provider VPN gateway or self-managed VPN server
+- **Private Connectivity**: Virtual network-based private networking
+- **Direct Connect**: Can be added for hybrid connectivity (Direct Connect, ExpressRoute, Interconnect, etc.)
 
 ### VPN Security
-- **VPN Server**: EC2 instance with Pritunl
-- **Protocols**: OpenVPN, WireGuard
-- **Encryption**: Strong encryption for VPN tunnels
-- **Access Control**: User-based authentication
+- **VPN Gateway**: Cloud provider VPN service or self-managed VPN server
+- **Protocols**: IPsec, OpenVPN, WireGuard, SSL/TLS
+- **Encryption**: Strong encryption for VPN tunnels (AES-256 minimum)
+- **Access Control**: Certificate-based or user-based authentication
 - **Network Isolation**: VPN users in separate network segment
 
 ### DDoS Protection

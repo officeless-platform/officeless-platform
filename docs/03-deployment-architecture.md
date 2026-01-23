@@ -8,94 +8,126 @@ permalink: /docs/03-deployment-architecture.html
 
 ## Deployment Overview
 
-This document describes the actual deployment architecture of the Officeless platform on AWS, including infrastructure components, networking, and operational considerations.
+This document describes the deployment architecture of the Officeless platform across multiple cloud providers and on-premises environments. The platform is designed to be cloud-agnostic, with consistent architecture patterns that can be deployed on AWS, GCP, Azure, Alibaba Cloud, Oracle Cloud, ByteDance Cloud, Huawei Cloud, or on-premises infrastructure.
 
 ## Deployment Architecture Diagram
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/03-deployment-architecture-diagram-1-bcef1d50.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/03-deployment-architecture-diagram-1-a0af33c9.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
 <pre><code class="language-mermaid">graph TB
-    subgraph &quot;AWS Region&quot;
-        subgraph &quot;VPC: 10.1.0.0/16&quot;
-            subgraph &quot;Public Subnets&quot;
-                subgraph &quot;AZ-1a: 10.1.0.0/20&quot;
-                    NAT[NAT Gateway&lt;br/&gt;Elastic IP]
-                    IGW[Internet Gateway]
-                    VPN_Instance[VPN Server&lt;br/&gt;EC2 t3.large&lt;br/&gt;Pritunl]
-                end
-                subgraph &quot;AZ-1b: 10.1.16.0/20&quot;
-                    ALB_Public[ALB Public&lt;br/&gt;Subnet]
-                end
-                subgraph &quot;AZ-1c: 10.1.80.0/20&quot;
-                    ALB_Public2[ALB Public&lt;br/&gt;Subnet]
-                end
-            end
-            
-            subgraph &quot;Private Subnets&quot;
-                subgraph &quot;AZ-1a: 10.1.32.0/20&quot;
-                    Node1[EKS Node 1&lt;br/&gt;t3.xlarge&lt;br/&gt;Bottlerocket]
-                    EFS_Mount1[EFS Mount&lt;br/&gt;Target]
-                end
-                subgraph &quot;AZ-1b: 10.1.48.0/20&quot;
-                    Node2[EKS Node 2&lt;br/&gt;t3.xlarge&lt;br/&gt;Bottlerocket]
-                    EFS_Mount2[EFS Mount&lt;br/&gt;Target]
-                end
-                subgraph &quot;AZ-1c: 10.1.64.0/20&quot;
-                    Node3[EKS Node 3&lt;br/&gt;t3.xlarge&lt;br/&gt;Bottlerocket]
-                    EFS_Mount3[EFS Mount&lt;br/&gt;Target]
-                end
-            end
-            
-            subgraph &quot;EKS Control Plane&quot;
-                EKS[EKS Cluster&lt;br/&gt;production-cluster&lt;br/&gt;K8s 1.33&lt;br/&gt;Private Endpoint Only]
-            end
+    subgraph &quot;Deployment Targets&quot;
+        subgraph &quot;AWS Deployment&quot;
+            AWS_VPC[AWS VPC&lt;br/&gt;Public/Private Subnets]
+            AWS_K8s[EKS Cluster&lt;br/&gt;Kubernetes]
+            AWS_LB[Application Load Balancer]
+            AWS_Storage[S3, EBS, EFS]
         end
         
-        subgraph &quot;AWS Managed Services&quot;
-            S3_Buckets[S3 Buckets&lt;br/&gt;Mimir, Loki, Tempo&lt;br/&gt;Application Data]
-            Valkey_Service[Valkey&lt;br/&gt;ElastiCache]
-            CloudWatch_Logs[CloudWatch Logs&lt;br/&gt;EKS Cluster Logs]
+        subgraph &quot;GCP Deployment&quot;
+            GCP_VPC[GCP VPC&lt;br/&gt;Subnets]
+            GCP_K8s[GKE Cluster&lt;br/&gt;Kubernetes]
+            GCP_LB[HTTPS Load Balancer]
+            GCP_Storage[Cloud Storage, Persistent Disk, Filestore]
+        end
+        
+        subgraph &quot;Azure Deployment&quot;
+            Azure_VNet[Azure Virtual Network&lt;br/&gt;Subnets]
+            Azure_K8s[AKS Cluster&lt;br/&gt;Kubernetes]
+            Azure_LB[Application Gateway]
+            Azure_Storage[Blob Storage, Managed Disks, Files]
+        end
+        
+        subgraph &quot;Alibaba Cloud Deployment&quot;
+            Alibaba_VPC[Alibaba VPC&lt;br/&gt;VSwitches]
+            Alibaba_K8s[ACK Cluster&lt;br/&gt;Kubernetes]
+            Alibaba_LB[SLB Load Balancer]
+            Alibaba_Storage[OSS, EBS, NAS]
+        end
+        
+        subgraph &quot;Oracle Cloud Deployment&quot;
+            OCI_VCN[OCI VCN&lt;br/&gt;Subnets]
+            OCI_K8s[OKE Cluster&lt;br/&gt;Kubernetes]
+            OCI_LB[Load Balancer]
+            OCI_Storage[Object Storage, Block Volume, File Storage]
+        end
+        
+        subgraph &quot;ByteDance Cloud Deployment&quot;
+            ByteDance_VPC[ByteDance VPC&lt;br/&gt;Subnets]
+            ByteDance_K8s[TKE Cluster&lt;br/&gt;Kubernetes]
+            ByteDance_LB[CLB Load Balancer]
+            ByteDance_Storage[TOS, EBS, NAS]
+        end
+        
+        subgraph &quot;Huawei Cloud Deployment&quot;
+            Huawei_VPC[Huawei VPC&lt;br/&gt;Subnets]
+            Huawei_K8s[CCE Cluster&lt;br/&gt;Kubernetes]
+            Huawei_LB[ELB Load Balancer]
+            Huawei_Storage[OBS, EVS, SFS]
+        end
+        
+        subgraph &quot;On-Premise Deployment&quot;
+            OnPrem_Network[Private Network&lt;br/&gt;VLANs/Subnets]
+            OnPrem_K8s[Kubernetes Cluster&lt;br/&gt;Rancher/OpenShift/K3s]
+            OnPrem_LB[Load Balancer&lt;br/&gt;HAProxy/Nginx]
+            OnPrem_Storage[Local Storage&lt;br/&gt;NFS/Ceph/GlusterFS]
         end
     end
     
-    Internet[Internet] --&gt; IGW
-    IGW --&gt; ALB_Public
-    IGW --&gt; ALB_Public2
-    IGW --&gt; VPN_Instance
+    subgraph &quot;Common Components&quot;
+        VPN[VPN Gateway&lt;br/&gt;Site-to-Site]
+        Monitoring[Observability Stack&lt;br/&gt;Mimir, Loki, Tempo]
+        Cache[Cache Layer&lt;br/&gt;Redis/Valkey]
+    end
     
-    ALB_Public --&gt; Node1
-    ALB_Public2 --&gt; Node2
-    ALB_Public --&gt; Node3
+    AWS_K8s --&gt; AWS_LB
+    GCP_K8s --&gt; GCP_LB
+    Azure_K8s --&gt; Azure_LB
+    Alibaba_K8s --&gt; Alibaba_LB
+    OCI_K8s --&gt; OCI_LB
+    ByteDance_K8s --&gt; ByteDance_LB
+    Huawei_K8s --&gt; Huawei_LB
+    OnPrem_K8s --&gt; OnPrem_LB
     
-    Node1 --&gt; NAT
-    Node2 --&gt; NAT
-    Node3 --&gt; NAT
-    NAT --&gt; IGW
+    AWS_K8s --&gt; AWS_Storage
+    GCP_K8s --&gt; GCP_Storage
+    Azure_K8s --&gt; Azure_Storage
+    Alibaba_K8s --&gt; Alibaba_Storage
+    OCI_K8s --&gt; OCI_Storage
+    ByteDance_K8s --&gt; ByteDance_Storage
+    Huawei_K8s --&gt; Huawei_Storage
+    OnPrem_K8s --&gt; OnPrem_Storage
     
-    Node1 --&gt; EKS
-    Node2 --&gt; EKS
-    Node3 --&gt; EKS
+    AWS_K8s --&gt; VPN
+    GCP_K8s --&gt; VPN
+    Azure_K8s --&gt; VPN
+    Alibaba_K8s --&gt; VPN
+    OCI_K8s --&gt; VPN
+    ByteDance_K8s --&gt; VPN
+    Huawei_K8s --&gt; VPN
+    OnPrem_K8s --&gt; VPN
     
-    Node1 --&gt; EFS_Mount1
-    Node2 --&gt; EFS_Mount2
-    Node3 --&gt; EFS_Mount3
+    AWS_K8s --&gt; Monitoring
+    GCP_K8s --&gt; Monitoring
+    Azure_K8s --&gt; Monitoring
+    Alibaba_K8s --&gt; Monitoring
+    OCI_K8s --&gt; Monitoring
+    ByteDance_K8s --&gt; Monitoring
+    Huawei_K8s --&gt; Monitoring
+    OnPrem_K8s --&gt; Monitoring
     
-    Node1 --&gt; S3_Buckets
-    Node2 --&gt; S3_Buckets
-    Node3 --&gt; S3_Buckets
-    
-    Node1 --&gt; Valkey_Service
-    Node2 --&gt; Valkey_Service
-    
-    EKS --&gt; CloudWatch_Logs
-    
-    VPN_Instance -.VPN Tunnel.-&gt; Node1
-    VPN_Instance -.VPN Tunnel.-&gt; Node2</code></pre>
+    AWS_K8s --&gt; Cache
+    GCP_K8s --&gt; Cache
+    Azure_K8s --&gt; Cache
+    Alibaba_K8s --&gt; Cache
+    OCI_K8s --&gt; Cache
+    ByteDance_K8s --&gt; Cache
+    Huawei_K8s --&gt; Cache
+    OnPrem_K8s --&gt; Cache</code></pre>
 
 </details>
 
@@ -103,185 +135,193 @@ This document describes the actual deployment architecture of the Officeless pla
 
 ## Infrastructure Foundation
 
-### AWS Region and Availability Zones
-- **Region**: AWS region (e.g., us-east-1)
-- **Availability Zones**: 
-  - us-east-1a
-  - us-east-1b
-  - us-east-1c
-- **Multi-AZ Deployment**: All critical components deployed across 3 availability zones
+The Officeless platform can be deployed on any of the supported cloud providers or on-premises infrastructure. The architecture follows consistent patterns across all deployment targets.
 
-### VPC Architecture
+### Common Architecture Patterns
 
-#### VPC Configuration
-- **CIDR Block**: 10.1.0.0/16
-- **DNS Support**: Enabled
-- **DNS Hostnames**: Enabled
-- **VPC Name**: `production-vpc`
+#### Network Architecture
+All deployments follow a consistent network architecture pattern:
+- **Virtual Network**: Isolated network environment (VPC, VNet, VCN, etc.)
+- **Subnet Segmentation**: Public and private subnets for security
+- **Multi-AZ/Region Deployment**: High availability across availability zones
+- **Internet Gateway**: Public internet access for public-facing services
+- **NAT Gateway**: Outbound internet access for private workloads
+- **VPN Gateway**: Site-to-site VPN for enterprise connectivity
 
-#### Subnet Architecture
-**Public Subnets** (3 subnets, one per AZ):
-- `public-subnet-1a`: 10.1.0.0/20
-- `public-subnet-1b`: 10.1.16.0/20
-- `public-subnet-1c`: 10.1.80.0/20
-- **Purpose**: NAT Gateway, Internet-facing load balancers
-- **Tags**: `kubernetes.io/role/elb = 1` for ALB placement
+#### Kubernetes Cluster
+- **Managed Kubernetes**: Use cloud provider's managed Kubernetes service or self-managed on-premise
+- **Private Endpoint**: Control plane accessible only from private network
+- **Node Groups**: Worker nodes in private subnets
+- **Multi-AZ**: Nodes distributed across availability zones
+- **Auto-scaling**: Cluster autoscaler for dynamic scaling
 
-**Private Subnets** (3 subnets, one per AZ):
-- `private-subnet-1a`: 10.1.32.0/20
-- `private-subnet-1b`: 10.1.48.0/20
-- `private-subnet-1c`: 10.1.64.0/20
-- **Purpose**: EKS cluster nodes, application workloads
-- **Tags**: `kubernetes.io/role/internal-elb = 1` for internal load balancers
+### Cloud Provider Deployments
 
-#### Networking Components
-- **Internet Gateway**: Provides internet access for public subnets
-- **NAT Gateway**: 
-  - Single NAT Gateway in public subnet (us-east-1a)
-  - Elastic IP associated
-  - Provides outbound internet access for private subnets
-- **Route Tables**: 
-  - Public route table with IGW route
-  - Private route table with NAT Gateway route
+#### AWS Deployment
+- **Kubernetes Service**: Amazon EKS
+- **Network**: VPC with public/private subnets
+- **Load Balancer**: Application Load Balancer (ALB) / Network Load Balancer (NLB)
+- **Storage**: EBS (block), EFS (file), S3 (object)
+- **See**: [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) for detailed AWS configuration
 
-## EKS Cluster Deployment
+#### GCP Deployment
+- **Kubernetes Service**: Google Kubernetes Engine (GKE)
+- **Network**: VPC with subnets
+- **Load Balancer**: HTTP(S) Load Balancer / Network Load Balancer
+- **Storage**: Persistent Disk (block), Filestore (file), Cloud Storage (object)
+- **See**: [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) for detailed GCP configuration
 
-### Cluster Configuration
-- **Cluster Name**: `production-cluster`
-- **Kubernetes Version**: 1.33
-- **Endpoint Access**:
-  - Private endpoint: Enabled (from VPC CIDR only)
-  - Public endpoint: Disabled (production security)
-- **Security Group**: Cluster-specific security group allowing HTTPS (443) from VPC CIDR
-- **CloudWatch Logging**: 
-  - API server logs
-  - Audit logs
-  - Authenticator logs
-  - Controller manager logs
-  - Scheduler logs
-  - Retention: 7 days
+#### Azure Deployment
+- **Kubernetes Service**: Azure Kubernetes Service (AKS)
+- **Network**: Virtual Network (VNet) with subnets
+- **Load Balancer**: Application Gateway / Load Balancer
+- **Storage**: Managed Disks (block), Files (file), Blob Storage (object)
+- **See**: [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) for detailed Azure configuration
 
-### Node Group Configuration
-- **Node Group Name**: `worker-nodes`
-- **Deployment**: Private subnets across 3 AZs
-- **Instance Types**: 
-  - Primary: `t3.xlarge` (4 vCPU, 16 GB RAM)
-  - Fallback: `m6i.large` (2 vCPU, 8 GB RAM)
-- **AMI**: Bottlerocket x86_64 (AWS-optimized container OS)
-- **Capacity Type**: ON_DEMAND
-- **Disk**: 200 GB per node
-- **Scaling**:
-  - Minimum: 3 nodes
-  - Desired: 3 nodes (auto-managed by autoscaler)
-  - Maximum: 6 nodes
-- **Update Strategy**: 
-  - Max unavailable: 1 node
-  - Rolling updates with zero-downtime
-- **Labels**: 
-  - `environment = production`
-  - `workload = application`
+#### Alibaba Cloud Deployment
+- **Kubernetes Service**: Container Service for Kubernetes (ACK)
+- **Network**: VPC with VSwitches
+- **Load Balancer**: Server Load Balancer (SLB)
+- **Storage**: Elastic Block Storage (EBS), Network Attached Storage (NAS), Object Storage Service (OSS)
+- **See**: [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) for detailed Alibaba Cloud configuration
+
+#### Oracle Cloud Deployment
+- **Kubernetes Service**: Oracle Kubernetes Engine (OKE)
+- **Network**: Virtual Cloud Network (VCN) with subnets
+- **Load Balancer**: Load Balancer service
+- **Storage**: Block Volume, File Storage, Object Storage
+- **See**: [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) for detailed OCI configuration
+
+#### ByteDance Cloud Deployment
+- **Kubernetes Service**: ByteDance Kubernetes Engine (TKE)
+- **Network**: VPC with subnets
+- **Load Balancer**: Cloud Load Balancer (CLB)
+- **Storage**: Elastic Block Storage (EBS), Network Attached Storage (NAS), TOS (Object Storage)
+- **See**: [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) for detailed ByteDance Cloud configuration
+
+#### Huawei Cloud Deployment
+- **Kubernetes Service**: Cloud Container Engine (CCE)
+- **Network**: VPC with subnets
+- **Load Balancer**: Elastic Load Balancer (ELB)
+- **Storage**: Elastic Volume Service (EVS), Scalable File Service (SFS), Object Storage Service (OBS)
+- **See**: [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) for detailed Huawei Cloud configuration
+
+#### On-Premise Deployment
+- **Kubernetes Distribution**: Rancher, OpenShift, K3s, K0s, or vanilla Kubernetes
+- **Network**: Private network with VLANs/subnets
+- **Load Balancer**: HAProxy, Nginx, or cloud-native load balancer
+- **Storage**: Local storage, NFS, Ceph, GlusterFS, or cloud-native storage
+- **See**: [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) for detailed on-premise configuration
 
 ## Storage Architecture
 
-### EBS (Elastic Block Store)
-- **CSI Driver**: AWS EBS CSI Driver v1.42.0-eksbuild.1
-- **Storage Class**: gp3 (provisioned IOPS)
+Storage architecture follows cloud-agnostic patterns with provider-specific implementations:
+
+### Block Storage
+- **Purpose**: Database volumes, application persistent storage
 - **Features**:
-  - Volume expansion: Enabled
-  - Volume binding: WaitForFirstConsumer (zone-aware)
-  - Encryption: AWS managed keys
-- **Use Cases**: Database volumes, application persistent storage
+  - Volume expansion support
+  - Zone-aware volume binding
+  - Encryption at rest
+- **Cloud Provider Implementations**:
+  - **AWS**: EBS (gp3) via EBS CSI Driver
+  - **GCP**: Persistent Disk via GCE Persistent Disk CSI Driver
+  - **Azure**: Managed Disks via Azure Disk CSI Driver
+  - **Alibaba**: Elastic Block Storage via EBS CSI Driver
+  - **OCI**: Block Volume via Block Volume CSI Driver
+  - **ByteDance**: EBS via EBS CSI Driver
+  - **Huawei**: Elastic Volume Service via EVS CSI Driver
+  - **On-Premise**: Local storage, Ceph, or cloud-native storage
 
-### EFS (Elastic File System)
-- **File System**: `eks-shared-storage`
-- **CSI Driver**: AWS EFS CSI Driver v3.1.8
-- **Configuration**:
-  - Performance mode: General Purpose
-  - Throughput mode: Bursting
-  - Encryption: Enabled at rest
-- **Mount Targets**: One per private subnet (3 total)
-- **Security**: Uses EKS cluster security group
-- **Storage Class**: `efs` with EFS Access Points
-- **Use Cases**: Shared file storage, content repositories
+### File Storage
+- **Purpose**: Shared file storage, content repositories
+- **Features**:
+  - Multi-AZ/region access
+  - Encryption at rest
+  - Access point support for multi-tenancy
+- **Cloud Provider Implementations**:
+  - **AWS**: EFS via EFS CSI Driver
+  - **GCP**: Filestore via Filestore CSI Driver
+  - **Azure**: Azure Files via Azure File CSI Driver
+  - **Alibaba**: NAS via NAS CSI Driver
+  - **OCI**: File Storage via File Storage CSI Driver
+  - **ByteDance**: NAS via NAS CSI Driver
+  - **Huawei**: Scalable File Service via SFS CSI Driver
+  - **On-Premise**: NFS, GlusterFS, or cloud-native file storage
 
-### S3 (Simple Storage Service)
-- **Application Buckets**: Custom buckets as needed
-- **Monitoring Buckets**:
-  - `mimir-metrics` - Metrics storage
-  - `mimir-alertmanager` - Alertmanager state
-  - `mimir-ruler` - Recording rules
-  - `loki-chunks` - Log chunks
-  - `loki-ruler` - Log rules
-  - `tempo-traces` - Trace storage
+### Object Storage
+- **Purpose**: Application data, monitoring data, backups
+- **Features**:
+  - Versioning support
+  - Lifecycle policies
+  - Encryption at rest
+- **Cloud Provider Implementations**:
+  - **AWS**: S3
+  - **GCP**: Cloud Storage
+  - **Azure**: Blob Storage
+  - **Alibaba**: Object Storage Service (OSS)
+  - **OCI**: Object Storage
+  - **ByteDance**: TOS (TikTok Object Storage)
+  - **Huawei**: Object Storage Service (OBS)
+  - **On-Premise**: MinIO, Ceph Object Gateway, or compatible S3 API
 
 ## Load Balancing
 
-### AWS Load Balancer Controller
-- **Version**: 1.12.0 (Helm chart)
-- **Namespace**: kube-system
-- **IAM Integration**: Pod Identity with dedicated IAM role
-- **Capabilities**:
-  - Automatic ALB/NLB creation from Ingress/Service resources
-  - SSL/TLS termination
-  - Path-based routing
-  - Host-based routing
+### Load Balancer Controller
+All deployments use cloud provider's load balancer controller:
+- **AWS**: AWS Load Balancer Controller (ALB/NLB)
+- **GCP**: GKE Ingress Controller (HTTP(S) Load Balancer)
+- **Azure**: Application Gateway Ingress Controller (AGIC)
+- **Alibaba**: ACK Ingress Controller (SLB)
+- **OCI**: OKE Ingress Controller (Load Balancer)
+- **ByteDance**: TKE Ingress Controller (CLB)
+- **Huawei**: CCE Ingress Controller (ELB)
+- **On-Premise**: HAProxy, Nginx Ingress, or cloud-native load balancer
 
-### Load Balancer Types
-- **Application Load Balancer (ALB)**: HTTP/HTTPS traffic
-- **Network Load Balancer (NLB)**: TCP/UDP traffic
-- **Placement**: Based on subnet tags (`kubernetes.io/role/elb`)
+### Load Balancer Capabilities
+- Automatic load balancer creation from Ingress/Service resources
+- SSL/TLS termination
+- Path-based and host-based routing
+- Health checks and auto-scaling
 
 ## VPN and Remote Access
 
-### VPN Server
-- **Instance Type**: t3.large
-- **AMI**: Ubuntu 24.04
-- **Deployment**: Public subnet (us-east-1a)
-- **Elastic IP**: Static public IP assigned
-- **Storage**: 
-  - Root volume: 20 GB gp3, encrypted
-  - Additional volume: 20 GB gp3, encrypted
-- **Software Stack**:
-  - Pritunl VPN Server
-  - OpenVPN
-  - WireGuard
-  - MongoDB 8.0 (for Pritunl)
-- **Security Group**: 
-  - SSH (22)
-  - VPN (1194 UDP)
-  - HTTP (80)
-  - HTTPS (443)
-  - Jenkins Agent JNLP (50000)
-  - Docker Registry (5000)
+### VPN Gateway
+- **Cloud Provider VPN Services**:
+  - **AWS**: Site-to-Site VPN, Client VPN
+  - **GCP**: Cloud VPN (Site-to-Site, HA VPN)
+  - **Azure**: VPN Gateway
+  - **Alibaba**: VPN Gateway
+  - **OCI**: Site-to-Site VPN
+  - **ByteDance**: VPN Gateway
+  - **Huawei**: VPN Gateway
+- **On-Premise**: Self-managed VPN server (Pritunl, OpenVPN, WireGuard)
+- **Protocols**: IPsec, SSL/TLS, WireGuard
+- **See**: [VPN Connectivity](./11-vpn-connectivity.html) for detailed VPN configuration
 
 ### CI/CD Integration
-- **Jenkins Agent**: Pre-configured on VPN instance
-- **Tools Installed**:
-  - Docker (latest)
-  - kubectl (latest)
-  - Java 21 (OpenJDK)
-  - AWS CLI v2
-  - Git, build-essential
-  - jq, yq, tree, htop
+- **CI/CD Tools**: Jenkins, GitLab CI, GitHub Actions, Azure DevOps
+- **Container Registry**: Cloud provider's container registry or self-hosted
+- **Deployment**: GitOps-based (ArgoCD, Flux) or CI/CD pipeline-driven
 
 ## Infrastructure as Code
 
 ### Terraform Structure
 ```
 terraform-officeless/
-├── 01-vpc/          # VPC, subnets, networking
-├── 02-eks/          # EKS cluster, node groups, addons
-├── 03-s3/           # S3 buckets
-├── 04-ec2/          # VPN instance
-├── 05-helm/         # Helm charts (addons)
-├── 07-valkey/       # Valkey (Redis) module
-└── modules/         # Reusable modules
+├── 01-network/       # VPC/VNet/VCN, subnets, networking
+├── 02-kubernetes/    # Kubernetes cluster, node groups, addons
+├── 03-storage/       # Storage buckets/volumes
+├── 04-vpn/           # VPN gateway/server
+├── 05-helm/          # Helm charts (addons)
+├── 06-cache/         # Cache layer (Redis/Valkey)
+└── modules/          # Reusable cloud-agnostic modules
 ```
 
 ### State Management
-- **Backend**: S3 with versioning and encryption
-- **State Locking**: DynamoDB (recommended)
-- **State Organization**: Separate state files per module
+- **Backend**: Cloud provider's object storage with versioning and encryption
+- **State Locking**: Cloud provider's database service (DynamoDB, Cloud Storage, etc.)
+- **State Organization**: Separate state files per module or environment
 
 ## Scaling Strategies
 
@@ -302,21 +342,24 @@ terraform-officeless/
 
 ## High Availability
 
-### Multi-AZ Deployment
-- **EKS Control Plane**: Managed by AWS across multiple AZs
-- **Node Groups**: Nodes distributed across 3 AZs
-- **EFS**: Mount targets in all 3 private subnets
-- **Load Balancers**: Multi-AZ by default
+### Multi-AZ/Region Deployment
+- **Kubernetes Control Plane**: Managed by cloud provider across multiple AZs/regions
+- **Node Groups**: Nodes distributed across 3+ availability zones
+- **File Storage**: Mount targets in all availability zones
+- **Load Balancers**: Multi-AZ by default for high availability
+- **Database**: Multi-AZ replication for database workloads
 
 ### Pod Disruption Budgets
 - **Update Strategy**: Max 1 unavailable node during updates
 - **Rolling Updates**: Zero-downtime deployments
+- **Health Checks**: Liveness and readiness probes
 
 ### Backup and Recovery
-- **EBS Snapshots**: Manual or automated via AWS Backup
-- **EFS Backups**: AWS Backup service
-- **S3 Versioning**: Enabled for critical buckets
+- **Block Storage**: Automated snapshots via cloud provider backup services
+- **File Storage**: Automated backups via cloud provider backup services
+- **Object Storage**: Versioning enabled for critical buckets
 - **Kubernetes Resources**: GitOps-based backup (recommended)
+- **Disaster Recovery**: Cross-region replication for critical data
 
 ## Network Architecture
 
@@ -338,17 +381,10 @@ terraform-officeless/
 - **VPN Access**: Pritunl VPN server for secure remote access
 - **Direct Connect**: Can be added for hybrid connectivity
 
-### GCP Deployment
-- GKE (Google Kubernetes Engine)
-- Cloud SQL, Firestore, Cloud Storage
-- VPC networking
-- Cloud IAM integration
-
-### Azure Deployment
-- AKS (Azure Kubernetes Service)
-- Azure SQL, Cosmos DB, Blob Storage
-- Virtual Network
-- Azure AD integration
+### Reference Implementations
+For detailed deployment configurations for each cloud provider, see:
+- [Multi-Cloud Deployment](./10-multi-cloud-deployment.html) - Comprehensive deployment guides for all cloud providers
+- [VPN Connectivity](./11-vpn-connectivity.html) - VPN configuration for each cloud provider
 
 ## Scaling Strategies
 

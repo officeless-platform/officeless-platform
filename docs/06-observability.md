@@ -8,13 +8,13 @@ permalink: /docs/06-observability.html
 
 ## Observability Overview
 
-This document describes the observability strategy for the Officeless platform, including monitoring, logging, tracing, and operational visibility capabilities. The platform uses a comprehensive observability stack with Mimir for metrics, Loki for logs, and Tempo for traces, all backed by Amazon S3.
+This document describes the observability strategy for the Officeless platform, including monitoring, logging, tracing, and operational visibility capabilities. The platform uses a comprehensive observability stack with Mimir for metrics, Loki for logs, and Tempo for traces, all backed by cloud provider object storage services for scalability and durability.
 
 ## Observability Stack Architecture
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/06-observability-diagram-1-5d6f799f.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/06-observability-diagram-1-fd753900.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
@@ -24,7 +24,7 @@ This document describes the observability strategy for the Officeless platform, 
         App1[Application Pod 1]
         App2[Application Pod 2]
         App3[Application Pod 3]
-        EKS_Cluster[EKS Control Plane]
+        K8s_Cluster[Kubernetes Control Plane]
     end
     
     subgraph &quot;Metrics Collection&quot;
@@ -35,7 +35,7 @@ This document describes the observability strategy for the Officeless platform, 
     
     subgraph &quot;Log Collection&quot;
         Loki[Loki&lt;br/&gt;Log Aggregation]
-        CloudWatch[CloudWatch Logs&lt;br/&gt;EKS Cluster Logs]
+        CloudLogs[Cloud Logging&lt;br/&gt;Kubernetes Cluster Logs]
     end
     
     subgraph &quot;Tracing&quot;
@@ -48,11 +48,11 @@ This document describes the observability strategy for the Officeless platform, 
         Notifications[Notifications&lt;br/&gt;Email, Slack, PagerDuty]
     end
     
-    subgraph &quot;Storage - S3&quot;
-        S3_Mimir[(S3: Mimir Metrics&lt;br/&gt;mimir-metrics)]
-        S3_Loki[(S3: Loki Logs&lt;br/&gt;loki-chunks)]
-        S3_Tempo[(S3: Tempo Traces&lt;br/&gt;tempo-traces)]
-        S3_Alert[(S3: Alertmanager&lt;br/&gt;mimir-alertmanager)]
+    subgraph &quot;Object Storage&quot;
+        Object_Metrics[(Metrics Storage&lt;br/&gt;mimir-metrics)]
+        Object_Logs[(Log Storage&lt;br/&gt;loki-chunks)]
+        Object_Traces[(Trace Storage&lt;br/&gt;tempo-traces)]
+        Object_Alerts[(Alert Storage&lt;br/&gt;mimir-alertmanager)]
     end
     
     subgraph &quot;Visualization&quot;
@@ -63,7 +63,7 @@ This document describes the observability strategy for the Officeless platform, 
     App1 --&gt; MetricsServer
     App2 --&gt; MetricsServer
     App3 --&gt; MetricsServer
-    EKS_Cluster --&gt; CloudWatch
+    K8s_Cluster --&gt; CloudLogs
     
     MetricsServer --&gt; Prometheus
     Prometheus --&gt; Mimir
@@ -73,7 +73,7 @@ This document describes the observability strategy for the Officeless platform, 
     App1 --&gt; Loki
     App2 --&gt; Loki
     App3 --&gt; Loki
-    CloudWatch --&gt; Loki
+    CloudLogs --&gt; Loki
     
     App1 --&gt; OpenTelemetry
     App2 --&gt; OpenTelemetry
@@ -83,10 +83,10 @@ This document describes the observability strategy for the Officeless platform, 
     Mimir --&gt; Alertmanager
     Alertmanager --&gt; Notifications
     
-    Mimir --&gt; S3_Mimir
-    Loki --&gt; S3_Loki
-    Tempo --&gt; S3_Tempo
-    Alertmanager --&gt; S3_Alert
+    Mimir --&gt; Object_Metrics
+    Loki --&gt; Object_Logs
+    Tempo --&gt; Object_Traces
+    Alertmanager --&gt; Object_Alerts
     
     Mimir --&gt; Grafana
     Loki --&gt; Grafana
@@ -100,8 +100,8 @@ This document describes the observability strategy for the Officeless platform, 
 ## Observability Stack
 
 ### Metrics: Mimir
-- **Storage Backend**: Amazon S3
-- **S3 Buckets**:
+- **Storage Backend**: Cloud provider object storage (S3, Cloud Storage, Blob Storage, OSS, etc.)
+- **Storage Buckets**:
   - `mimir-metrics` - Metrics storage
   - `mimir-alertmanager` - Alertmanager state
   - `mimir-ruler` - Recording and alerting rules
@@ -110,21 +110,22 @@ This document describes the observability strategy for the Officeless platform, 
   - Prometheus-compatible
   - Horizontal scaling
   - High availability
+  - Cloud-agnostic object storage backend
 
 ### Logs: Loki
-- **Storage Backend**: Amazon S3
-- **S3 Buckets**:
+- **Storage Backend**: Cloud provider object storage
+- **Storage Buckets**:
   - `loki-chunks` - Log chunks
   - `loki-ruler` - Log rules
 - **Features**:
   - Log aggregation
   - Label-based indexing
   - PromQL-compatible queries
-  - S3-backed storage
+  - Cloud-agnostic object storage backend
 
 ### Traces: Tempo
-- **Storage Backend**: Amazon S3
-- **S3 Bucket**: `tempo-traces`
+- **Storage Backend**: Cloud provider object storage
+- **Storage Bucket**: `tempo-traces`
 - **Features**:
   - Distributed tracing
   - OpenTelemetry compatible
@@ -132,35 +133,36 @@ This document describes the observability strategy for the Officeless platform, 
   - High scalability
 
 ### Access Management
-- **IAM Role**: `monitoring-role`
+- **Cloud IAM Integration**: Pod Identity / Workload Identity
 - **Service Account**: `monitoring-sa`
 - **Namespace**: `monitoring`
 - **Permissions**:
-  - S3 read/write access to monitoring buckets
+  - Object storage read/write access to monitoring buckets
   - Pod Identity association for secure access
+  - Cloud provider IAM roles for service account mapping
 
 ## Observability Pillars
 
 ### Metrics
 - **Kubernetes Metrics**: Metrics Server for cluster metrics
 - **Application Metrics**: Prometheus-compatible metrics
-- **Infrastructure Metrics**: AWS CloudWatch integration
+- **Infrastructure Metrics**: Cloud provider monitoring integration (CloudWatch, Cloud Monitoring, Monitor, etc.)
 - **Custom Metrics**: Application-defined metrics
-- **Storage**: Mimir with S3 backend
+- **Storage**: Mimir with cloud provider object storage backend
 
 ### Logs
 - **Application Logs**: Collected via Loki
-- **System Logs**: EKS cluster logs in CloudWatch
+- **System Logs**: Kubernetes cluster logs via cloud provider logging service
 - **Access Logs**: Application-level logging
 - **Audit Logs**: Kubernetes audit logs (enabled)
-- **Storage**: Loki with S3 backend
+- **Storage**: Loki with cloud provider object storage backend
 
 ### Traces
 - **Distributed Tracing**: Tempo for trace collection
 - **Request Flow Tracking**: End-to-end request tracing
 - **Service Dependencies**: Service map generation
 - **Performance Analysis**: Latency and bottleneck identification
-- **Storage**: Tempo with S3 backend
+- **Storage**: Tempo with cloud provider object storage backend
 
 ## Metrics Collection
 
@@ -184,11 +186,11 @@ This document describes the observability strategy for the Officeless platform, 
   - Custom application metrics
 
 ### Infrastructure Metrics
-- **AWS CloudWatch**: 
-  - EKS cluster metrics
+- **Cloud Provider Monitoring**: 
+  - Kubernetes cluster metrics
   - Node metrics
-  - EBS volume metrics
-  - EFS metrics
+  - Block storage volume metrics
+  - File storage metrics
   - Load balancer metrics
 - **Kubernetes Metrics**:
   - CPU utilization
@@ -203,7 +205,7 @@ This document describes the observability strategy for the Officeless platform, 
 - **Performance Indicators**: Custom performance metrics
 
 ### Metrics Storage
-- **Backend**: Mimir with S3 storage
+- **Backend**: Mimir with cloud provider object storage
 - **Retention**: Configurable (long-term storage)
 - **Query**: PromQL-compatible
 - **Aggregation**: Automatic metric aggregation
@@ -320,7 +322,7 @@ This document describes the observability strategy for the Officeless platform, 
 ## Infrastructure Monitoring
 
 ### Cloud Provider Monitoring
-- CloudWatch (AWS)
+- Cloud provider monitoring services (CloudWatch, Cloud Monitoring, Monitor, etc.)
 - Cloud Monitoring (GCP)
 - Azure Monitor
 - Native integrations

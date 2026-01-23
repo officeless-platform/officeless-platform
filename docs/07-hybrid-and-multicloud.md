@@ -14,73 +14,81 @@ This document describes deployment patterns and strategies for hybrid and multi-
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/07-hybrid-and-multicloud-diagram-1-a86f58ec.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/07-hybrid-and-multicloud-diagram-1-9dcfed49.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
 <pre><code class="language-mermaid">graph TB
-    subgraph &quot;On-Premise&quot;
+    subgraph &quot;On-Premise Deployment&quot;
         OnPrem_App[On-Premise Applications]
         OnPrem_Data[On-Premise Data]
+        OnPrem_K8s[Kubernetes Cluster&lt;br/&gt;Rancher/OpenShift/K3s]
         Legacy[Legacy Systems]
     end
     
-    subgraph &quot;Cloud Provider 1 - AWS&quot;
-        AWS_EKS[AWS EKS Cluster]
-        AWS_VPN[Site-to-Site VPN]
-        AWS_Services[AWS Services]
-    end
-    
-    subgraph &quot;Cloud Provider 2 - GCP&quot;
-        GCP_GKE[GCP GKE Cluster]
-        GCP_VPN[Cloud VPN]
-        GCP_Services[GCP Services]
-    end
-    
-    subgraph &quot;Cloud Provider 3 - Azure&quot;
-        Azure_AKS[Azure AKS Cluster]
-        Azure_VPN[VPN Gateway]
-        Azure_Services[Azure Services]
+    subgraph &quot;Cloud Deployments&quot;
+        AWS[AWS&lt;br/&gt;EKS Cluster]
+        GCP[GCP&lt;br/&gt;GKE Cluster]
+        Azure[Azure&lt;br/&gt;AKS Cluster]
+        Alibaba[Alibaba Cloud&lt;br/&gt;ACK Cluster]
+        OCI[Oracle Cloud&lt;br/&gt;OKE Cluster]
+        ByteDance[ByteDance Cloud&lt;br/&gt;TKE Cluster]
+        Huawei[Huawei Cloud&lt;br/&gt;CCE Cluster]
     end
     
     subgraph &quot;Connectivity&quot;
         VPN_Tunnel1[Site-to-Site VPN&lt;br/&gt;IPsec]
         VPN_Tunnel2[Site-to-Site VPN&lt;br/&gt;IPsec]
-        DirectConnect[Direct Connect&lt;br/&gt;ExpressRoute&lt;br/&gt;Interconnect]
+        DirectConnect[Direct Connect&lt;br/&gt;ExpressRoute/Interconnect]
         Internet[Internet&lt;br/&gt;HTTPS]
     end
     
     subgraph &quot;Data Synchronization&quot;
-        DataSync[Data Sync Service]
-        Replication[Cross-Cloud Replication]
+        DataSync[Data Sync Service&lt;br/&gt;Cross-Cloud]
+        Replication[Data Replication&lt;br/&gt;Multi-Region]
     end
     
     OnPrem_App --&gt; VPN_Tunnel1
     OnPrem_Data --&gt; VPN_Tunnel1
     Legacy --&gt; VPN_Tunnel1
     
-    VPN_Tunnel1 --&gt; AWS_VPN
-    VPN_Tunnel1 --&gt; GCP_VPN
-    VPN_Tunnel1 --&gt; Azure_VPN
+    VPN_Tunnel1 --&gt; AWS
+    VPN_Tunnel1 --&gt; GCP
+    VPN_Tunnel1 --&gt; Azure
+    VPN_Tunnel1 --&gt; Alibaba
+    VPN_Tunnel1 --&gt; OCI
+    VPN_Tunnel1 --&gt; ByteDance
+    VPN_Tunnel1 --&gt; Huawei
+    VPN_Tunnel1 --&gt; OnPrem_K8s
     
-    AWS_VPN --&gt; AWS_EKS
-    GCP_VPN --&gt; GCP_GKE
-    Azure_VPN --&gt; Azure_AKS
-    
-    AWS_EKS --&gt; DataSync
-    GCP_GKE --&gt; DataSync
-    Azure_AKS --&gt; DataSync
+    AWS --&gt; DataSync
+    GCP --&gt; DataSync
+    Azure --&gt; DataSync
+    Alibaba --&gt; DataSync
+    OCI --&gt; DataSync
+    ByteDance --&gt; DataSync
+    Huawei --&gt; DataSync
+    OnPrem_K8s --&gt; DataSync
     
     DataSync --&gt; Replication
     
-    AWS_EKS -.Data Sync.-&gt; GCP_GKE
-    GCP_GKE -.Data Sync.-&gt; Azure_AKS
-    Azure_AKS -.Data Sync.-&gt; AWS_EKS
+    AWS -.Data Sync.-&gt; GCP
+    GCP -.Data Sync.-&gt; Azure
+    Azure -.Data Sync.-&gt; Alibaba
+    Alibaba -.Data Sync.-&gt; OCI
+    OCI -.Data Sync.-&gt; ByteDance
+    ByteDance -.Data Sync.-&gt; Huawei
+    Huawei -.Data Sync.-&gt; OnPrem_K8s
+    OnPrem_K8s -.Data Sync.-&gt; AWS
     
-    AWS_EKS --&gt; DirectConnect
-    GCP_GKE --&gt; DirectConnect
-    Azure_AKS --&gt; DirectConnect</code></pre>
+    AWS --&gt; DirectConnect
+    GCP --&gt; DirectConnect
+    Azure --&gt; DirectConnect
+    Alibaba --&gt; DirectConnect
+    OCI --&gt; DirectConnect
+    ByteDance --&gt; DirectConnect
+    Huawei --&gt; DirectConnect</code></pre>
 
 </details>
 

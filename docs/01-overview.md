@@ -8,39 +8,44 @@ permalink: /docs/01-overview.html
 
 ## Introduction
 
-This document provides a high-level overview of the Officeless platform, its core concepts, capabilities, and positioning in enterprise environments.
+This document provides a high-level overview of the Officeless platform, its core concepts, capabilities, and positioning in enterprise environments. The platform is designed to be **cloud-agnostic**, supporting deployments across major cloud providers and on-premises infrastructure.
 
 ## Platform Overview
 
 <div class="mermaid-diagram-container">
 
-<img src="{{ site.baseurl }}/assets/diagrams/rendered/01-overview-diagram-1-e6454949.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
+<img src="{{ site.baseurl }}/assets/diagrams/rendered/01-overview-diagram-1-af08947b.svg" alt="Mermaid Diagram" style="max-width: 100%; height: auto;">
 
 <details>
 <summary>View Mermaid source code</summary>
 
 <pre><code class="language-mermaid">graph TB
-    subgraph &quot;Officeless Platform&quot;
-        subgraph &quot;Core Platform&quot;
-            Dev[Application Development&lt;br/&gt;Low-Code/No-Code]
-            Integration[Enterprise Integration&lt;br/&gt;API-First]
-            Security[Security &amp; Compliance&lt;br/&gt;Built-in Controls]
-            Scale[Scalability &amp; Performance&lt;br/&gt;Multi-Tenant]
-        end
-        
-        subgraph &quot;Deployment Options&quot;
-            Cloud[Cloud Deployment&lt;br/&gt;AWS, GCP, Azure, etc.]
-            Hybrid[Hybrid Cloud&lt;br/&gt;Cloud + On-Premise]
-            MultiCloud[Multi-Cloud&lt;br/&gt;Multiple Providers]
-            OnPrem[On-Premise&lt;br/&gt;Self-Managed]
-        end
-        
-        subgraph &quot;Enterprise Integration&quot;
-            Oracle[Oracle EBS]
-            SAP[SAP Systems]
-            Salesforce[Salesforce]
-            Custom[Custom Applications]
-        end
+    subgraph &quot;Officeless Platform - Core Capabilities&quot;
+        Dev[Application Development&lt;br/&gt;Low-Code/No-Code]
+        Integration[Enterprise Integration&lt;br/&gt;API-First]
+        Security[Security &amp; Compliance&lt;br/&gt;Built-in Controls]
+        Scale[Scalability &amp; Performance&lt;br/&gt;Multi-Tenant]
+    end
+    
+    subgraph &quot;Cloud Deployments&quot;
+        AWS[AWS&lt;br/&gt;EKS]
+        GCP[GCP&lt;br/&gt;GKE]
+        Azure[Azure&lt;br/&gt;AKS]
+        Alibaba[Alibaba Cloud&lt;br/&gt;ACK]
+        OCI[Oracle Cloud&lt;br/&gt;OKE]
+        ByteDance[ByteDance Cloud&lt;br/&gt;TKE]
+        Huawei[Huawei Cloud&lt;br/&gt;CCE]
+    end
+    
+    subgraph &quot;On-Premise Deployment&quot;
+        OnPrem[On-Premise&lt;br/&gt;Kubernetes&lt;br/&gt;Rancher/OpenShift/K3s]
+    end
+    
+    subgraph &quot;Enterprise Integration&quot;
+        Oracle_App[Oracle EBS]
+        SAP_App[SAP Systems]
+        Salesforce_App[Salesforce]
+        Custom[Custom Applications]
     end
     
     subgraph &quot;Target Industries&quot;
@@ -51,18 +56,25 @@ This document provides a high-level overview of the Officeless platform, its cor
         Retail[Retail &amp; E-commerce]
     end
     
-    Dev --&gt; Cloud
-    Dev --&gt; Hybrid
-    Integration --&gt; Oracle
-    Integration --&gt; SAP
-    Integration --&gt; Salesforce
+    Dev --&gt; AWS
+    Dev --&gt; GCP
+    Dev --&gt; Azure
+    Dev --&gt; Alibaba
+    Dev --&gt; OCI
+    Dev --&gt; ByteDance
+    Dev --&gt; Huawei
+    Dev --&gt; OnPrem
+    
+    Integration --&gt; Oracle_App
+    Integration --&gt; SAP_App
+    Integration --&gt; Salesforce_App
+    Integration --&gt; Custom
+    
     Security --&gt; Finance
     Security --&gt; Healthcare
     Scale --&gt; Government
     Scale --&gt; Manufacturing
-    
-    Cloud --&gt; MultiCloud
-    Hybrid --&gt; OnPrem</code></pre>
+    Scale --&gt; Retail</code></pre>
 
 </details>
 
@@ -96,10 +108,11 @@ Officeless is designed to enable organizations to build custom applications tail
 
 ## Key Differentiators
 
-1. **Cloud-Agnostic** - Deployable across major cloud providers and on-premises
-2. **Enterprise-Ready** - Security, compliance, and governance built-in
-3. **Extensible** - Customizable to meet specific business requirements
-4. **Hybrid-Capable** - Supports hybrid and multi-cloud deployments
+1. **Cloud-Agnostic** - Deployable across all major cloud providers (AWS, GCP, Azure, Alibaba Cloud, Oracle Cloud, ByteDance Cloud, Huawei Cloud) and on-premises infrastructure
+2. **Enterprise-Ready** - Security, compliance, and governance built-in from the ground up
+3. **Extensible** - Customizable to meet specific business requirements through APIs and plugins
+4. **Hybrid-Capable** - Supports hybrid and multi-cloud deployments with seamless connectivity
+5. **Vendor-Independent** - Avoid vendor lock-in with portable architecture and standard interfaces
 
 ## Use Cases
 
