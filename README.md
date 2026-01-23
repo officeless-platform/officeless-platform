@@ -29,11 +29,44 @@ To preview the documentation locally, you'll need both Ruby (for Jekyll) and Nod
 ### Prerequisites
 
 1. **Ruby** (3.0+ recommended) and **Bundler**
-   ```bash
-   # Check if Ruby is installed
-   ruby --version
    
-   # Install Bundler if not installed
+   **⚠️ Important**: Avoid using system Ruby on macOS. Use a Ruby version manager instead.
+   
+   **Option A: Using Homebrew (Recommended)**
+   ```bash
+   # Install Ruby via Homebrew
+   brew install ruby
+   
+   # Add to your ~/.zshrc or ~/.bash_profile:
+   export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+   export PATH="/opt/homebrew/lib/ruby/gems/3.3.0/bin:$PATH"
+   
+   # Reload shell
+   source ~/.zshrc  # or source ~/.bash_profile
+   
+   # Verify installation
+   ruby --version  # Should show 3.x.x
+   ```
+   
+   **Option B: Using rbenv (Alternative)**
+   ```bash
+   # Install rbenv via Homebrew
+   brew install rbenv ruby-build
+   
+   # Add to your ~/.zshrc or ~/.bash_profile:
+   eval "$(rbenv init - zsh)"  # or eval "$(rbenv init - bash)"
+   
+   # Reload shell and install Ruby
+   source ~/.zshrc
+   rbenv install 3.3.0
+   rbenv global 3.3.0
+   
+   # Verify installation
+   ruby --version
+   ```
+   
+   **Install Bundler**
+   ```bash
    gem install bundler
    ```
 
@@ -42,6 +75,9 @@ To preview the documentation locally, you'll need both Ruby (for Jekyll) and Nod
    # Check if Node.js is installed
    node --version
    npm --version
+   
+   # If not installed, use Homebrew:
+   brew install node
    ```
 
 ### Setup Steps
@@ -91,9 +127,30 @@ The `--livereload` flag will automatically refresh the browser when you make cha
 
 ### Troubleshooting
 
-**Issue: `bundle install` fails**
-- Make sure Ruby and Bundler are installed correctly
-- Try `gem update bundler` if you have an older version
+**Issue: `bundle install` fails with "Operation not permitted" or permission errors**
+- **Solution**: You're using system Ruby. Switch to Homebrew Ruby or rbenv (see Prerequisites above)
+- System Ruby requires sudo, which is not recommended
+- After switching, run `bundle install` again
+
+**Issue: `eventmachine` gem fails to compile with "iostream file not found"**
+- **Solution 1**: Make sure Xcode Command Line Tools are installed:
+  ```bash
+  xcode-select --install
+  ```
+- **Solution 2**: Set SDK path before installing:
+  ```bash
+  export SDKROOT=$(xcrun --show-sdk-path)
+  bundle install
+  ```
+- **Solution 3**: Use a Ruby version manager (rbenv/rvm) instead of system Ruby
+- **Solution 4**: Install eventmachine separately with flags:
+  ```bash
+  gem install eventmachine -- --with-cppflags=-I$(xcrun --show-sdk-path)/usr/include
+  ```
+
+**Issue: Ruby version is too old (< 3.0)**
+- Jekyll 4.3+ requires Ruby 3.0+
+- Use Homebrew or rbenv to install Ruby 3.0+ (see Prerequisites)
 
 **Issue: Diagrams not showing**
 - Run `npm run render-diagrams` to generate SVG files
@@ -105,6 +162,10 @@ The `--livereload` flag will automatically refresh the browser when you make cha
 **Issue: Changes not reflecting**
 - Stop the server (Ctrl+C) and restart
 - Or use `--watch` flag for auto-reload
+
+**Issue: "Command not found: bundle"**
+- Make sure Bundler is installed: `gem install bundler`
+- If using rbenv, run `rbenv rehash` after installing bundler
 
 ## Contributing
 
